@@ -1,0 +1,208 @@
+<%- include('../partials/head') %>
+</head>
+
+
+
+<body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 min-h-screen text-white">
+  <!-- Navigation -->
+  <nav class="fixed w-full top-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-blue-500/20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center space-x-2">
+          <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-lg flex items-center justify-center">
+            <span class="text-slate-900 font-bold text-xl">FM</span>
+          </div>
+          <span class="text-xl font-bold">FinManage</span>
+        </div>
+        <div class="hidden md:flex space-x-8">
+          <a href="#features" class="hover:text-blue-400 transition">Features</a>
+          
+        </div>
+        <div class="flex space-x-4">
+          <button onclick="location.href='/login'" class="px-4 py-2 text-sm hover:text-blue-400 transition">Sign In</button>
+          <button onclick="location.href='/signup'" class="px-4 py-2 text-sm bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg hover:from-blue-600 hover:to-cyan-600 transition">Get Started</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <div>
+          <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+            Next-Gen
+            <span class="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent"> Financial Management</span>
+          </h1>
+          <p class="text-xl text-slate-300 mb-8 leading-relaxed">
+            Harness the power of AI and advanced database systems to manage stocks, detect fraud, and predict market trends with unprecedented accuracy.
+          </p>
+          
+          <div class="flex items-center gap-8 mt-8 text-sm">
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+              </svg>
+              <span class="text-slate-300">AI-Powered</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+              </svg>
+              <span class="text-slate-300">Bank-Grade Security</span>
+            </div>
+          </div>
+        </div>
+        <div class="relative">
+          <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl blur-3xl opacity-20"></div>
+          <div class="relative bg-slate-800/50 backdrop-blur-sm border border-blue-500/20 rounded-2xl p-8">
+            <div class="space-y-4">
+              <div class="flex items-center justify-between p-4 bg-slate-900/50 rounded-lg">
+                <span class="text-slate-300">Total Assets</span>
+                <span class="text-2xl font-bold text-green-400">$1M</span>
+              </div>
+              <div class="flex items-center justify-between p-4 bg-slate-900/50 rounded-lg">
+                <span class="text-slate-300">Active Trades</span>
+                <span class="text-2xl font-bold text-blue-400">0</span>
+              </div>
+              <div class="flex items-center justify-between p-4 bg-slate-900/50 rounded-lg">
+                <span class="text-slate-300">Fraud Detected</span>
+                <span class="text-2xl font-bold text-red-400">2</span>
+              </div>
+              <div class="h-32 bg-slate-900/50 rounded-lg p-4 flex items-end justify-between">
+                <div class="w-8 bg-gradient-to-t from-blue-500 to-cyan-500 rounded-t" style="height: 60%"></div>
+                <div class="w-8 bg-gradient-to-t from-blue-500 to-cyan-500 rounded-t" style="height: 75%"></div>
+                <div class="w-8 bg-gradient-to-t from-blue-500 to-cyan-500 rounded-t" style="height: 50%"></div>
+                <div class="w-8 bg-gradient-to-t from-blue-500 to-cyan-500 rounded-t" style="height: 90%"></div>
+                <div class="w-8 bg-gradient-to-t from-blue-500 to-cyan-500 rounded-t" style="height: 70%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="py-20 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold mb-4">Powerful Features</h2>
+        <p class="text-xl text-slate-300">Everything you need to manage your financial operations efficiently</p>
+      </div>
+      
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Feature 1 -->
+        <div class="bg-slate-800/30 backdrop-blur-sm border border-blue-500/20 rounded-xl p-6 hover:border-blue-500/40 transition-all hover:transform hover:scale-105">
+          <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Stock Management</h3>
+          <p class="text-slate-300">Comprehensive database system to track company stocks, ownership, and transactions with real-time updates.</p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="bg-slate-800/30 backdrop-blur-sm border border-blue-500/20 rounded-xl p-6 hover:border-blue-500/40 transition-all hover:transform hover:scale-105">
+          <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Audit Reports</h3>
+          <p class="text-slate-300">Secure storage and organization of audit reports with version control and compliance tracking.</p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="bg-slate-800/30 backdrop-blur-sm border border-blue-500/20 rounded-xl p-6 hover:border-blue-500/40 transition-all hover:transform hover:scale-105">
+          <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Trade Management</h3>
+          <p class="text-slate-300">Complete trade lifecycle management with ACID compliance and automated validation processes.</p>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="bg-slate-800/30 backdrop-blur-sm border border-red-500/20 rounded-xl p-6 hover:border-red-500/40 transition-all hover:transform hover:scale-105">
+          <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-orange-500 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">AI Fraud Detection</h3>
+          <p class="text-slate-300">Machine learning algorithms detect suspicious patterns and anomalies in real-time to prevent fraud.</p>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="bg-slate-800/30 backdrop-blur-sm border border-blue-500/20 rounded-xl p-6 hover:border-blue-500/40 transition-all hover:transform hover:scale-105">
+          <div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Price Monitoring</h3>
+          <p class="text-slate-300">Continuous AI-driven monitoring of market prices with alerts for unusual movements and volatility.</p>
+        </div>
+
+        <!-- Feature 6 -->
+        <div class="bg-slate-800/30 backdrop-blur-sm border border-cyan-500/20 rounded-xl p-6 hover:border-cyan-500/40 transition-all hover:transform hover:scale-105">
+          <div class="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Stock Prediction</h3>
+          <p class="text-slate-300">Advanced ML models forecast future stock prices using historical data and time-series analysis.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="py-20 px-4 sm:px-6 lg:px-8 bg-slate-800/20">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid md:grid-cols-4 gap-8 text-center">
+        <div>
+          <div class="text-4xl font-bold text-blue-400 mb-2">99.9%</div>
+          <div class="text-slate-300">Uptime</div>
+        </div>
+        <div>
+          <div class="text-4xl font-bold text-cyan-400 mb-2">+</div>
+          <div class="text-slate-300">Institutions</div>
+        </div>
+        <div>
+          <div class="text-4xl font-bold text-green-400 mb-2">$</div>
+          <div class="text-slate-300">Assets Managed</div>
+        </div>
+        <div>
+          <div class="text-4xl font-bold text-purple-400 mb-2">24/7</div>
+          <div class="text-slate-300">AI Monitoring</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-20 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-4xl font-bold mb-6">Ready to Transform Your Financial Management?</h2>
+      <p class="text-xl text-slate-300 mb-8">Join hundreds of institutions using AI-powered insights for better decisions.</p>
+      <button onclick="location.href='/signup'" class="px-8 py-4 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg font-semibold text-lg hover:shadow-lg hover:shadow-blue-500/50 transition-all transform hover:scale-105">
+        Get Started Today
+      </button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-blue-500/20 py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto text-center text-slate-400">
+      <p>&copy; 2024 FinManage. All rights reserved. Powered by AI and Innovation.</p>
+    </div>
+  </footer>
+</body>
+</html>
