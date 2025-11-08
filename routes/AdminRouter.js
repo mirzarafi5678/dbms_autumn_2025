@@ -6,7 +6,9 @@ const AdminRouter = express.Router();
 const AdminController = require("../controllers/AdminController");
 
 
-AdminRouter.get('/Admin-dashboard',AdminController.Dashboard)
+AdminRouter.get('/dashboard',AdminController.Dashboard)
+
+AdminRouter.get('/Company-Stock-Management',AdminController.comapanyStockManagement)
 
 
 module.exports = AdminRouter;

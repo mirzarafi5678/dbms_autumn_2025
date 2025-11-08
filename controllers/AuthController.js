@@ -1,14 +1,14 @@
 
 
 exports.login = (req, res, next) => {
-  res.render('store/logIn', {
+  res.render('store/Auth-ejs/logIn', {
     pageTitle: 'Login Page'
   });
 };
 
 exports.signup=(req, res , next ) => {
    
-    res.render('store/signup', {
+    res.render('store/Auth-ejs/signup', {
     pageTitle: 'Sign Page'
   });
 
