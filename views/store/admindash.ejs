@@ -1,29 +1,14 @@
 <%- include('../partials/head') %>
 </head>
+
 <body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 min-h-screen text-white">
-  <!-- Sidebar -->
-  
+  <%- include('../partials/admin-nav') %>
 
   <!-- Main Content -->
-  <main class="ml-64 min-h-screen">
-    <!-- Top Bar -->
-    <header class="bg-slate-900/50 backdrop-blur-md border-b border-blue-500/20 px-8 py-4">
-      <div class="flex items-center justify-between">
-        <div>
-          <h1 class="text-2xl font-bold">Dashboard</h1>
-          <p class="text-sm text-slate-400">Financial Institutions Management System</p>
-        </div>
-        <div class="flex items-center space-x-4">
-          <div class="text-sm text-slate-400">
-            Friday, November 07, 2025
-          </div>
-        </div>
-      </div>
-    </header>
-
+  <main class="min-h-screen pt-16">
     <!-- Dashboard Content -->
     <div class="p-8">
-      <div class="flex items-center justify-center min-h-[calc(100vh-200px)]">
+      <div class="flex items-center justify-center min-h-[calc(100vh-150px)]">
         <div class="text-center">
           <div class="inline-block mb-6">
             <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center animate-pulse">
@@ -44,5 +29,3 @@
   </main>
 </body>
 </html>
-
-
