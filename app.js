@@ -30,7 +30,7 @@ app.set('view engine', 'ejs');
 app.set('views', 'views');
 app.use(express.static(path.join(rootDir, 'public')))
 app.use(express.urlencoded());
-app.use(AdminRouter);
+app.use("/Admin",AdminRouter);
 app.use(AuthRouter)
 
 
@@ -40,7 +40,7 @@ app.use(errorsController.pageNotFound);
 
 
 
-const PORT = 3000;
+const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`Server running on address http://localhost:${PORT}`);
 });
