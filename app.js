@@ -7,10 +7,19 @@ const express = require('express');
 //Local Module
 
 
-const Router = require("./routes/manyRouter")
-
-const rootDir = require("./utils/pathUtil");
+const AdminRouter = require("./routes/AdminRouter")
+const AuthRouter = require("./routes/AuthRouter")
 const errorsController = require("./controllers/errors");
+const rootDir = require("./utils/pathUtil");
+
+
+
+// const db = require("./utils/sql")
+// db.execute('SELECT * FROM users').then(([a,b]) =>{
+//   console.log('getting from db',a)
+// } ).catch(error =>{
+//   console.log('this is the error-', error)
+// })
 
 
 const app = express();
@@ -19,21 +28,17 @@ const app = express();
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
-
-app.use(express.urlencoded());
-app.use(Router);
-
-
-app.get('/test', (req, res) => {
-     res.render('store/admindash', {
-    pageTitle: 'admin'
-  })
-});
-
-
 app.use(express.static(path.join(rootDir, 'public')))
+app.use(express.urlencoded());
+app.use(AdminRouter);
+app.use(AuthRouter)
+
 
 app.use(errorsController.pageNotFound);
+
+
+
+
 
 const PORT = 3000;
 app.listen(PORT, () => {

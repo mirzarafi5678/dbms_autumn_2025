@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "tailwind": "tailwindcss -i ./views/input.css -o ./public/output.css --watch",
-     "start": "concurrently \"npm run tailwind\" \"nodemon app.js\""
+    "start": "concurrently \"npm run tailwind\" \"nodemon app.js\""
   },
   "keywords": [],
   "author": "",
@@ -20,6 +20,7 @@
   "dependencies": {
     "body-parser": "^1.20.3",
     "ejs": "^3.1.10",
-    "express": "^4.21.0"
+    "express": "^4.21.0",
+    "mysql2": "^3.15.3"
   }
 }
