@@ -9,16 +9,22 @@
     <div class="mb-12">
       <h2 class="text-2xl font-bold mb-4">Company</h2>
       <div class="mb-4 flex justify-between items-center">
-          <div class="flex items-center space-x-2">
-            <input type="text" placeholder="Search Company..." class="w-64 px-4 py-2 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500" id="companySearch">
-            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center">
-              <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35" />
-              </svg>
-              Search
-            </button>
-          </div>
+        <div class="flex items-center space-x-2">
+          <input type="text" placeholder="Search Company..." class="w-64 px-4 py-2 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500" id="companySearch">
+          <button id="companySearchBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center">
+            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35" />
+            </svg>
+            Search
+          </button>
+        </div>
+
+        <div>
+          <button id="openCompanyAdd" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200">
+            + Add Company
+          </button>
+        </div>
       </div>
       <div class="overflow-x-auto rounded-lg shadow">
         <table class="min-w-full bg-slate-800">
@@ -39,8 +45,11 @@
                 <td class="py-2 px-4"><%= company.sector %></td>
                 <td class="py-2 px-4"><%= company.registrationNo %></td>
                 <td class="py-2 px-4">
-                  <button class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded mr-2">Edit</button>
-                  <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Delete</button>
+                  <button class="edit-company bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded mr-2"
+                          data-id="<%= company.id %>" data-name="<%= company.name %>" data-sector="<%= company.sector %>" data-registrationno="<%= company.registrationNo %>">
+                    Edit
+                  </button>
+                  <button class="delete-company bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Delete</button>
                 </td>
               </tr>
             <% }) %>
@@ -49,20 +58,29 @@
       </div>
     </div>
 
-    <!-- Stocks Table -->
+    
     <div>
       <h2 class="text-2xl font-bold mb-4">Stocks</h2>
       <div class="mb-4 flex justify-between items-center">
-          <div class="flex items-center space-x-2">
-            <input type="text" placeholder="Search Stocks..." class="w-64 px-4 py-2 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500" id="stockSearch">
-            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center">
-              <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35" />
-              </svg>
-              Search
-            </button>
-          </div>
+        <div class="flex items-center space-x-2">
+          <input type="text" placeholder="Search Stocks..." class="w-64 px-4 py-2 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500" id="stockSearch">
+          <button id="stockSearchBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center">
+            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35" />
+            </svg>
+            Search
+          </button>
+        </div>
+
+       
+          
+          
+        <div>  
+          <button id="openStockAdd" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200">
+            + Add Stock
+          </button>
+        </div>
       </div>
       <div class="overflow-x-auto rounded-lg shadow">
         <table class="min-w-full bg-slate-800">
@@ -81,15 +99,11 @@
                 <td class="py-2 px-4"><%= stock.totalShare %></td>
                 <td class="py-2 px-4"><%= stock.currentPrice %></td>
                 <td class="py-2 px-4">
-                  
-<!-- <form action="/newtype" method="POST">
-  <button type="submit" class="px-4 py-2 text-sm hover:text-blue-400 transition">
-    Submit
-  </button>
-</form>
-                   -->
-                  <button class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded mr-2">Edit</button>
-                  <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Delete</button>
+                  <button class="edit-stock bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded mr-2"
+                          data-companyid="<%= stock.companyId %>" data-totalshare="<%= stock.totalShare %>" data-currentprice="<%= stock.currentPrice %>">
+                    Edit
+                  </button>
+                  <button class="delete-stock bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Delete</button>
                 </td>
               </tr>
             <% }) %>
@@ -98,6 +112,346 @@
       </div>
     </div>
   </div>
+
+  <!-- Company Add Modal -->
+  <div id="companyModal" class="fixed inset-0 z-50 hidden items-center justify-center">
+    <div class="absolute inset-0 bg-black/50" data-close-target="companyModal"></div>
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 z-10 overflow-hidden">
+      <div class="flex justify-between items-center px-4 py-3 border-b">
+        <h3 class="text-lg font-semibold text-slate-900">Add Company</h3>
+        <button class="text-slate-600 hover:text-slate-900" data-close-target="companyModal">✕</button>
+      </div>
+      <form id="companyForm" action="/company/add" method="POST" class="px-4 py-4 space-y-3">
+        <div>
+          <label class="text-sm text-slate-700">Company ID</label>
+          <input name="id" required class="w-full px-3 py-2 rounded border" />
+        </div>
+        <div>
+          <label class="text-sm text-slate-700">Name</label>
+          <input name="name" required class="w-full px-3 py-2 rounded border" />
+        </div>
+        <div>
+          <label class="text-sm text-slate-700">Sector</label>
+          <input name="sector" class="w-full px-3 py-2 rounded border" />
+        </div>
+        <div>
+          <label class="text-sm text-slate-700">Registration No</label>
+          <input name="registrationNo" class="w-full px-3 py-2 rounded border" />
+        </div>
+        <div class="pt-2 flex justify-end space-x-2">
+          <button type="button" class="px-4 py-2 rounded border" data-close-target="companyModal">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Company Edit Modal -->
+  <div id="companyEditModal" class="fixed inset-0 z-50 hidden items-center justify-center">
+    <div class="absolute inset-0 bg-black/50" data-close-target="companyEditModal"></div>
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 z-10 overflow-hidden">
+      <div class="flex justify-between items-center px-4 py-3 border-b">
+        <h3 class="text-lg font-semibold text-slate-900">Edit Company</h3>
+        <button class="text-slate-600 hover:text-slate-900" data-close-target="companyEditModal">✕</button>
+      </div>
+      <form id="companyEditForm" action="/company/edit" method="POST" class="px-4 py-4 space-y-3">
+        <input type="hidden" name="originalId" />
+        <div>
+          <label class="text-sm text-slate-700">Company ID</label>
+          <input name="id" required class="w-full px-3 py-2 rounded border" />
+        </div>
+        <div>
+          <label class="text-sm text-slate-700">Name</label>
+          <input name="name" required class="w-full px-3 py-2 rounded border" />
+        </div>
+        <div>
+          <label class="text-sm text-slate-700">Sector</label>
+          <input name="sector" class="w-full px-3 py-2 rounded border" />
+        </div>
+        <div>
+          <label class="text-sm text-slate-700">Registration No</label>
+          <input name="registrationNo" class="w-full px-3 py-2 rounded border" />
+        </div>
+        <div class="pt-2 flex justify-end space-x-2">
+          <button type="button" class="px-4 py-2 rounded border" data-close-target="companyEditModal">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+
+ 
+
+
+  
+
+
+
+
+
+
+  <!-- Stock Add Modal -->
+  <div id="stockModal" class="fixed inset-0 z-50 hidden items-center justify-center">
+    <div class="absolute inset-0 bg-black/50" data-close-target="stockModal"></div>
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 z-10 overflow-hidden">
+      <div class="flex justify-between items-center px-4 py-3 border-b">
+        <h3 class="text-lg font-semibold text-slate-900">Add Stock</h3>
+        <button class="text-slate-600 hover:text-slate-900" data-close-target="stockModal">✕</button>
+      </div>
+      <form id="stockForm" action="/stock/add" method="POST" class="px-4 py-4 space-y-3">
+        <div>
+          <label class="text-sm text-slate-700">Company ID</label>
+          <input name="companyId" required class="w-full px-3 py-2 rounded border" />
+        </div>
+        <div>
+          <label class="text-sm text-slate-700">Total Share</label>
+          <input name="totalShare" type="number" required class="w-full px-3 py-2 rounded border" />
+        </div>
+        <div>
+          <label class="text-sm text-slate-700">Current Price</label>
+          <input name="currentPrice" type="number" step="0.01" required class="w-full px-3 py-2 rounded border" />
+        </div>
+        <div class="pt-2 flex justify-end space-x-2">
+          <button type="button" class="px-4 py-2 rounded border" data-close-target="stockModal">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Stock Edit Modal -->
+  <div id="stockEditModal" class="fixed inset-0 z-50 hidden items-center justify-center">
+    <div class="absolute inset-0 bg-black/50" data-close-target="stockEditModal"></div>
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 z-10 overflow-hidden">
+      <div class="flex justify-between items-center px-4 py-3 border-b">
+        <h3 class="text-lg font-semibold text-slate-900">Edit Stock</h3>
+        <button class="text-slate-600 hover:text-slate-900" data-close-target="stockEditModal">✕</button>
+      </div>
+      <form id="stockEditForm" action="/stock/edit" method="POST" class="px-4 py-4 space-y-3">
+        <input type="hidden" name="originalCompanyId" />
+        <div>
+          <label class="text-sm text-slate-700">Company ID</label>
+          <input name="companyId" required class="w-full px-3 py-2 rounded border" />
+        </div>
+        <div>
+          <label class="text-sm text-slate-700">Total Share</label>
+          <input name="totalShare" type="number" required class="w-full px-3 py-2 rounded border" />
+        </div>
+        <div>
+          <label class="text-sm text-slate-700">Current Price</label>
+          <input name="currentPrice" type="number" step="0.01" required class="w-full px-3 py-2 rounded border" />
+        </div>
+        <div class="pt-2 flex justify-end space-x-2">
+          <button type="button" class="px-4 py-2 rounded border" data-close-target="stockEditModal">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Modal open/close handlers
+    function openModal(id) {
+      const modal = document.getElementById(id);
+      if (!modal) return;
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+    function closeModal(id) {
+      const modal = document.getElementById(id);
+      if (!modal) return;
+      modal.classList.remove('flex');
+      modal.classList.add('hidden');
+    }
+
+    document.getElementById('openCompanyAdd')?.addEventListener('click', () => openModal('companyModal'));
+    document.getElementById('openStockAdd')?.addEventListener('click', () => openModal('stockModal'));
+
+    // Close when clicking overlay or buttons with data-close-target
+    document.querySelectorAll('[data-close-target]').forEach(el => {
+      el.addEventListener('click', (e) => {
+        const target = e.currentTarget.getAttribute('data-close-target');
+        if (target) closeModal(target);
+        else {
+          // if overlay (no data-close-target attr value), try to find parent modal id via closest
+          const parent = e.currentTarget.closest('.fixed');
+          if (parent && parent.id) closeModal(parent.id);
+        }
+      });
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal('companyModal');
+        closeModal('stockModal');
+      }
+    });
+
+    // Submit handlers - try AJAX then fallback to default submit
+    async function handleFormSubmit(e, tableBodyId, fields) {
+      e.preventDefault();
+      const form = e.target;
+      const action = form.action || window.location.href;
+      const formData = new FormData(form);
+      try {
+        const resp = await fetch(action, { method: 'POST', body: formData, credentials: 'same-origin' });
+        if (resp.ok) {
+          let data;
+          try { data = await resp.json(); } catch (err) { data = null; }
+          // If server returns created object use it, otherwise use form values
+          const values = data || Object.fromEntries(formData.entries());
+          appendRow(tableBodyId, fields, values);
+          // close modal
+          const modalId = form.id === 'companyForm' ? 'companyModal' : 'stockModal';
+          closeModal(modalId);
+          form.reset();
+        } else {
+          // fallback: allow default submit
+          form.submit();
+        }
+      } catch (err) {
+        // network error - fallback
+        form.submit();
+      }
+    }
+
+    function appendRow(tableBodyId, fields, values) {
+      const tbody = document.getElementById(tableBodyId);
+      if (!tbody) return;
+      const tr = document.createElement('tr');
+      tr.className = 'border-b border-slate-700 hover:bg-slate-700 text-white';
+      fields.forEach(f => {
+        const td = document.createElement('td');
+        td.className = 'py-2 px-4';
+        td.textContent = values[f] ?? '';
+        tr.appendChild(td);
+      });
+      // actions cell (include edit button with data attributes so edit works for appended rows)
+      const actionTd = document.createElement('td');
+      actionTd.className = 'py-2 px-4';
+      if (tableBodyId === 'companyTableBody') {
+        const id = values['id'] ?? '';
+        const name = values['name'] ?? '';
+        const sector = values['sector'] ?? '';
+        const registrationNo = values['registrationNo'] ?? '';
+        actionTd.innerHTML = `
+          <button class="edit-company bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded mr-2" data-id="${id}" data-name="${name}" data-sector="${sector}" data-registrationno="${registrationNo}">Edit</button>
+          <button class="delete-company bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Delete</button>
+        `;
+      } else if (tableBodyId === 'stockTableBody') {
+        const companyId = values['companyId'] ?? '';
+        const totalShare = values['totalShare'] ?? '';
+        const currentPrice = values['currentPrice'] ?? '';
+        actionTd.innerHTML = `
+          <button class="edit-stock bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded mr-2" data-companyid="${companyId}" data-totalshare="${totalShare}" data-currentprice="${currentPrice}">Edit</button>
+          <button class="delete-stock bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Delete</button>
+        `;
+      } else {
+        actionTd.innerHTML = `
+          <button class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded mr-2">Edit</button>
+          <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Delete</button>
+        `;
+      }
+      tr.appendChild(actionTd);
+      tbody.appendChild(tr);
+    }
+
+    document.getElementById('companyForm')?.addEventListener('submit', (e) => handleFormSubmit(e, 'companyTableBody', ['id','name','sector','registrationNo']));
+    document.getElementById('stockForm')?.addEventListener('submit', (e) => handleFormSubmit(e, 'stockTableBody', ['companyId','totalShare','currentPrice']));
+
+    // Edit modal handlers: delegation to support existing and appended rows
+    document.getElementById('companyTableBody')?.addEventListener('click', (e) => {
+      const btn = e.target.closest('.edit-company');
+      if (!btn) return;
+      const id = btn.getAttribute('data-id');
+      const name = btn.getAttribute('data-name');
+      const sector = btn.getAttribute('data-sector');
+      const registrationNo = btn.getAttribute('data-registrationno');
+      const form = document.getElementById('companyEditForm');
+      form.originalId.value = id;
+      form.id.value = id;
+      form.name.value = name;
+      form.sector.value = sector;
+      form.registrationNo.value = registrationNo;
+      openModal('companyEditModal');
+    });
+
+    document.getElementById('stockTableBody')?.addEventListener('click', (e) => {
+      const btn = e.target.closest('.edit-stock');
+      if (!btn) return;
+      const companyId = btn.getAttribute('data-companyid');
+      const totalShare = btn.getAttribute('data-totalshare');
+      const currentPrice = btn.getAttribute('data-currentprice');
+      const form = document.getElementById('stockEditForm');
+      form.originalCompanyId.value = companyId;
+      form.companyId.value = companyId;
+      form.totalShare.value = totalShare;
+      form.currentPrice.value = currentPrice;
+      openModal('stockEditModal');
+    });
+
+    // Edit form submit - similar to add but updates existing row instead of appending
+    async function handleEditSubmit(e, tableBodyId, idField, fields) {
+      e.preventDefault();
+      const form = e.target;
+      const action = form.action || window.location.href;
+      const formData = new FormData(form);
+      try {
+        const resp = await fetch(action, { method: 'POST', body: formData, credentials: 'same-origin' });
+        if (resp.ok) {
+          let data;
+          try { data = await resp.json(); } catch (err) { data = null; }
+          const values = data || Object.fromEntries(formData.entries());
+          updateRow(tableBodyId, idField, formData.get(idField === 'id' ? 'originalId' : 'originalCompanyId'), values, fields);
+          // close modal
+          const modalId = form.id === 'companyEditForm' ? 'companyEditModal' : 'stockEditModal';
+          closeModal(modalId);
+          form.reset();
+        } else {
+          form.submit();
+        }
+      } catch (err) {
+        form.submit();
+      }
+    }
+
+    function updateRow(tableBodyId, idField, originalId, values, fields) {
+      const tbody = document.getElementById(tableBodyId);
+      if (!tbody) return;
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      for (const row of rows) {
+        const firstCell = row.querySelector('td');
+        if (!firstCell) continue;
+        if (String(firstCell.textContent).trim() === String(originalId).trim()) {
+          // update each field cell in order
+          const tds = row.querySelectorAll('td');
+          fields.forEach((f, idx) => {
+            if (tds[idx]) tds[idx].textContent = values[f] ?? '';
+          });
+          // update data attributes on edit button if present
+          const editBtn = row.querySelector(idField === 'id' ? '.edit-company' : '.edit-stock');
+          if (editBtn) {
+            if (idField === 'id') {
+              editBtn.setAttribute('data-id', values['id'] ?? '');
+              editBtn.setAttribute('data-name', values['name'] ?? '');
+              editBtn.setAttribute('data-sector', values['sector'] ?? '');
+              editBtn.setAttribute('data-registrationno', values['registrationNo'] ?? '');
+            } else {
+              editBtn.setAttribute('data-companyid', values['companyId'] ?? '');
+              editBtn.setAttribute('data-totalshare', values['totalShare'] ?? '');
+              editBtn.setAttribute('data-currentprice', values['currentPrice'] ?? '');
+            }
+          }
+          break;
+        }
+      }
+    }
+
+    document.getElementById('companyEditForm')?.addEventListener('submit', (e) => handleEditSubmit(e, 'companyTableBody', 'id', ['id','name','sector','registrationNo']));
+    document.getElementById('stockEditForm')?.addEventListener('submit', (e) => handleEditSubmit(e, 'stockTableBody', 'companyId', ['companyId','totalShare','currentPrice']));
+  </script>
 
 </body>
 </html>
