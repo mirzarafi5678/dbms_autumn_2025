@@ -8,24 +8,120 @@
   <main class="min-h-screen pt-16">
     <!-- Dashboard Content -->
     <div class="p-8">
-      <div class="flex items-center justify-center min-h-[calc(100vh-150px)]">
-        <div class="text-center">
-          <div class="inline-block mb-6">
-            <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center animate-pulse">
-              <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-              </svg>
+      <div class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Pie chart: Company stock distribution -->
+          <div class="bg-slate-800 rounded-lg p-4 shadow">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-lg font-semibold">Company Stock Distribution</h3>
+              <p class="text-sm text-slate-400">Total stocks per company</p>
+            </div>
+            <div class="w-full h-64 flex items-center justify-center">
+              <canvas id="companyStockChart" class="w-full h-full"></canvas>
             </div>
           </div>
+
+          <!-- Line chart: Price movement -->
+          <div class="bg-slate-800 rounded-lg p-4 shadow">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-lg font-semibold">Price Movement</h3>
+              <p class="text-sm text-slate-400">Price over days</p>
+            </div>
+            <div class="w-full h-64">
+              <canvas id="priceMoveChart" class="w-full h-full"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center">
           <h2 class="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
             Welcome to Dashboard
           </h2>
-          <p class="text-xl text-slate-400">
-            Financial Institutions Management System
-          </p>
+          <p class="text-xl text-slate-400">Financial Institutions Management System</p>
         </div>
       </div>
     </div>
   </main>
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Server-provided data
+  const companyStockRaw = JSON.parse('<%- JSON.stringify(typeof CompanyStockList !== "undefined" ? CompanyStockList : []) %>');
+  const movePriceRaw = JSON.parse('<%- JSON.stringify(typeof MovePriceList !== "undefined" ? MovePriceList : []) %>');
+
+    // Helper to extract labels and values from arrays like [{company1:456},{company2:756},...]
+    function extractPairs(arr) {
+      const labels = [];
+      const data = [];
+      arr.forEach(obj => {
+        const keys = Object.keys(obj);
+        if (keys.length === 0) return;
+        const k = keys[0];
+        labels.push(k);
+        data.push(Number(obj[k]) || 0);
+      });
+      return { labels, data };
+    }
+
+    // Prepare data for company pie chart
+    const companyPairs = extractPairs(companyStockRaw);
+
+    // Prepare data for price movement: MovePriceList like [{day1:123},{day2:140},...]
+    const pricePairs = extractPairs(movePriceRaw);
+
+    // Colors for pie chart
+    const palette = [
+      '#60A5FA','#34D399','#FBBF24','#F87171','#A78BFA','#38BDF8','#F472B6','#FCD34D','#4ADE80','#60A5FA'
+    ];
+
+    // Render company pie chart
+    const ctxPie = document.getElementById('companyStockChart');
+    if (ctxPie) {
+      new Chart(ctxPie, {
+        type: 'pie',
+        data: {
+          labels: companyPairs.labels,
+          datasets: [{
+            data: companyPairs.data,
+            backgroundColor: companyPairs.labels.map((_, i) => palette[i % palette.length]),
+            borderColor: 'rgba(0,0,0,0.1)'
+          }]
+        },
+        options: {
+          plugins: {
+            legend: { position: 'bottom', labels: { color: '#cbd5e1' } }
+          }
+        }
+      });
+    }
+
+    // Render price movement line chart
+    const ctxLine = document.getElementById('priceMoveChart');
+    if (ctxLine) {
+      new Chart(ctxLine, {
+        type: 'line',
+        data: {
+          labels: pricePairs.labels,
+          datasets: [{
+            label: 'Price (taka)',
+            data: pricePairs.data,
+            borderColor: '#60A5FA',
+            backgroundColor: 'rgba(96,165,250,0.12)',
+            tension: 0.2,
+            pointRadius: 3,
+            pointBackgroundColor: '#fff'
+          }]
+        },
+        options: {
+          scales: {
+            x: { ticks: { color: '#cbd5e1' } },
+            y: { ticks: { color: '#cbd5e1' }, beginAtZero: true }
+          },
+          plugins: { legend: { labels: { color: '#cbd5e1' } } }
+        }
+      });
+    }
+  </script>
 </body>
 </html>

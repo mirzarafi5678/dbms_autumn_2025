@@ -1,0 +1,124 @@
+<%- include('../../partials/head') %>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 min-h-screen text-white">
+
+    <%- include('../../partials/Investor-nav') %>
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 ml-16 mr-8">
+            <!-- Stock Distribution Graph -->
+            <div class="bg-white/10 p-6 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300">
+                <h2 class="text-xl font-bold mb-4 text-center">Company Stock Distribution</h2>
+                <canvas id="stockDistributionChart"></canvas>
+            </div>
+            
+            <!-- Price Movement Graph -->
+            <div class="bg-white/10 p-6 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300">
+                <h2 class="text-xl font-bold mb-4 text-center">Price Movement Over Time</h2>
+                <canvas id="priceMovementChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Process CompanyStockList data for pie chart
+        const companyStockList = <%- JSON.stringify(CompanyStockList) %>;
+        const companies = [];
+        const stockAmounts = [];
+        
+        companyStockList.forEach(item => {
+            const [company, amount] = Object.entries(item)[0];
+            companies.push(company);
+            stockAmounts.push(amount);
+        });
+
+        // Create Pie Chart
+        const stockCtx = document.getElementById('stockDistributionChart').getContext('2d');
+        new Chart(stockCtx, {
+            type: 'pie',
+            data: {
+                labels: companies,
+                datasets: [{
+                    data: stockAmounts,
+                    backgroundColor: [
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56',
+                        '#4BC0C0',
+                        '#9966FF',
+                        '#FF9F40'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: 'white'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Process MovePriceList data for line chart
+        const movePriceList = <%- JSON.stringify(MovePriceList) %>;
+        const days = [];
+        const prices = [];
+        
+        movePriceList.forEach(item => {
+            const [day, price] = Object.entries(item)[0];
+            days.push(day);
+            prices.push(price);
+        });
+
+        // Create Line Chart
+        const priceCtx = document.getElementById('priceMovementChart').getContext('2d');
+        new Chart(priceCtx, {
+            type: 'line',
+            data: {
+                labels: days,
+                datasets: [{
+                    label: 'Price Movement',
+                    data: prices,
+                    borderColor: '#36A2EB',
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'white'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'white'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'white'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
