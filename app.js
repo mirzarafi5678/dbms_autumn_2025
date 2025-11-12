@@ -30,14 +30,24 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 app.use(express.static(path.join(rootDir, 'public')))
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
+
+// Parse JSON bodies (from fetch/AJAX)
+app.use(express.json());
+
+
+
+
+
 app.use("/Admin",AdminRouter);
 app.use("/investor",InvestorRouter)
-// app.use("/Investor",InvestorRouter);
+
 app.use(AuthRouter)
 
 
 app.use(errorsController.pageNotFound);
+
+
 
 
 

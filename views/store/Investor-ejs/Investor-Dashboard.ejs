@@ -21,19 +21,23 @@
         </div>
     </div>
 
-    <script>
-        // Process CompanyStockList data for pie chart
-        const companyStockList = <%- JSON.stringify(CompanyStockList) %>;
+<script>
+    // Get backend data (may be empty or undefined)
+    const companyStockList = <%- JSON.stringify(CompanyStockList || []) %>;
+    const movePriceList = <%- JSON.stringify(MovePriceList || []) %>;
+
+    // Process CompanyStockList for pie chart
+    if (companyStockList.length > 0) {
         const companies = [];
         const stockAmounts = [];
-        
+
         companyStockList.forEach(item => {
             const [company, amount] = Object.entries(item)[0];
             companies.push(company);
             stockAmounts.push(amount);
         });
 
-        // Create Pie Chart
+        // Create Pie Chart only if data exists
         const stockCtx = document.getElementById('stockDistributionChart').getContext('2d');
         new Chart(stockCtx, {
             type: 'pie',
@@ -56,26 +60,28 @@
                 plugins: {
                     legend: {
                         position: 'bottom',
-                        labels: {
-                            color: 'white'
-                        }
+                        labels: { color: 'white' }
                     }
                 }
             }
         });
+    } else {
+        // Hide the pie chart canvas if no data
+        document.getElementById('stockDistributionChart').style.display = 'none';
+    }
 
-        // Process MovePriceList data for line chart
-        const movePriceList = <%- JSON.stringify(MovePriceList) %>;
+    // Process MovePriceList for line chart
+    if (movePriceList.length > 0) {
         const days = [];
         const prices = [];
-        
+
         movePriceList.forEach(item => {
             const [day, price] = Object.entries(item)[0];
             days.push(day);
             prices.push(price);
         });
 
-        // Create Line Chart
+        // Create Line Chart only if data exists
         const priceCtx = document.getElementById('priceMovementChart').getContext('2d');
         new Chart(priceCtx, {
             type: 'line',
@@ -94,31 +100,24 @@
                 scales: {
                     y: {
                         beginAtZero: false,
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.1)'
-                        },
-                        ticks: {
-                            color: 'white'
-                        }
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        ticks: { color: 'white' }
                     },
                     x: {
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.1)'
-                        },
-                        ticks: {
-                            color: 'white'
-                        }
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        ticks: { color: 'white' }
                     }
                 },
                 plugins: {
-                    legend: {
-                        labels: {
-                            color: 'white'
-                        }
-                    }
+                    legend: { labels: { color: 'white' } }
                 }
             }
         });
-    </script>
+    } else {
+        // Hide the line chart canvas if no data
+        document.getElementById('priceMovementChart').style.display = 'none';
+    }
+</script>
+
 </body>
 </html>
