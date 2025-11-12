@@ -1,0 +1,168 @@
+<%- include('../../partials/head') %>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 min-h-screen text-white">
+
+<%- include('../../partials/Investor-nav') %>
+
+<div class="container mx-auto py-10 px-4 space-y-10">
+
+  <!-- 1️⃣ Transaction Table -->
+  <div class="bg-slate-800 p-6 rounded-2xl shadow-lg ml-20">
+    <h2 class="text-2xl font-bold mb-4 text-center">Transactions</h2>
+    <table class="w-full table-auto border-collapse border border-slate-600">
+      <thead>
+        <tr class="bg-slate-700">
+          <th class="border border-slate-600 px-4 py-2">TID</th>
+          <th class="border border-slate-600 px-4 py-2">Stock ID</th>
+          <th class="border border-slate-600 px-4 py-2">Investor ID</th>
+          <th class="border border-slate-600 px-4 py-2">Amount</th>
+          <th class="border border-slate-600 px-4 py-2">Detect</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (transactionList && transactionList.length > 0) { %>
+          <% transactionList.forEach(tx => { %>
+            <tr>
+              <td class="border border-slate-600 px-4 py-2"><%= tx.tid %></td>
+              <td class="border border-slate-600 px-4 py-2"><%= tx.stockId %></td>
+              <td class="border border-slate-600 px-4 py-2"><%= tx.investorId %></td>
+              <td class="border border-slate-600 px-4 py-2"><%= tx.amount %></td>
+              <td class="border border-slate-600 px-4 py-2 text-center">
+                <button class="detectBtn bg-red-600 hover:bg-red-700 px-3 py-1 rounded font-semibold text-sm"
+                  data-tid="<%= tx.tid %>" data-stockid="<%= tx.stockId %>" data-investorid="<%= tx.investorId %>" data-amount="<%= tx.amount %>">
+                  Detect
+                </button>
+              </td>
+            </tr>
+          <% }) %>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 2️⃣ Detection Section -->
+  <div class="bg-slate-800 p-6 rounded-2xl shadow-lg max-w-2xl mx-auto">
+    <h2 class="text-2xl font-bold mb-4 text-center">Fraud Detection Result</h2>
+    <div id="detectionResult" class="space-y-2 text-white">
+      <p><strong>Risk Score:</strong> <span id="riskScore">-</span></p>
+      <p><strong>Accuracy Score:</strong> <span id="accuracyScore">-</span></p>
+      <p><strong>Detection Date:</strong> <span id="detectionDate">-</span></p>
+      <p><strong>Summary:</strong> <span id="summary">-</span></p>
+    </div>
+    <button id="addFraudBtn" class="mt-4 w-full bg-blue-600 hover:bg-blue-700 py-2 rounded font-semibold transition">Add</button>
+    <p id="successMsg" class="text-green-400 text-center mt-2 hidden">✅ Added to Fraud Table!</p>
+  </div>
+
+  <!-- 3️⃣ Fraud Table -->
+  <div class="bg-slate-800 p-6 rounded-2xl shadow-lg max-w-5xl mx-auto">
+    <h2 class="text-2xl font-bold mb-4 text-center">Fraud Table</h2>
+    <table class="w-full table-auto border-collapse border border-slate-600">
+      <thead>
+        <tr class="bg-slate-700">
+          <th class="border border-slate-600 px-4 py-2">Alert ID</th>
+          <th class="border border-slate-600 px-4 py-2">TID</th>
+          <th class="border border-slate-600 px-4 py-2">Risk Score</th>
+          <th class="border border-slate-600 px-4 py-2">Accuracy Score</th>
+          <th class="border border-slate-600 px-4 py-2">Detection Date</th>
+          <th class="border border-slate-600 px-4 py-2">Summary</th>
+        </tr>
+      </thead>
+      <tbody id="fraudTableBody">
+        <% if (fraudList && fraudList.length > 0) { %>
+          <% fraudList.forEach(f => { %>
+            <tr>
+              <td class="border border-slate-600 px-4 py-2"><%= f.alertId %></td>
+              <td class="border border-slate-600 px-4 py-2"><%= f.tid %></td>
+              <td class="border border-slate-600 px-4 py-2"><%= f.riskScore %></td>
+              <td class="border border-slate-600 px-4 py-2"><%= f.accuracyScore %></td>
+              <td class="border border-slate-600 px-4 py-2"><%= f.detectionDate %></td>
+              <td class="border border-slate-600 px-4 py-2"><%= f.summary %></td>
+            </tr>
+          <% }) %>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+  const detectButtons = document.querySelectorAll('.detectBtn');
+  let currentDetection = {};
+
+  detectButtons.forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const tid = btn.dataset.tid;
+      const stockId = btn.dataset.stockid;
+      const investorId = btn.dataset.investorid;
+      const amount = btn.dataset.amount;
+
+      // Call AI fraud detection API (replace this with actual fetch to your AI API)
+      try {
+const response = await fetch('/investor/ai-detect', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ tid, stockId, investorId, amount })
+});
+
+
+
+        const result = await response.json();
+        // Expected result = { riskScore, accuracyScore, detectionDate, summary }
+
+        document.getElementById('riskScore').textContent = result.riskScore;
+        document.getElementById('accuracyScore').textContent = result.accuracyScore;
+        document.getElementById('detectionDate').textContent = result.detectionDate;
+        document.getElementById('summary').textContent = result.summary;
+
+        // Save for adding to fraud table
+        currentDetection = { tid, ...result };
+
+      } catch (err) {
+        console.error('Detection failed', err);
+      }
+    });
+  });
+
+  document.getElementById('addFraudBtn').addEventListener('click', async () => {
+    if (!currentDetection.tid) return;
+
+    try {
+      const res = await fetch('/investor/add-fraud', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(currentDetection)
+      });
+
+      if (res.ok) {
+        const saved = await res.json();
+
+        // Add to fraud table dynamically
+        const tbody = document.getElementById('fraudTableBody');
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="border border-slate-600 px-4 py-2">${saved.alertId}</td>
+          <td class="border border-slate-600 px-4 py-2">${saved.tid}</td>
+          <td class="border border-slate-600 px-4 py-2">${saved.riskScore}</td>
+          <td class="border border-slate-600 px-4 py-2">${saved.accuracyScore}</td>
+          <td class="border border-slate-600 px-4 py-2">${saved.detectionDate}</td>
+          <td class="border border-slate-600 px-4 py-2">${saved.summary}</td>
+        `;
+        tbody.appendChild(row);
+
+        // Show success message
+        const msg = document.getElementById('successMsg');
+        msg.classList.remove('hidden');
+        setTimeout(() => msg.classList.add('hidden'), 2000);
+
+        currentDetection = {}; // reset
+      }
+    } catch (err) {
+      console.error('Failed to add fraud detection', err);
+    }
+  });
+</script>
+
+</body>
+</html>
