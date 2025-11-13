@@ -1,0 +1,78 @@
+<!-- Vertical Navigation Bar -->
+<div class="h-screen w-64 bg-gradient-to-b from-blue-600 to-blue-800 text-white shadow-lg fixed left-0 top-0">
+  <div class="p-4">
+    <!-- Logo/Brand -->
+    <div class="flex items-center space-x-2 mb-8">
+      <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+        <span class="text-blue-600 font-bold text-xl">F</span>
+      </div>
+      <span class="font-semibold text-lg">FinManage</span>
+    </div>
+
+    <!-- Navigation Links -->
+    <nav class="space-y-2">
+      <a href="/Investor/dashboard" 
+         class="<%= currentPage === 'dashboard' ? 'bg-white/10' : 'hover:bg-white/5' %> flex items-center space-x-3 px-4 py-3 rounded-md transition-all duration-200 w-full">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        </svg>
+        <span class="text-sm font-medium">Dashboard</span>
+      </a>
+ 
+
+      <a href="/Investor/profile" 
+         class="<%= currentPage === 'profile' ? 'bg-white/10' : 'hover:bg-white/5' %> flex items-center space-x-3 px-4 py-3 rounded-md transition-all duration-200 w-full">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        <span class="text-sm font-medium">Profile</span>
+      </a>
+
+      <a href="/Investor/stock-transaction" 
+         class="<%= currentPage === 'stock-transaction' ? 'bg-white/10' : 'hover:bg-white/5' %> flex items-center space-x-3 px-4 py-3 rounded-md transition-all duration-200 w-full">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+        </svg>
+        <span class="text-sm font-medium">Stock Transaction</span>
+      </a>
+
+      <a href="/Investor/fraud-detection" 
+         class="<%= currentPage === 'fraud-detection' ? 'bg-white/10' : 'hover:bg-white/5' %> flex items-center space-x-3 px-4 py-3 rounded-md transition-all duration-200 w-full">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <span class="text-sm font-medium">Fraud Detection</span>
+      </a>
+      
+
+      <!-- User Profile -->
+      <div class="absolute bottom-0 left-0 w-full p-4 border-t border-white/10">
+        <div class="flex items-center space-x-3 mb-4">
+          <div class="w-10 h-10 bg-gradient-to-br from-white to-blue-100 rounded-full flex items-center justify-center">
+            <span class="text-blue-600 font-semibold">IN</span>
+          </div>
+          <div>
+            <div class="text-sm font-medium">Investor</div>
+            <div class="text-xs text-blue-200">investor@finmanage.com</div>
+          </div>
+        </div>
+        
+        <a href="/login" 
+           class="flex items-center space-x-3 px-4 py-3 rounded-md bg-red-500/10 hover:bg-red-500/20 transition-all duration-200 w-full text-red-100">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          </svg>
+          <span class="text-sm font-medium">Log Out</span>
+        </a>
+      </div>
+    </nav>
+  </div>
+</div>
+
+<!-- Add padding to main content to account for fixed sidebar -->
+<style>
+  main {
+    margin-left: 16rem; /* w-64 = 16rem */
+    padding: 1.5rem;
+  }
+</style>
