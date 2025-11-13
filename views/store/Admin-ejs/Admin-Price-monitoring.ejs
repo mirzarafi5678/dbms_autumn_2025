@@ -1,314 +1,134 @@
 <%- include('../../partials/head') %>
 </head>
 <body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 min-h-screen text-white">
-	<%- include('../../partials/admin-nav') %>
-  
+  <%- include('../../partials/admin-nav') %>
 
-	<div class="container mx-auto px-4 py-8">
-		<div>
-			<h2 class="text-2xl font-bold mb-4">Price History</h2>
-			<div class="mb-4 flex justify-between items-center">
-				<div class="flex items-center space-x-2">
-					<input type="text" placeholder="Search Price History..." class="w-64 px-4 py-2 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500" id="priceSearch">
-					<button id="priceSearchBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center">
-						<svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35" />
-						</svg>
-						Search
-					</button>
-				</div>
+  <div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6 text-center">Price History Management</h1>
 
-				<div>
-					<button id="openPriceAdd" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200">
-						Add Price History
-					</button>
-				</div>
-			</div>
-			<div class="overflow-x-auto rounded-lg shadow">
-				<table class="min-w-full bg-slate-800">
-					<thead>
-						<tr class="bg-blue-900 text-white">
-							<th class="py-3 px-4 text-left">History ID</th>
-							<th class="py-3 px-4 text-left">Stock ID</th>
-							<th class="py-3 px-4 text-left">Date</th>
-							<th class="py-3 px-4 text-left">Open</th>
-							<th class="py-3 px-4 text-left">Close</th>
-							<th class="py-3 px-4 text-left">Volume</th>
-							<th class="py-3 px-4 text-left">Action</th>
-						</tr>
-					</thead>
-					<tbody id="priceTableBody">
-						<% PriceList.forEach(function(p) { %>
-							<tr class="border-b border-slate-700 hover:bg-slate-700">
-								<td class="py-2 px-4"><%= p.historyId %></td>
-								<td class="py-2 px-4"><%= p.stockId %></td>
-								<td class="py-2 px-4"><%= p.date %></td>
-								<td class="py-2 px-4"><%= p.open %></td>
-								<td class="py-2 px-4"><%= p.close %></td>
-								<td class="py-2 px-4"><%= p.volume %></td>
-								<td class="py-2 px-4">
-									<button class="edit-price bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded mr-2"
-													data-historyid="<%= p.historyId %>" data-stockid="<%= p.stockId %>" data-date="<%= p.date %>" data-open="<%= p.open %>" data-close="<%= p.close %>" data-volume="<%= p.volume %>">
-										Edit
-									</button>
-									<button class="delete-price bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Delete</button>
-								</td>
-							</tr>
-						<% }) %>
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
+    <!-- Search bar -->
+    <div class="flex justify-between mb-4">
+      <form method="GET" action="/admin/price-history/search" class="flex gap-2">
+        <input type="text" name="query" placeholder="Search by Stock ID..." 
+               class="px-3 py-2 rounded-lg text-black" />
+        <button type="submit" class="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700">Search</button>
+      </form>
 
-	<!-- Price Add Modal -->
-	<div id="priceModal" class="fixed inset-0 z-50 hidden items-center justify-center">
-		<div class="absolute inset-0 bg-black/50" data-close-target="priceModal"></div>
-		<div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 z-10 overflow-hidden">
-			<div class="flex justify-between items-center px-4 py-3 border-b">
-				<h3 class="text-lg font-semibold text-slate-900">Add Price History</h3>
-				<button class="text-slate-600 hover:text-slate-900" data-close-target="priceModal">✕</button>
-			</div>
-			<form id="priceForm" action="/price/add" method="POST" class="px-4 py-4 space-y-3">
-				<div>
-					<label class="text-sm text-slate-700">History ID</label>
-					<input name="historyId" required class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div>
-					<label class="text-sm text-slate-700">Stock ID</label>
-					<input name="stockId" required class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div>
-					<label class="text-sm text-slate-700">Date</label>
-					<input name="date" type="date" required class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div>
-					<label class="text-sm text-slate-700">Open</label>
-					<input name="open" type="number" step="0.01" class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div>
-					<label class="text-sm text-slate-700">Close</label>
-					<input name="close" type="number" step="0.01" class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div>
-					<label class="text-sm text-slate-700">Volume</label>
-					<input name="volume" type="number" step="1" class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div class="pt-2 flex justify-end space-x-2">
-					<button type="button" class="px-4 py-2 rounded border" data-close-target="priceModal">Cancel</button>
-					<button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Submit</button>
-				</div>
-			</form>
-		</div>
-	</div>
+      <!-- Add button -->
+      <button onclick="openAddModal()" class="bg-green-600 px-4 py-2 rounded-lg hover:bg-green-700">
+        Add Price Record
+      </button>
+    </div>
 
-	<!-- Price Edit Modal -->
-	<div id="priceEditModal" class="fixed inset-0 z-50 hidden items-center justify-center">
-		<div class="absolute inset-0 bg-black/50" data-close-target="priceEditModal"></div>
-		<div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 z-10 overflow-hidden">
-			<div class="flex justify-between items-center px-4 py-3 border-b">
-				<h3 class="text-lg font-semibold text-slate-900">Edit Price History</h3>
-				<button class="text-slate-600 hover:text-slate-900" data-close-target="priceEditModal">✕</button>
-			</div>
-			<form id="priceEditForm" action="/price/edit" method="POST" class="px-4 py-4 space-y-3">
-				<input type="hidden" name="originalHistoryId" />
-				<div>
-					<label class="text-sm text-slate-700">History ID</label>
-					<input name="historyId" required class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div>
-					<label class="text-sm text-slate-700">Stock ID</label>
-					<input name="stockId" required class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div>
-					<label class="text-sm text-slate-700">Date</label>
-					<input name="date" type="date" required class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div>
-					<label class="text-sm text-slate-700">Open</label>
-					<input name="open" type="number" step="0.01" class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div>
-					<label class="text-sm text-slate-700">Close</label>
-					<input name="close" type="number" step="0.01" class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div>
-					<label class="text-sm text-slate-700">Volume</label>
-					<input name="volume" type="number" step="1" class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div class="pt-2 flex justify-end space-x-2">
-					<button type="button" class="px-4 py-2 rounded border" data-close-target="priceEditModal">Cancel</button>
-					<button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
-				</div>
-			</form>
-		</div>
-	</div>
+    <!-- Table -->
+    <div class="overflow-x-auto">
+      <table class="min-w-full border border-gray-700 rounded-lg">
+        <thead class="bg-blue-800 text-white">
+          <tr>
+            <th class="px-4 py-2 border">History ID</th>
+            <th class="px-4 py-2 border">Stock ID</th>
+            <th class="px-4 py-2 border">Date</th>
+            <th class="px-4 py-2 border">Open</th>
+            <th class="px-4 py-2 border">Close</th>
+            <th class="px-4 py-2 border">Volume</th>
+            <th class="px-4 py-2 border">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (PriceList && PriceList.length > 0) { %>
+            <% PriceList.forEach(function(p) { %>
+              <tr class="border-b border-slate-700 hover:bg-slate-700">
+                <td class="py-2 px-4"><%= p.historyId %></td>
+                <td class="py-2 px-4"><%= p.stockId %></td>
+                <td class="py-2 px-4"><%= p.date %></td>
+                <td class="py-2 px-4"><%= p.open %></td>
+                <td class="py-2 px-4"><%= p.close %></td>
+                <td class="py-2 px-4"><%= p.volume %></td>
+                <td class="py-2 px-4 flex gap-2">
+                  <button onclick='openEditModal(<%= JSON.stringify(p) %>)'
+                          class="bg-yellow-500 px-3 py-1 rounded-lg hover:bg-yellow-600">
+                    Edit
+                  </button>
 
-	<script>
-		// Modal open/close handlers
-		function openModal(id) {
-			const modal = document.getElementById(id);
-			if (!modal) return;
-			modal.classList.remove('hidden');
-			modal.classList.add('flex');
-		}
-		function closeModal(id) {
-			const modal = document.getElementById(id);
-			if (!modal) return;
-			modal.classList.remove('flex');
-			modal.classList.add('hidden');
-		}
+                  <form action="/admin/price-history/delete/<%= p.historyId %>" method="POST">
+                    <button type="submit" class="bg-red-600 px-3 py-1 rounded-lg hover:bg-red-700">
+                      Delete
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="7" class="text-center py-4">No price history records available</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-		document.getElementById('openPriceAdd')?.addEventListener('click', () => openModal('priceModal'));
+  <!-- Add Modal -->
+  <div id="addModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div class="bg-slate-800 p-6 rounded-lg w-96">
+      <h2 class="text-xl mb-4">Add New Price Record</h2>
+      <form method="POST" action="/admin/price-history/add">
+        <input type="text" name="stockId" placeholder="Stock ID" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="date" name="date" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="number" step="0.01" name="open" placeholder="Open Price" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="number" step="0.01" name="close" placeholder="Close Price" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="number" name="volume" placeholder="Volume" class="w-full p-2 mb-3 rounded text-black" required>
 
-		// Close when clicking overlay or buttons with data-close-target
-		document.querySelectorAll('[data-close-target]').forEach(el => {
-			el.addEventListener('click', (e) => {
-				const target = e.currentTarget.getAttribute('data-close-target');
-				if (target) closeModal(target);
-				else {
-					const parent = e.currentTarget.closest('.fixed');
-					if (parent && parent.id) closeModal(parent.id);
-				}
-			});
-		});
+        <div class="flex justify-end gap-2">
+          <button type="button" onclick="closeAddModal()" class="bg-gray-600 px-3 py-1 rounded-lg hover:bg-gray-700">Cancel</button>
+          <button type="submit" class="bg-green-600 px-3 py-1 rounded-lg hover:bg-green-700">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-		// Close on Escape
-		document.addEventListener('keydown', (e) => {
-			if (e.key === 'Escape') {
-				closeModal('priceModal');
-				closeModal('priceEditModal');
-			}
-		});
+  <!-- Edit Modal -->
+  <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div class="bg-slate-800 p-6 rounded-lg w-96">
+      <h2 class="text-xl mb-4">Edit Price Record</h2>
+      <form id="editForm" method="POST">
+        <input type="text" name="stockId" id="editStockId" placeholder="Stock ID" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="date" name="date" id="editDate" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="number" step="0.01" name="open" id="editOpen" placeholder="Open Price" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="number" step="0.01" name="close" id="editClose" placeholder="Close Price" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="number" name="volume" id="editVolume" placeholder="Volume" class="w-full p-2 mb-3 rounded text-black" required>
 
-		// Submit handlers - try AJAX then fallback to default submit
-		async function handleFormSubmit(e, tableBodyId, fields) {
-			e.preventDefault();
-			const form = e.target;
-			const action = form.action || window.location.href;
-			const formData = new FormData(form);
-			try {
-				const resp = await fetch(action, { method: 'POST', body: formData, credentials: 'same-origin' });
-				if (resp.ok) {
-					let data;
-					try { data = await resp.json(); } catch (err) { data = null; }
-					const values = data || Object.fromEntries(formData.entries());
-					appendRow(tableBodyId, fields, values);
-					const modalId = form.id === 'priceForm' ? 'priceModal' : 'priceEditModal';
-					closeModal(modalId);
-					form.reset();
-				} else {
-					form.submit();
-				}
-			} catch (err) {
-				form.submit();
-			}
-		}
+        <div class="flex justify-end gap-2">
+          <button type="button" onclick="closeEditModal()" class="bg-gray-600 px-3 py-1 rounded-lg hover:bg-gray-700">Cancel</button>
+          <button type="submit" class="bg-yellow-500 px-3 py-1 rounded-lg hover:bg-yellow-600">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-		function appendRow(tableBodyId, fields, values) {
-			const tbody = document.getElementById(tableBodyId);
-			if (!tbody) return;
-			const tr = document.createElement('tr');
-			tr.className = 'border-b border-slate-700 hover:bg-slate-700 text-white';
-			fields.forEach(f => {
-				const td = document.createElement('td');
-				td.className = 'py-2 px-4';
-				td.textContent = values[f] ?? '';
-				tr.appendChild(td);
-			});
-			const actionTd = document.createElement('td');
-			actionTd.className = 'py-2 px-4';
-			const historyId = values['historyId'] ?? '';
-			const stockId = values['stockId'] ?? '';
-			const date = values['date'] ?? '';
-			const open = values['open'] ?? '';
-			const close = values['close'] ?? '';
-			const volume = values['volume'] ?? '';
-			actionTd.innerHTML = `
-				<button class="edit-price bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded mr-2" data-historyid="${historyId}" data-stockid="${stockId}" data-date="${date}" data-open="${open}" data-close="${close}" data-volume="${volume}">Edit</button>
-				<button class="delete-price bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Delete</button>
-			`;
-			tr.appendChild(actionTd);
-			tbody.appendChild(tr);
-		}
+  <script>
+    // --- Add Modal ---
+    function openAddModal() {
+      document.getElementById('addModal').classList.remove('hidden');
+    }
+    function closeAddModal() {
+      document.getElementById('addModal').classList.add('hidden');
+    }
 
-		document.getElementById('priceForm')?.addEventListener('submit', (e) => handleFormSubmit(e, 'priceTableBody', ['historyId','stockId','date','open','close','volume']));
+    // --- Edit Modal ---
+    function openEditModal(p) {
+      document.getElementById('editStockId').value = p.stockId;
+      document.getElementById('editDate').value = p.date;
+      document.getElementById('editOpen').value = p.open;
+      document.getElementById('editClose').value = p.close;
+      document.getElementById('editVolume').value = p.volume;
 
-		// Edit modal handlers: delegation to support existing and appended rows
-		document.getElementById('priceTableBody')?.addEventListener('click', (e) => {
-			const btn = e.target.closest('.edit-price');
-			if (!btn) return;
-			const historyId = btn.getAttribute('data-historyid');
-			const stockId = btn.getAttribute('data-stockid');
-			const date = btn.getAttribute('data-date');
-			const open = btn.getAttribute('data-open');
-			const close = btn.getAttribute('data-close');
-			const volume = btn.getAttribute('data-volume');
-			const form = document.getElementById('priceEditForm');
-			form.originalHistoryId.value = historyId;
-			form.historyId.value = historyId;
-			form.stockId.value = stockId;
-			form.date.value = date;
-			form.open.value = open;
-			form.close.value = close;
-			form.volume.value = volume;
-			openModal('priceEditModal');
-		});
-
-		// Edit form submit - updates existing row instead of appending
-		async function handleEditSubmit(e, tableBodyId, idField, fields) {
-			e.preventDefault();
-			const form = e.target;
-			const action = form.action || window.location.href;
-			const formData = new FormData(form);
-			try {
-				const resp = await fetch(action, { method: 'POST', body: formData, credentials: 'same-origin' });
-				if (resp.ok) {
-					let data;
-					try { data = await resp.json(); } catch (err) { data = null; }
-					const values = data || Object.fromEntries(formData.entries());
-					updateRow(tableBodyId, idField, formData.get('originalHistoryId'), values, fields);
-					const modalId = form.id === 'priceEditForm' ? 'priceEditModal' : 'priceModal';
-					closeModal(modalId);
-					form.reset();
-				} else {
-					form.submit();
-				}
-			} catch (err) {
-				form.submit();
-			}
-		}
-
-		function updateRow(tableBodyId, idField, originalId, values, fields) {
-			const tbody = document.getElementById(tableBodyId);
-			if (!tbody) return;
-			const rows = Array.from(tbody.querySelectorAll('tr'));
-			for (const row of rows) {
-				const firstCell = row.querySelector('td');
-				if (!firstCell) continue;
-				if (String(firstCell.textContent).trim() === String(originalId).trim()) {
-					const tds = row.querySelectorAll('td');
-					fields.forEach((f, idx) => {
-						if (tds[idx]) tds[idx].textContent = values[f] ?? '';
-					});
-					const editBtn = row.querySelector('.edit-price');
-					if (editBtn) {
-						editBtn.setAttribute('data-historyid', values['historyId'] ?? '');
-						editBtn.setAttribute('data-stockid', values['stockId'] ?? '');
-						editBtn.setAttribute('data-date', values['date'] ?? '');
-						editBtn.setAttribute('data-open', values['open'] ?? '');
-						editBtn.setAttribute('data-close', values['close'] ?? '');
-						editBtn.setAttribute('data-volume', values['volume'] ?? '');
-					}
-					break;
-				}
-			}
-		}
-
-		document.getElementById('priceEditForm')?.addEventListener('submit', (e) => handleEditSubmit(e, 'priceTableBody', 'historyId', ['historyId','stockId','date','open','close','volume']));
-	</script>
-
+      document.getElementById('editForm').action = `/admin/price-history/edit/${p.historyId}`;
+      document.getElementById('editModal').classList.remove('hidden');
+    }
+    function closeEditModal() {
+      document.getElementById('editModal').classList.add('hidden');
+    }
+  </script>
 </body>
 </html>
-

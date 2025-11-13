@@ -12,13 +12,27 @@ AdminRouter.get('/Company-Stock-Management',AdminController.comapanyStockManagem
 
 AdminRouter.get('/Audit-Report-Management',AdminController.AduitReportManagement)
 
-AdminRouter.get('/analytics',AdminController.AduitReportManagement)
-AdminRouter.get('/Price-Monitoring',AdminController.AduitReportManagement)
-AdminRouter.get('/Trade-Management',AdminController.AduitReportManagement)
-AdminRouter.get('/AI-Based-Fraud-Detection',AdminController.AduitReportManagement)
-AdminRouter.get('/Prediction-of-Stock-Price',AdminController.AduitReportManagement)
+
+AdminRouter.get('/Price-Monitoring',AdminController.PriceMonitoring)
+AdminRouter.get('/Trade-Management',AdminController.TradeManagement)
+AdminRouter.get('/AI-Based-Fraud-Detection',AdminController.AIBasedFraudDetection)
+AdminRouter.get('/Prediction-of-Stock-Price',AdminController.PredictionStockPricet)
 
 
+// router.get('/admin/predictions', adminController.PredictionStockPricet);
+// router.post('/admin/predictions/add', adminController.addPrediction);
+// router.post('/admin/predictions/edit/:Stockid', adminController.editPrediction);
+// router.post('/admin/predictions/delete/:Stockid', adminController.deletePrediction);
+// router.get('/admin/predictions/search', adminController.searchPrediction);
+
+
+
+
+
+
+
+
+AdminRouter.get('/User-details',AdminController.Userdetails)
 module.exports = AdminRouter;
 
 

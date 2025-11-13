@@ -1,298 +1,129 @@
 <%- include('../../partials/head') %>
 </head>
 <body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 min-h-screen text-white">
-	<%- include('../../partials/admin-nav') %>
+  <%- include('../../partials/admin-nav') %>
 
-	<div class="container mx-auto px-4 py-8">
-		<div>
-			<h2 class="text-2xl font-bold mb-4">Price Predictions</h2>
-			<div class="mb-4 flex justify-between items-center">
-				<div class="flex items-center space-x-2">
-					<input type="text" placeholder="Search Predictions..." class="w-64 px-4 py-2 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500" id="predictionSearch">
-					<button id="predictionSearchBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center">
-						<svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35" />
-						</svg>
-						Search
-					</button>
-				</div>
+  <div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6 text-center">Stock Price Predictions</h1>
 
-				<div>
-					<button id="openPredictionAdd" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200">
-						Add Prediction
-					</button>
-				</div>
-			</div>
-			<div class="overflow-x-auto rounded-lg shadow">
-				<table class="min-w-full bg-slate-800">
-					<thead>
-						<tr class="bg-blue-900 text-white">
-							<th class="py-3 px-4 text-left">Prediction ID</th>
-							<th class="py-3 px-4 text-left">Stock ID</th>
-							<th class="py-3 px-4 text-left">Predicted Price</th>
-							<th class="py-3 px-4 text-left">Date</th>
-							<th class="py-3 px-4 text-left">Accuracy Score</th>
-							<th class="py-3 px-4 text-left">Action</th>
-						</tr>
-					</thead>
-					<tbody id="predictionTableBody">
-						<% PredictionList.forEach(function(p) { %>
-							<tr class="border-b border-slate-700 hover:bg-slate-700">
-								<td class="py-2 px-4"><%= p.predictionId %></td>
-								<td class="py-2 px-4"><%= p.stockId %></td>
-								<td class="py-2 px-4"><%= p.predictedPrice %></td>
-								<td class="py-2 px-4"><%= p.date %></td>
-								<td class="py-2 px-4"><%= p.accuracyScore %></td>
-								<td class="py-2 px-4">
-									<button class="edit-pred bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded mr-2"
-													data-predictionid="<%= p.predictionId %>" data-stockid="<%= p.stockId %>" data-predictedprice="<%= p.predictedPrice %>" data-date="<%= p.date %>" data-accuracyscore="<%= p.accuracyScore %>">
-										Edit
-									</button>
-									<button class="delete-pred bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Delete</button>
-								</td>
-							</tr>
-						<% }) %>
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
+    <!-- Search bar -->
+    <div class="flex justify-between mb-4">
+      <form method="GET" action="/admin/predictions/search" class="flex gap-2">
+        <input type="text" name="query" placeholder="Search by Stock ID..." 
+               class="px-3 py-2 rounded-lg text-black" />
+        <button type="submit" class="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700">Search</button>
+      </form>
 
-	<!-- Prediction Add Modal -->
-	<div id="predictionModal" class="fixed inset-0 z-50 hidden items-center justify-center">
-		<div class="absolute inset-0 bg-black/50" data-close-target="predictionModal"></div>
-		<div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 z-10 overflow-hidden">
-			<div class="flex justify-between items-center px-4 py-3 border-b">
-				<h3 class="text-lg font-semibold text-slate-900">Add Prediction</h3>
-				<button class="text-slate-600 hover:text-slate-900" data-close-target="predictionModal">✕</button>
-			</div>
-			<form id="predictionForm" action="/prediction/add" method="POST" class="px-4 py-4 space-y-3">
-				<div>
-					<label class="text-sm text-slate-700">Prediction ID</label>
-					<input name="predictionId" required class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div>
-					<label class="text-sm text-slate-700">Stock ID</label>
-					<input name="stockId" required class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div>
-					<label class="text-sm text-slate-700">Predicted Price</label>
-					<input name="predictedPrice" type="number" step="0.01" class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div>
-					<label class="text-sm text-slate-700">Date</label>
-					<input name="date" type="date" required class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div>
-					<label class="text-sm text-slate-700">Accuracy Score</label>
-					<input name="accuracyScore" type="number" step="0.01" class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div class="pt-2 flex justify-end space-x-2">
-					<button type="button" class="px-4 py-2 rounded border" data-close-target="predictionModal">Cancel</button>
-					<button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Submit</button>
-				</div>
-			</form>
-		</div>
-	</div>
+      <!-- Add button -->
+      <button onclick="openAddModal()" class="bg-green-600 px-4 py-2 rounded-lg hover:bg-green-700">
+        Add Prediction
+      </button>
+    </div>
 
-	<!-- Prediction Edit Modal -->
-	<div id="predictionEditModal" class="fixed inset-0 z-50 hidden items-center justify-center">
-		<div class="absolute inset-0 bg-black/50" data-close-target="predictionEditModal"></div>
-		<div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 z-10 overflow-hidden">
-			<div class="flex justify-between items-center px-4 py-3 border-b">
-				<h3 class="text-lg font-semibold text-slate-900">Edit Prediction</h3>
-				<button class="text-slate-600 hover:text-slate-900" data-close-target="predictionEditModal">✕</button>
-			</div>
-			<form id="predictionEditForm" action="/prediction/edit" method="POST" class="px-4 py-4 space-y-3">
-				<input type="hidden" name="originalPredictionId" />
-				<div>
-					<label class="text-sm text-slate-700">Prediction ID</label>
-					<input name="predictionId" required class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div>
-					<label class="text-sm text-slate-700">Stock ID</label>
-					<input name="stockId" required class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div>
-					<label class="text-sm text-slate-700">Predicted Price</label>
-					<input name="predictedPrice" type="number" step="0.01" class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div>
-					<label class="text-sm text-slate-700">Date</label>
-					<input name="date" type="date" required class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div>
-					<label class="text-sm text-slate-700">Accuracy Score</label>
-					<input name="accuracyScore" type="number" step="0.01" class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div class="pt-2 flex justify-end space-x-2">
-					<button type="button" class="px-4 py-2 rounded border" data-close-target="predictionEditModal">Cancel</button>
-					<button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
-				</div>
-			</form>
-		</div>
-	</div>
+    <!-- Table -->
+    <div class="overflow-x-auto">
+      <table class="min-w-full border border-gray-700 rounded-lg">
+        <thead class="bg-blue-800 text-white">
+          <tr>
+            <th class="px-4 py-2 ">Prediction ID</th>
+            <th class="px-4 py-2 r">Stock ID</th>
+            <th class="px-4 py-2 ">Predicted Price</th>
+            <th class="px-4 py-2 ">Date</th>
+            <th class="px-4 py-2 ">Accuracy Score</th>
+            <th class="px-4 py-2 ">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (PredictionList && PredictionList.length > 0) { %>
+            <% PredictionList.forEach(prediction => { %>
+              <tr class="hover:bg-slate-800 transition">
+                <td class="px-4 py-2 border"><%= prediction.id %></td>
+                <td class="px-4 py-2 border"><%= prediction.Stockid %></td>
+                <td class="px-4 py-2 border"><%= prediction.predictedPrice %></td>
+                <td class="px-4 py-2 border"><%= prediction.date %></td>
+                <td class="px-4 py-2 border"><%= prediction.accuracyScore %></td>
+                <td class="px-4 py-2 border flex gap-2">
+                  <button onclick="openEditModal(<%= JSON.stringify(prediction) %>)"
+                          class="bg-yellow-500 px-3 py-1 rounded-lg hover:bg-yellow-600">
+                    Edit
+                  </button>
 
-	<script>
-		// Modal open/close handlers
-		function openModal(id) {
-			const modal = document.getElementById(id);
-			if (!modal) return;
-			modal.classList.remove('hidden');
-			modal.classList.add('flex');
-		}
-		function closeModal(id) {
-			const modal = document.getElementById(id);
-			if (!modal) return;
-			modal.classList.remove('flex');
-			modal.classList.add('hidden');
-		}
+                  <form action="/admin/predictions/delete/<%= prediction.Stockid %>" method="POST">
+                    <button type="submit" class="bg-red-600 px-3 py-1 rounded-lg hover:bg-red-700">
+                      Delete
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="6" class="text-center py-4">No predictions available</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-		document.getElementById('openPredictionAdd')?.addEventListener('click', () => openModal('predictionModal'));
+  <!-- Add Modal -->
+  <div id="addModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div class="bg-slate-800 p-6 rounded-lg w-96">
+      <h2 class="text-xl mb-4">Add New Prediction</h2>
+      <form method="POST" action="/admin/predictions/add">
+        <input type="text" name="Stockid" placeholder="Stock ID" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="number" name="predictedPrice" placeholder="Predicted Price" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="date" name="date" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="number" step="0.01" name="accuracyScore" placeholder="Accuracy Score" class="w-full p-2 mb-3 rounded text-black" required>
 
-		// Close when clicking overlay or buttons with data-close-target
-		document.querySelectorAll('[data-close-target]').forEach(el => {
-			el.addEventListener('click', (e) => {
-				const target = e.currentTarget.getAttribute('data-close-target');
-				if (target) closeModal(target);
-				else {
-					const parent = e.currentTarget.closest('.fixed');
-					if (parent && parent.id) closeModal(parent.id);
-				}
-			});
-		});
+        <div class="flex justify-end gap-2">
+          <button type="button" onclick="closeAddModal()" class="bg-gray-600 px-3 py-1 rounded-lg hover:bg-gray-700">Cancel</button>
+          <button type="submit" class="bg-green-600 px-3 py-1 rounded-lg hover:bg-green-700">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-		// Close on Escape
-		document.addEventListener('keydown', (e) => {
-			if (e.key === 'Escape') {
-				closeModal('predictionModal');
-				closeModal('predictionEditModal');
-			}
-		});
+  <!-- Edit Modal -->
+  <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div class="bg-slate-800 p-6 rounded-lg w-96">
+      <h2 class="text-xl mb-4">Edit Prediction</h2>
+      <form id="editForm" method="POST">
+        <input type="text" name="Stockid" id="editStockid" placeholder="Stock ID" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="number" name="predictedPrice" id="editPredictedPrice" placeholder="Predicted Price" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="date" name="date" id="editDate" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="number" step="0.01" name="accuracyScore" id="editAccuracyScore" placeholder="Accuracy Score" class="w-full p-2 mb-3 rounded text-black" required>
 
-		// Submit handlers - try AJAX then fallback to default submit
-		async function handleFormSubmit(e, tableBodyId, fields) {
-			e.preventDefault();
-			const form = e.target;
-			const action = form.action || window.location.href;
-			const formData = new FormData(form);
-			try {
-				const resp = await fetch(action, { method: 'POST', body: formData, credentials: 'same-origin' });
-				if (resp.ok) {
-					let data;
-					try { data = await resp.json(); } catch (err) { data = null; }
-					const values = data || Object.fromEntries(formData.entries());
-					appendRow(tableBodyId, fields, values);
-					const modalId = form.id === 'predictionForm' ? 'predictionModal' : 'predictionEditModal';
-					closeModal(modalId);
-					form.reset();
-				} else {
-					form.submit();
-				}
-			} catch (err) {
-				form.submit();
-			}
-		}
+        <div class="flex justify-end gap-2">
+          <button type="button" onclick="closeEditModal()" class="bg-gray-600 px-3 py-1 rounded-lg hover:bg-gray-700">Cancel</button>
+          <button type="submit" class="bg-yellow-500 px-3 py-1 rounded-lg hover:bg-yellow-600">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-		function appendRow(tableBodyId, fields, values) {
-			const tbody = document.getElementById(tableBodyId);
-			if (!tbody) return;
-			const tr = document.createElement('tr');
-			tr.className = 'border-b border-slate-700 hover:bg-slate-700 text-white';
-			fields.forEach(f => {
-				const td = document.createElement('td');
-				td.className = 'py-2 px-4';
-				td.textContent = values[f] ?? '';
-				tr.appendChild(td);
-			});
-			const actionTd = document.createElement('td');
-			actionTd.className = 'py-2 px-4';
-			const predictionId = values['predictionId'] ?? '';
-			const stockId = values['stockId'] ?? '';
-			const predictedPrice = values['predictedPrice'] ?? '';
-			const date = values['date'] ?? '';
-			const accuracyScore = values['accuracyScore'] ?? '';
-			actionTd.innerHTML = `
-				<button class="edit-pred bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded mr-2" data-predictionid="${predictionId}" data-stockid="${stockId}" data-predictedprice="${predictedPrice}" data-date="${date}" data-accuracyscore="${accuracyScore}">Edit</button>
-				<button class="delete-pred bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Delete</button>
-			`;
-			tr.appendChild(actionTd);
-			tbody.appendChild(tr);
-		}
+  <script>
+    // --- Add Modal ---
+    function openAddModal() {
+      document.getElementById('addModal').classList.remove('hidden');
+    }
+    function closeAddModal() {
+      document.getElementById('addModal').classList.add('hidden');
+    }
 
-		document.getElementById('predictionForm')?.addEventListener('submit', (e) => handleFormSubmit(e, 'predictionTableBody', ['predictionId','stockId','predictedPrice','date','accuracyScore']));
+    // --- Edit Modal ---
+    function openEditModal(prediction) {
+      document.getElementById('editStockid').value = prediction.Stockid;
+      document.getElementById('editPredictedPrice').value = prediction.predictedPrice;
+      document.getElementById('editDate').value = prediction.date;
+      document.getElementById('editAccuracyScore').value = prediction.accuracyScore;
 
-		// Edit modal handlers: delegation to support existing and appended rows
-		document.getElementById('predictionTableBody')?.addEventListener('click', (e) => {
-			const btn = e.target.closest('.edit-pred');
-			if (!btn) return;
-			const predictionId = btn.getAttribute('data-predictionid');
-			const stockId = btn.getAttribute('data-stockid');
-			const predictedPrice = btn.getAttribute('data-predictedprice');
-			const date = btn.getAttribute('data-date');
-			const accuracyScore = btn.getAttribute('data-accuracyscore');
-			const form = document.getElementById('predictionEditForm');
-			form.originalPredictionId.value = predictionId;
-			form.predictionId.value = predictionId;
-			form.stockId.value = stockId;
-			form.predictedPrice.value = predictedPrice;
-			form.date.value = date;
-			form.accuracyScore.value = accuracyScore;
-			openModal('predictionEditModal');
-		});
-
-		// Edit form submit - updates existing row instead of appending
-		async function handleEditSubmit(e, tableBodyId, idField, fields) {
-			e.preventDefault();
-			const form = e.target;
-			const action = form.action || window.location.href;
-			const formData = new FormData(form);
-			try {
-				const resp = await fetch(action, { method: 'POST', body: formData, credentials: 'same-origin' });
-				if (resp.ok) {
-					let data;
-					try { data = await resp.json(); } catch (err) { data = null; }
-					const values = data || Object.fromEntries(formData.entries());
-					updateRow(tableBodyId, idField, formData.get('originalPredictionId'), values, fields);
-					const modalId = form.id === 'predictionEditForm' ? 'predictionEditModal' : 'predictionModal';
-					closeModal(modalId);
-					form.reset();
-				} else {
-					form.submit();
-				}
-			} catch (err) {
-				form.submit();
-			}
-		}
-
-		function updateRow(tableBodyId, idField, originalId, values, fields) {
-			const tbody = document.getElementById(tableBodyId);
-			if (!tbody) return;
-			const rows = Array.from(tbody.querySelectorAll('tr'));
-			for (const row of rows) {
-				const firstCell = row.querySelector('td');
-				if (!firstCell) continue;
-				if (String(firstCell.textContent).trim() === String(originalId).trim()) {
-					const tds = row.querySelectorAll('td');
-					fields.forEach((f, idx) => {
-						if (tds[idx]) tds[idx].textContent = values[f] ?? '';
-					});
-					const editBtn = row.querySelector('.edit-pred');
-					if (editBtn) {
-						editBtn.setAttribute('data-predictionid', values['predictionId'] ?? '');
-						editBtn.setAttribute('data-stockid', values['stockId'] ?? '');
-						editBtn.setAttribute('data-predictedprice', values['predictedPrice'] ?? '');
-						editBtn.setAttribute('data-date', values['date'] ?? '');
-						editBtn.setAttribute('data-accuracyscore', values['accuracyScore'] ?? '');
-					}
-					break;
-				}
-			}
-		}
-
-		document.getElementById('predictionEditForm')?.addEventListener('submit', (e) => handleEditSubmit(e, 'predictionTableBody', 'predictionId', ['predictionId','stockId','predictedPrice','date','accuracyScore']));
-	</script>
-
+      document.getElementById('editForm').action = `/admin/predictions/edit/${prediction.Stockid}`;
+      document.getElementById('editModal').classList.remove('hidden');
+    }
+    function closeEditModal() {
+      document.getElementById('editModal').classList.add('hidden');
+    }
+  </script>
 </body>
 </html>

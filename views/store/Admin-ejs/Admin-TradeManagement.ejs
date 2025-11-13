@@ -1,300 +1,129 @@
 <%- include('../../partials/head') %>
 </head>
 <body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 min-h-screen text-white">
-	<%- include('../../partials/admin-nav') %>
+  <%- include('../../partials/admin-nav') %>
 
+  <div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6 text-center">Trade Management</h1>
 
-	<div class="container mx-auto px-4 py-8">
-		<div>
-			<h2 class="text-2xl font-bold mb-4">Trade Management</h2>
-			<div class="mb-4 flex justify-between items-center">
-				<div class="flex items-center space-x-2">
-					<input type="text" placeholder="Search Trades..." class="w-64 px-4 py-2 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500" id="tradeSearch">
-					<button id="tradeSearchBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center">
-						<svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35" />
-						</svg>
-						Search
-					</button>
-				</div>
+    <!-- Search bar -->
+    <div class="flex justify-between mb-4">
+      <form method="GET" action="/admin/trades/search" class="flex gap-2">
+        <input type="text" name="query" placeholder="Search by Trade ID..." 
+               class="px-3 py-2 rounded-lg text-black" />
+        <button type="submit" class="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700">Search</button>
+      </form>
 
-				<div>
-					<button id="openTradeAdd" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200">
-						Add Trade
-					</button>
-				</div>
-			</div>
-			<div class="overflow-x-auto rounded-lg shadow">
-				<table class="min-w-full bg-slate-800">
-					<thead>
-						<tr class="bg-blue-900 text-white">
-							<th class="py-3 px-4 text-left">Trade ID</th>
-							<th class="py-3 px-4 text-left">Buyer ID</th>
-							<th class="py-3 px-4 text-left">Seller ID</th>
-							<th class="py-3 px-4 text-left">Amount</th>
-							<th class="py-3 px-4 text-left">Date</th>
-							<th class="py-3 px-4 text-left">Action</th>
-						</tr>
-					</thead>
-					<tbody id="tradeTableBody">
-						<% Trades.forEach(function(t) { %>
-							<tr class="border-b border-slate-700 hover:bg-slate-700">
-								<td class="py-2 px-4"><%= t.tradeId %></td>
-								<td class="py-2 px-4"><%= t.buyerId %></td>
-								<td class="py-2 px-4"><%= t.sellerId %></td>
-								<td class="py-2 px-4"><%= t.amount %></td>
-								<td class="py-2 px-4"><%= t.date %></td>
-								<td class="py-2 px-4">
-									<button class="edit-trade bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded mr-2"
-													data-tradeid="<%= t.tradeId %>" data-buyerid="<%= t.buyerId %>" data-sellerid="<%= t.sellerId %>" data-amount="<%= t.amount %>" data-date="<%= t.date %>">
-										Edit
-									</button>
-									<button class="delete-trade bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Delete</button>
-								</td>
-							</tr>
-						<% }) %>
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
+      <!-- Add button -->
+      <button onclick="openAddModal()" class="bg-green-600 px-4 py-2 rounded-lg hover:bg-green-700">
+        Add Trade
+      </button>
+    </div>
 
-	<!-- Trade Add Modal -->
-	<div id="tradeModal" class="fixed inset-0 z-50 hidden items-center justify-center">
-		<div class="absolute inset-0 bg-black/50" data-close-target="tradeModal"></div>
-		<div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 z-10 overflow-hidden">
-			<div class="flex justify-between items-center px-4 py-3 border-b">
-				<h3 class="text-lg font-semibold text-slate-900">Add Trade</h3>
-				<button class="text-slate-600 hover:text-slate-900" data-close-target="tradeModal">✕</button>
-			</div>
-			<form id="tradeForm" action="/trades/add" method="POST" class="px-4 py-4 space-y-3">
-				<div>
-					<label class="text-sm text-slate-700">Trade ID</label>
-					<input name="tradeId" required class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div>
-					<label class="text-sm text-slate-700">Buyer ID</label>
-					<input name="buyerId" required class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div>
-					<label class="text-sm text-slate-700">Seller ID</label>
-					<input name="sellerId" required class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div>
-					<label class="text-sm text-slate-700">Amount</label>
-					<input name="amount" type="number" step="0.01" class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div>
-					<label class="text-sm text-slate-700">Date</label>
-					<input name="date" type="date" required class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div class="pt-2 flex justify-end space-x-2">
-					<button type="button" class="px-4 py-2 rounded border" data-close-target="tradeModal">Cancel</button>
-					<button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Submit</button>
-				</div>
-			</form>
-		</div>
-	</div>
+    <!-- Table -->
+    <div class="overflow-x-auto">
+      <table class="min-w-full border border-gray-700 rounded-lg">
+        <thead class="bg-blue-800 text-white">
+          <tr>
+            <th class="px-4 py-2 border">Trade ID</th>
+            <th class="px-4 py-2 border">Buyer ID</th>
+            <th class="px-4 py-2 border">Seller ID</th>
+            <th class="px-4 py-2 border">Amount</th>
+            <th class="px-4 py-2 border">Date</th>
+            <th class="px-4 py-2 border">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (Trades && Trades.length > 0) { %>
+            <% Trades.forEach(trade => { %>
+              <tr class="hover:bg-slate-800 transition">
+                <td class="px-4 py-2 border"><%= trade.tradeId %></td>
+                <td class="px-4 py-2 border"><%= trade.buyerId %></td>
+                <td class="px-4 py-2 border"><%= trade.sellerId %></td>
+                <td class="px-4 py-2 border"><%= trade.amount %></td>
+                <td class="px-4 py-2 border"><%= trade.date %></td>
+                <td class="px-4 py-2 border flex gap-2">
+                  <button onclick="openEditModal(<%= JSON.stringify(trade) %>)"
+                          class="bg-yellow-500 px-3 py-1 rounded-lg hover:bg-yellow-600">
+                    Edit
+                  </button>
 
-	<!-- Trade Edit Modal -->
-	<div id="tradeEditModal" class="fixed inset-0 z-50 hidden items-center justify-center">
-		<div class="absolute inset-0 bg-black/50" data-close-target="tradeEditModal"></div>
-		<div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 z-10 overflow-hidden">
-			<div class="flex justify-between items-center px-4 py-3 border-b">
-				<h3 class="text-lg font-semibold text-slate-900">Edit Trade</h3>
-				<button class="text-slate-600 hover:text-slate-900" data-close-target="tradeEditModal">✕</button>
-			</div>
-			<form id="tradeEditForm" action="/trades/edit" method="POST" class="px-4 py-4 space-y-3">
-				<input type="hidden" name="originalTradeId" />
-				<div>
-					<label class="text-sm text-slate-700">Trade ID</label>
-					<input name="tradeId" required class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div>
-					<label class="text-sm text-slate-700">Buyer ID</label>
-					<input name="buyerId" required class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div>
-					<label class="text-sm text-slate-700">Seller ID</label>
-					<input name="sellerId" required class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div>
-					<label class="text-sm text-slate-700">Amount</label>
-					<input name="amount" type="number" step="0.01" class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div>
-					<label class="text-sm text-slate-700">Date</label>
-					<input name="date" type="date" required class="w-full px-3 py-2 rounded border" />
-				</div>
-				<div class="pt-2 flex justify-end space-x-2">
-					<button type="button" class="px-4 py-2 rounded border" data-close-target="tradeEditModal">Cancel</button>
-					<button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
-				</div>
-			</form>
-		</div>
-	</div>
+                  <form action="/admin/trades/delete/<%= trade.tradeId %>" method="POST">
+                    <button type="submit" class="bg-red-600 px-3 py-1 rounded-lg hover:bg-red-700">
+                      Delete
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="6" class="text-center py-4">No trades available</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-	<script>
-		// Modal open/close handlers
-		function openModal(id) {
-			const modal = document.getElementById(id);
-			if (!modal) return;
-			modal.classList.remove('hidden');
-			modal.classList.add('flex');
-		}
-		function closeModal(id) {
-			const modal = document.getElementById(id);
-			if (!modal) return;
-			modal.classList.remove('flex');
-			modal.classList.add('hidden');
-		}
+  <!-- Add Modal -->
+  <div id="addModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div class="bg-slate-800 p-6 rounded-lg w-96">
+      <h2 class="text-xl mb-4">Add New Trade</h2>
+      <form method="POST" action="/admin/trades/add">
+        <input type="text" name="buyerId" placeholder="Buyer ID" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="text" name="sellerId" placeholder="Seller ID" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="number" name="amount" placeholder="Amount" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="date" name="date" class="w-full p-2 mb-3 rounded text-black" required>
 
-		document.getElementById('openTradeAdd')?.addEventListener('click', () => openModal('tradeModal'));
+        <div class="flex justify-end gap-2">
+          <button type="button" onclick="closeAddModal()" class="bg-gray-600 px-3 py-1 rounded-lg hover:bg-gray-700">Cancel</button>
+          <button type="submit" class="bg-green-600 px-3 py-1 rounded-lg hover:bg-green-700">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-		// Close when clicking overlay or buttons with data-close-target
-		document.querySelectorAll('[data-close-target]').forEach(el => {
-			el.addEventListener('click', (e) => {
-				const target = e.currentTarget.getAttribute('data-close-target');
-				if (target) closeModal(target);
-				else {
-					const parent = e.currentTarget.closest('.fixed');
-					if (parent && parent.id) closeModal(parent.id);
-				}
-			});
-		});
+  <!-- Edit Modal -->
+  <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div class="bg-slate-800 p-6 rounded-lg w-96">
+      <h2 class="text-xl mb-4">Edit Trade</h2>
+      <form id="editForm" method="POST">
+        <input type="text" name="buyerId" id="editBuyerId" placeholder="Buyer ID" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="text" name="sellerId" id="editSellerId" placeholder="Seller ID" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="number" name="amount" id="editAmount" placeholder="Amount" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="date" name="date" id="editDate" class="w-full p-2 mb-3 rounded text-black" required>
 
-		// Close on Escape
-		document.addEventListener('keydown', (e) => {
-			if (e.key === 'Escape') {
-				closeModal('tradeModal');
-				closeModal('tradeEditModal');
-			}
-		});
+        <div class="flex justify-end gap-2">
+          <button type="button" onclick="closeEditModal()" class="bg-gray-600 px-3 py-1 rounded-lg hover:bg-gray-700">Cancel</button>
+          <button type="submit" class="bg-yellow-500 px-3 py-1 rounded-lg hover:bg-yellow-600">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-		// Submit handlers - try AJAX then fallback to default submit
-		async function handleFormSubmit(e, tableBodyId, fields) {
-			e.preventDefault();
-			const form = e.target;
-			const action = form.action || window.location.href;
-			const formData = new FormData(form);
-			try {
-				const resp = await fetch(action, { method: 'POST', body: formData, credentials: 'same-origin' });
-				if (resp.ok) {
-					let data;
-					try { data = await resp.json(); } catch (err) { data = null; }
-					const values = data || Object.fromEntries(formData.entries());
-					appendRow(tableBodyId, fields, values);
-					const modalId = form.id === 'tradeForm' ? 'tradeModal' : 'tradeEditModal';
-					closeModal(modalId);
-					form.reset();
-				} else {
-					form.submit();
-				}
-			} catch (err) {
-				form.submit();
-			}
-		}
+  <script>
+    // --- Add Modal ---
+    function openAddModal() {
+      document.getElementById('addModal').classList.remove('hidden');
+    }
+    function closeAddModal() {
+      document.getElementById('addModal').classList.add('hidden');
+    }
 
-		function appendRow(tableBodyId, fields, values) {
-			const tbody = document.getElementById(tableBodyId);
-			if (!tbody) return;
-			const tr = document.createElement('tr');
-			tr.className = 'border-b border-slate-700 hover:bg-slate-700 text-white';
-			fields.forEach(f => {
-				const td = document.createElement('td');
-				td.className = 'py-2 px-4';
-				td.textContent = values[f] ?? '';
-				tr.appendChild(td);
-			});
-			const actionTd = document.createElement('td');
-			actionTd.className = 'py-2 px-4';
-			const tradeId = values['tradeId'] ?? '';
-			const buyerId = values['buyerId'] ?? '';
-			const sellerId = values['sellerId'] ?? '';
-			const amount = values['amount'] ?? '';
-			const date = values['date'] ?? '';
-			actionTd.innerHTML = `
-				<button class="edit-trade bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded mr-2" data-tradeid="${tradeId}" data-buyerid="${buyerId}" data-sellerid="${sellerId}" data-amount="${amount}" data-date="${date}">Edit</button>
-				<button class="delete-trade bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Delete</button>
-			`;
-			tr.appendChild(actionTd);
-			tbody.appendChild(tr);
-		}
+    // --- Edit Modal ---
+    function openEditModal(trade) {
+      document.getElementById('editBuyerId').value = trade.buyerId;
+      document.getElementById('editSellerId').value = trade.sellerId;
+      document.getElementById('editAmount').value = trade.amount;
+      document.getElementById('editDate').value = trade.date;
 
-		document.getElementById('tradeForm')?.addEventListener('submit', (e) => handleFormSubmit(e, 'tradeTableBody', ['tradeId','buyerId','sellerId','amount','date']));
-
-		// Edit modal handlers: delegation to support existing and appended rows
-		document.getElementById('tradeTableBody')?.addEventListener('click', (e) => {
-			const btn = e.target.closest('.edit-trade');
-			if (!btn) return;
-			const tradeId = btn.getAttribute('data-tradeid');
-			const buyerId = btn.getAttribute('data-buyerid');
-			const sellerId = btn.getAttribute('data-sellerid');
-			const amount = btn.getAttribute('data-amount');
-			const date = btn.getAttribute('data-date');
-			const form = document.getElementById('tradeEditForm');
-			form.originalTradeId.value = tradeId;
-			form.tradeId.value = tradeId;
-			form.buyerId.value = buyerId;
-			form.sellerId.value = sellerId;
-			form.amount.value = amount;
-			form.date.value = date;
-			openModal('tradeEditModal');
-		});
-
-		// Edit form submit - updates existing row instead of appending
-		async function handleEditSubmit(e, tableBodyId, idField, fields) {
-			e.preventDefault();
-			const form = e.target;
-			const action = form.action || window.location.href;
-			const formData = new FormData(form);
-			try {
-				const resp = await fetch(action, { method: 'POST', body: formData, credentials: 'same-origin' });
-				if (resp.ok) {
-					let data;
-					try { data = await resp.json(); } catch (err) { data = null; }
-					const values = data || Object.fromEntries(formData.entries());
-					updateRow(tableBodyId, idField, formData.get('originalTradeId'), values, fields);
-					const modalId = form.id === 'tradeEditForm' ? 'tradeEditModal' : 'tradeModal';
-					closeModal(modalId);
-					form.reset();
-				} else {
-					form.submit();
-				}
-			} catch (err) {
-				form.submit();
-			}
-		}
-
-		function updateRow(tableBodyId, idField, originalId, values, fields) {
-			const tbody = document.getElementById(tableBodyId);
-			if (!tbody) return;
-			const rows = Array.from(tbody.querySelectorAll('tr'));
-			for (const row of rows) {
-				const firstCell = row.querySelector('td');
-				if (!firstCell) continue;
-				if (String(firstCell.textContent).trim() === String(originalId).trim()) {
-					const tds = row.querySelectorAll('td');
-					fields.forEach((f, idx) => {
-						if (tds[idx]) tds[idx].textContent = values[f] ?? '';
-					});
-					const editBtn = row.querySelector('.edit-trade');
-					if (editBtn) {
-						editBtn.setAttribute('data-tradeid', values['tradeId'] ?? '');
-						editBtn.setAttribute('data-buyerid', values['buyerId'] ?? '');
-						editBtn.setAttribute('data-sellerid', values['sellerId'] ?? '');
-						editBtn.setAttribute('data-amount', values['amount'] ?? '');
-						editBtn.setAttribute('data-date', values['date'] ?? '');
-					}
-					break;
-				}
-			}
-		}
-
-		document.getElementById('tradeEditForm')?.addEventListener('submit', (e) => handleEditSubmit(e, 'tradeTableBody', 'tradeId', ['tradeId','buyerId','sellerId','amount','date']));
-	</script>
-
+      document.getElementById('editForm').action = `/admin/trades/edit/${trade.tradeId}`;
+      document.getElementById('editModal').classList.remove('hidden');
+    }
+    function closeEditModal() {
+      document.getElementById('editModal').classList.add('hidden');
+    }
+  </script>
 </body>
 </html>
-

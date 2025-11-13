@@ -5,9 +5,10 @@ const ManagerController = require("../controllers/ManagerController");
 
 
 
-ManagerRouterRouter.get('/dashboard',ManagerController.Dashboard)
+ManagerRouterRouter.get('/profile-info',ManagerController.ProfileInfo)
 
-
+ManagerRouterRouter.get('/analytics',ManagerController.analytic)
+ManagerRouterRouter.get('/view-stakeholder',ManagerController.viewStackHolder)
 
 
 
