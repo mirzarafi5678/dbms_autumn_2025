@@ -39,5 +39,51 @@ exports.AduitReportManagement=(req, res , next ) => {
   });
 }
 
+exports.PriceMonitoring=(req, res , next ) => {
+   
+    res.render('store/Admin-ejs/Admin-Price-monitoring', {
+    pageTitle: 'Admin',
+    currentPage : 'Price-Monitoring',
+    PriceList : []
+  });
+}
 
+
+exports.TradeManagement=(req, res , next ) => {
+   
+    res.render('store/Admin-ejs/Admin-TradeManagement', {
+    pageTitle: 'Admin',
+    currentPage : 'Trade-Management',
+    Trades : []
+  });
+}
+
+exports.AIBasedFraudDetection=(req, res , next ) => {
+   
+    res.render('store/Admin-ejs/Admin-FruadDetect', {
+    pageTitle: 'Admin',
+    currentPage : 'AI-Based-Fraud-Detection',
+    FraudList : []
+  });
+}
+
+exports.PredictionStockPricet=(req, res , next ) => {
+   
+    res.render('store/Admin-ejs/Admin-PricePrediction', {
+    pageTitle: 'Admin',
+    currentPage : 'Prediction-of-Stock-Price',
+    PredictionList : []
+  });
+}
+
+exports.Userdetails=(req, res , next ) => {
+   
+    res.render('store/Admin-ejs/Admin-UserDetail', {
+    pageTitle: 'Admin',
+    currentPage : 'User-details',
+   InvestorList : [],
+   TransactionList:[],
+   StakeholderList: []
+  });
+}
 

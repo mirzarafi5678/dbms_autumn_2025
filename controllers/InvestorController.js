@@ -1,8 +1,8 @@
 // ✅ Proper fetch import for Node v22 (CJS)
-const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
+// const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 // ✅ Your Gemini API key
-const GEMINI_API_KEY = "AIzaSyCOJyUBQEa84SmEWmrO1aiyyUwaUJiACeY";
+
 
 // Temporary storage for fraud data
 let fraudData = [];
@@ -89,7 +89,7 @@ exports.FruadDetection = (req, res) => {
     fraudList: [...fraudList, ...fraudData]
   });
 };
-
+const GEMINI_API_KEY = "AIzaSyCOJyUBQEa84SmEWmrO1aiyyUwaUJiACeY";
 
 exports.AiDetect = async (req, res) => {
   const { tid, stockId, investorId, amount } = req.body;

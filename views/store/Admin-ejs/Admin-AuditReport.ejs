@@ -2,446 +2,212 @@
 </head>
 <body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 min-h-screen text-white">
   <%- include('../../partials/admin-nav') %>
-  
 
-  <div class="container mx-auto px-4 py-8">
-    <!-- Institute Table -->
-    <div class="mb-12">
-      <h2 class="text-2xl font-bold mb-4">Institute</h2>
-      <div class="mb-4 flex justify-between items-center">
-        <div class="flex items-center space-x-2">
-          <input type="text" placeholder="Search Institute..." class="w-64 px-4 py-2 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500" id="instituteSearch">
-          <button id="instituteSearchBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center">
-            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35" />
-            </svg>
-            Search
-          </button>
-        </div>
+  <div class="container mx-auto p-6 space-y-16">
+    <!-- ================= INSTITUTE MANAGEMENT ================= -->
+    <section>
+      <h1 class="text-3xl font-bold mb-6 text-center">Institute Management</h1>
 
-        <div>
-          <button id="openInstituteAdd" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200">
-            + Add Institute
-          </button>
-        </div>
+      <!-- Search + Add -->
+      <div class="flex justify-between mb-4">
+        <form method="GET" action="/admin/institutes/search" class="flex gap-2">
+          <input type="text" name="query" placeholder="Search by Name or License No..." 
+                 class="px-3 py-2 rounded-lg text-black" />
+          <button type="submit" class="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700">Search</button>
+        </form>
+
+        <button onclick="openAddInstituteModal()" class="bg-green-600 px-4 py-2 rounded-lg hover:bg-green-700">
+          Add Institute
+        </button>
       </div>
-      <div class="overflow-x-auto rounded-lg shadow">
-        <table class="min-w-full bg-slate-800">
-          <thead>
-            <tr class="bg-blue-900 text-white">
-              <th class="py-3 px-4 text-left">ID</th>
-              <th class="py-3 px-4 text-left">Name</th>
-              <th class="py-3 px-4 text-left">License No</th>
-              <th class="py-3 px-4 text-left">Type</th>
-              <th class="py-3 px-4 text-left">Action</th>
+
+      <!-- Institute Table -->
+      <div class="overflow-x-auto">
+        <table class="min-w-full border border-gray-700 rounded-lg">
+          <thead class="bg-blue-800 text-white">
+            <tr>
+              <th class="px-4 py-2 border">Institute ID</th>
+              <th class="px-4 py-2 border">Name</th>
+              <th class="px-4 py-2 border">License No</th>
+              <th class="px-4 py-2 border">Type</th>
+              <th class="px-4 py-2 border">Actions</th>
             </tr>
           </thead>
-          <tbody id="instituteTableBody">
-            <% InstituteList.forEach(function(inst) { %>
-              <tr class="border-b border-slate-700 hover:bg-slate-700">
-                <td class="py-2 px-4"><%= inst.id %></td>
-                <td class="py-2 px-4"><%= inst.name %></td>
-                <td class="py-2 px-4"><%= inst.licenseNo %></td>
-                <td class="py-2 px-4"><%= inst.type %></td>
-                <td class="py-2 px-4">
-                  <button class="edit-institute bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded mr-2"
-                          data-id="<%= inst.id %>" data-name="<%= inst.name %>" data-licenseno="<%= inst.licenseNo %>" data-type="<%= inst.type %>">
-                    Edit
-                  </button>
-                  <button class="delete-institute bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Delete</button>
-                </td>
-              </tr>
-            <% }) %>
+          <tbody>
+            <% if (InstituteList && InstituteList.length > 0) { %>
+              <% InstituteList.forEach(function(inst) { %>
+                <tr class="border-b border-slate-700 hover:bg-slate-700">
+                  <td class="py-2 px-4"><%= inst.id %></td>
+                  <td class="py-2 px-4"><%= inst.name %></td>
+                  <td class="py-2 px-4"><%= inst.licenseNo %></td>
+                  <td class="py-2 px-4"><%= inst.type %></td>
+                  <td class="py-2 px-4 flex gap-2">
+                    <button onclick='openEditInstituteModal(<%= JSON.stringify(inst) %>)'
+                            class="bg-yellow-500 px-3 py-1 rounded-lg hover:bg-yellow-600">
+                      Edit
+                    </button>
+                    <form action="/admin/institutes/delete/<%= inst.id %>" method="POST">
+                      <button type="submit" class="bg-red-600 px-3 py-1 rounded-lg hover:bg-red-700">
+                        Delete
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+              <% }) %>
+            <% } else { %>
+              <tr><td colspan="5" class="text-center py-4">No institutes found</td></tr>
+            <% } %>
           </tbody>
         </table>
       </div>
-    </div>
+    </section>
 
-    <div>
-      <h2 class="text-2xl font-bold mb-4">Audit Reports</h2>
-      <div class="mb-4 flex justify-between items-center">
-        <div class="flex items-center space-x-2">
-          <input type="text" placeholder="Search Audit Reports..." class="w-64 px-4 py-2 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500" id="auditSearch">
-          <button id="auditSearchBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center">
-            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35" />
-            </svg>
-            Search
-          </button>
-        </div>
+    <!-- ================= AUDIT REPORT MANAGEMENT ================= -->
+    <section>
+      <h1 class="text-3xl font-bold mb-6 text-center">Audit Report Management</h1>
 
-        <div>
-          <button id="openAuditAdd" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200">
-            + Add Audit Report
-          </button>
-        </div>
+      <!-- Search + Add -->
+      <div class="flex justify-between mb-4">
+        <form method="GET" action="/admin/audit/search" class="flex gap-2">
+          <input type="text" name="query" placeholder="Search by Institute ID..." 
+                 class="px-3 py-2 rounded-lg text-black" />
+          <button type="submit" class="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700">Search</button>
+        </form>
+
+        <button onclick="openAddAuditModal()" class="bg-green-600 px-4 py-2 rounded-lg hover:bg-green-700">
+          Add Audit Report
+        </button>
       </div>
-      <div class="overflow-x-auto rounded-lg shadow">
-        <table class="min-w-full bg-slate-800">
-          <thead>
-            <tr class="bg-blue-900 text-white">
-              <th class="py-3 px-4 text-left">Report ID</th>
-              <th class="py-3 px-4 text-left">Institute ID</th>
-              <th class="py-3 px-4 text-left">Audit Date</th>
-              <th class="py-3 px-4 text-left">Finding Summary</th>
-              <th class="py-3 px-4 text-left">Action</th>
+
+      <!-- Audit Table -->
+      <div class="overflow-x-auto">
+        <table class="min-w-full border border-gray-700 rounded-lg">
+          <thead class="bg-blue-800 text-white">
+            <tr>
+              <th class="px-4 py-2 border">Report ID</th>
+              <th class="px-4 py-2 border">Institute ID</th>
+              <th class="px-4 py-2 border">Audit Date</th>
+              <th class="px-4 py-2 border">Finding Summary</th>
+              <th class="px-4 py-2 border">Actions</th>
             </tr>
           </thead>
-          <tbody id="auditTableBody">
-            <% AuditList.forEach(function(a) { %>
-              <tr class="border-b border-slate-700 hover:bg-slate-700">
-                <td class="py-2 px-4"><%= a.reportId %></td>
-                <td class="py-2 px-4"><%= a.instituteId %></td>
-                <td class="py-2 px-4"><%= a.auditDate %></td>
-                <td class="py-2 px-4"><%= a.findingSummary %></td>
-                <td class="py-2 px-4">
-                  <button class="edit-audit bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded mr-2"
-                          data-reportid="<%= a.reportId %>" data-instituteid="<%= a.instituteId %>" data-auditdate="<%= a.auditDate %>" data-findingsummary="<%= a.findingSummary %>">
-                    Edit
-                  </button>
-                  <button class="delete-audit bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Delete</button>
-                </td>
-              </tr>
-            <% }) %>
+          <tbody>
+            <% if (AuditList && AuditList.length > 0) { %>
+              <% AuditList.forEach(function(a) { %>
+                <tr class="border-b border-slate-700 hover:bg-slate-700">
+                  <td class="py-2 px-4"><%= a.reportId %></td>
+                  <td class="py-2 px-4"><%= a.instituteId %></td>
+                  <td class="py-2 px-4"><%= a.auditDate %></td>
+                  <td class="py-2 px-4"><%= a.findingSummary %></td>
+                  <td class="py-2 px-4 flex gap-2">
+                    <button onclick='openEditAuditModal(<%= JSON.stringify(a) %>)'
+                            class="bg-yellow-500 px-3 py-1 rounded-lg hover:bg-yellow-600">
+                      Edit
+                    </button>
+                    <form action="/admin/audit/delete/<%= a.reportId %>" method="POST">
+                      <button type="submit" class="bg-red-600 px-3 py-1 rounded-lg hover:bg-red-700">
+                        Delete
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+              <% }) %>
+            <% } else { %>
+              <tr><td colspan="5" class="text-center py-4">No audit reports found</td></tr>
+            <% } %>
           </tbody>
         </table>
       </div>
-    </div>
+    </section>
   </div>
 
-  <!-- Institute Add Modal -->
-  <div id="instituteModal" class="fixed inset-0 z-50 hidden items-center justify-center">
-    <div class="absolute inset-0 bg-black/50" data-close-target="instituteModal"></div>
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 z-10 overflow-hidden">
-      <div class="flex justify-between items-center px-4 py-3 border-b">
-        <h3 class="text-lg font-semibold text-slate-900">Add Institute</h3>
-        <button class="text-slate-600 hover:text-slate-900" data-close-target="instituteModal">✕</button>
-      </div>
-      <form id="instituteForm" action="/institute/add" method="POST" class="px-4 py-4 space-y-3">
-        <div>
-          <label class="text-sm text-slate-700">ID</label>
-          <input name="id" required class="w-full px-3 py-2 rounded border" />
-        </div>
-        <div>
-          <label class="text-sm text-slate-700">Name</label>
-          <input name="name" required class="w-full px-3 py-2 rounded border" />
-        </div>
-        <div>
-          <label class="text-sm text-slate-700">License No</label>
-          <input name="licenseNo" class="w-full px-3 py-2 rounded border" />
-        </div>
-        <div>
-          <label class="text-sm text-slate-700">Type</label>
-          <input name="type" class="w-full px-3 py-2 rounded border" />
-        </div>
-        <div class="pt-2 flex justify-end space-x-2">
-          <button type="button" class="px-4 py-2 rounded border" data-close-target="instituteModal">Cancel</button>
-          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Submit</button>
+  <!-- ================= INSTITUTE MODALS ================= -->
+  <div id="addInstituteModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div class="bg-slate-800 p-6 rounded-lg w-96">
+      <h2 class="text-xl mb-4">Add Institute</h2>
+      <form method="POST" action="/admin/institutes/add">
+        <input type="text" name="name" placeholder="Name" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="text" name="licenseNo" placeholder="License No" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="text" name="type" placeholder="Type" class="w-full p-2 mb-3 rounded text-black" required>
+        <div class="flex justify-end gap-2">
+          <button type="button" onclick="closeAddInstituteModal()" class="bg-gray-600 px-3 py-1 rounded-lg hover:bg-gray-700">Cancel</button>
+          <button type="submit" class="bg-green-600 px-3 py-1 rounded-lg hover:bg-green-700">Save</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Institute Edit Modal -->
-  <div id="instituteEditModal" class="fixed inset-0 z-50 hidden items-center justify-center">
-    <div class="absolute inset-0 bg-black/50" data-close-target="instituteEditModal"></div>
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 z-10 overflow-hidden">
-      <div class="flex justify-between items-center px-4 py-3 border-b">
-        <h3 class="text-lg font-semibold text-slate-900">Edit Institute</h3>
-        <button class="text-slate-600 hover:text-slate-900" data-close-target="instituteEditModal">✕</button>
-      </div>
-      <form id="instituteEditForm" action="/institute/edit" method="POST" class="px-4 py-4 space-y-3">
-        <input type="hidden" name="originalId" />
-        <div>
-          <label class="text-sm text-slate-700">ID</label>
-          <input name="id" required class="w-full px-3 py-2 rounded border" />
-        </div>
-        <div>
-          <label class="text-sm text-slate-700">Name</label>
-          <input name="name" required class="w-full px-3 py-2 rounded border" />
-        </div>
-        <div>
-          <label class="text-sm text-slate-700">License No</label>
-          <input name="licenseNo" class="w-full px-3 py-2 rounded border" />
-        </div>
-        <div>
-          <label class="text-sm text-slate-700">Type</label>
-          <input name="type" class="w-full px-3 py-2 rounded border" />
-        </div>
-        <div class="pt-2 flex justify-end space-x-2">
-          <button type="button" class="px-4 py-2 rounded border" data-close-target="instituteEditModal">Cancel</button>
-          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
+  <div id="editInstituteModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div class="bg-slate-800 p-6 rounded-lg w-96">
+      <h2 class="text-xl mb-4">Edit Institute</h2>
+      <form id="editInstituteForm" method="POST">
+        <input type="text" name="name" id="editInstituteName" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="text" name="licenseNo" id="editInstituteLicense" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="text" name="type" id="editInstituteType" class="w-full p-2 mb-3 rounded text-black" required>
+        <div class="flex justify-end gap-2">
+          <button type="button" onclick="closeEditInstituteModal()" class="bg-gray-600 px-3 py-1 rounded-lg hover:bg-gray-700">Cancel</button>
+          <button type="submit" class="bg-yellow-500 px-3 py-1 rounded-lg hover:bg-yellow-600">Update</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Audit Add Modal -->
-  <div id="auditModal" class="fixed inset-0 z-50 hidden items-center justify-center">
-    <div class="absolute inset-0 bg-black/50" data-close-target="auditModal"></div>
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 z-10 overflow-hidden">
-      <div class="flex justify-between items-center px-4 py-3 border-b">
-        <h3 class="text-lg font-semibold text-slate-900">Add Audit Report</h3>
-        <button class="text-slate-600 hover:text-slate-900" data-close-target="auditModal">✕</button>
-      </div>
-      <form id="auditForm" action="/audit/add" method="POST" class="px-4 py-4 space-y-3">
-        <div>
-          <label class="text-sm text-slate-700">Report ID</label>
-          <input name="reportId" required class="w-full px-3 py-2 rounded border" />
-        </div>
-        <div>
-          <label class="text-sm text-slate-700">Institute ID</label>
-          <input name="instituteId" required class="w-full px-3 py-2 rounded border" />
-        </div>
-        <div>
-          <label class="text-sm text-slate-700">Audit Date</label>
-          <input name="auditDate" type="date" required class="w-full px-3 py-2 rounded border" />
-        </div>
-        <div>
-          <label class="text-sm text-slate-700">Finding Summary</label>
-          <textarea name="findingSummary" rows="3" class="w-full px-3 py-2 rounded border"></textarea>
-        </div>
-        <div class="pt-2 flex justify-end space-x-2">
-          <button type="button" class="px-4 py-2 rounded border" data-close-target="auditModal">Cancel</button>
-          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Submit</button>
+  <!-- ================= AUDIT REPORT MODALS ================= -->
+  <div id="addAuditModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div class="bg-slate-800 p-6 rounded-lg w-96">
+      <h2 class="text-xl mb-4">Add Audit Report</h2>
+      <form method="POST" action="/admin/audit/add">
+        <input type="text" name="instituteId" placeholder="Institute ID" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="date" name="auditDate" class="w-full p-2 mb-3 rounded text-black" required>
+        <textarea name="findingSummary" placeholder="Finding Summary" class="w-full p-2 mb-3 rounded text-black" required></textarea>
+        <div class="flex justify-end gap-2">
+          <button type="button" onclick="closeAddAuditModal()" class="bg-gray-600 px-3 py-1 rounded-lg hover:bg-gray-700">Cancel</button>
+          <button type="submit" class="bg-green-600 px-3 py-1 rounded-lg hover:bg-green-700">Save</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Audit Edit Modal -->
-  <div id="auditEditModal" class="fixed inset-0 z-50 hidden items-center justify-center">
-    <div class="absolute inset-0 bg-black/50" data-close-target="auditEditModal"></div>
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 z-10 overflow-hidden">
-      <div class="flex justify-between items-center px-4 py-3 border-b">
-        <h3 class="text-lg font-semibold text-slate-900">Edit Audit Report</h3>
-        <button class="text-slate-600 hover:text-slate-900" data-close-target="auditEditModal">✕</button>
-      </div>
-      <form id="auditEditForm" action="/audit/edit" method="POST" class="px-4 py-4 space-y-3">
-        <input type="hidden" name="originalReportId" />
-        <div>
-          <label class="text-sm text-slate-700">Report ID</label>
-          <input name="reportId" required class="w-full px-3 py-2 rounded border" />
-        </div>
-        <div>
-          <label class="text-sm text-slate-700">Institute ID</label>
-          <input name="instituteId" required class="w-full px-3 py-2 rounded border" />
-        </div>
-        <div>
-          <label class="text-sm text-slate-700">Audit Date</label>
-          <input name="auditDate" type="date" required class="w-full px-3 py-2 rounded border" />
-        </div>
-        <div>
-          <label class="text-sm text-slate-700">Finding Summary</label>
-          <textarea name="findingSummary" rows="3" class="w-full px-3 py-2 rounded border"></textarea>
-        </div>
-        <div class="pt-2 flex justify-end space-x-2">
-          <button type="button" class="px-4 py-2 rounded border" data-close-target="auditEditModal">Cancel</button>
-          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
+  <div id="editAuditModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div class="bg-slate-800 p-6 rounded-lg w-96">
+      <h2 class="text-xl mb-4">Edit Audit Report</h2>
+      <form id="editAuditForm" method="POST">
+        <input type="text" name="instituteId" id="editAuditInstituteId" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="date" name="auditDate" id="editAuditDate" class="w-full p-2 mb-3 rounded text-black" required>
+        <textarea name="findingSummary" id="editFindingSummary" class="w-full p-2 mb-3 rounded text-black" required></textarea>
+        <div class="flex justify-end gap-2">
+          <button type="button" onclick="closeEditAuditModal()" class="bg-gray-600 px-3 py-1 rounded-lg hover:bg-gray-700">Cancel</button>
+          <button type="submit" class="bg-yellow-500 px-3 py-1 rounded-lg hover:bg-yellow-600">Update</button>
         </div>
       </form>
     </div>
   </div>
 
+  <!-- ================= SCRIPTS ================= -->
   <script>
-    // Modal open/close handlers
-    function openModal(id) {
-      const modal = document.getElementById(id);
-      if (!modal) return;
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
+    // ===== Institute =====
+    function openAddInstituteModal() { document.getElementById('addInstituteModal').classList.remove('hidden'); }
+    function closeAddInstituteModal() { document.getElementById('addInstituteModal').classList.add('hidden'); }
+    function openEditInstituteModal(inst) {
+      document.getElementById('editInstituteName').value = inst.name;
+      document.getElementById('editInstituteLicense').value = inst.licenseNo;
+      document.getElementById('editInstituteType').value = inst.type;
+      document.getElementById('editInstituteForm').action = `/admin/institutes/edit/${inst.id}`;
+      document.getElementById('editInstituteModal').classList.remove('hidden');
     }
-    function closeModal(id) {
-      const modal = document.getElementById(id);
-      if (!modal) return;
-      modal.classList.remove('flex');
-      modal.classList.add('hidden');
+    function closeEditInstituteModal() { document.getElementById('editInstituteModal').classList.add('hidden'); }
+
+    // ===== Audit =====
+    function openAddAuditModal() { document.getElementById('addAuditModal').classList.remove('hidden'); }
+    function closeAddAuditModal() { document.getElementById('addAuditModal').classList.add('hidden'); }
+    function openEditAuditModal(a) {
+      document.getElementById('editAuditInstituteId').value = a.instituteId;
+      document.getElementById('editAuditDate').value = a.auditDate;
+      document.getElementById('editFindingSummary').value = a.findingSummary;
+      document.getElementById('editAuditForm').action = `/admin/audit/edit/${a.reportId}`;
+      document.getElementById('editAuditModal').classList.remove('hidden');
     }
-
-    document.getElementById('openInstituteAdd')?.addEventListener('click', () => openModal('instituteModal'));
-    document.getElementById('openAuditAdd')?.addEventListener('click', () => openModal('auditModal'));
-
-    // Close when clicking overlay or buttons with data-close-target
-    document.querySelectorAll('[data-close-target]').forEach(el => {
-      el.addEventListener('click', (e) => {
-        const target = e.currentTarget.getAttribute('data-close-target');
-        if (target) closeModal(target);
-        else {
-          const parent = e.currentTarget.closest('.fixed');
-          if (parent && parent.id) closeModal(parent.id);
-        }
-      });
-    });
-
-    // Close on Escape
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeModal('instituteModal');
-        closeModal('auditModal');
-      }
-    });
-
-    // Submit handlers - try AJAX then fallback to default submit
-    async function handleFormSubmit(e, tableBodyId, fields) {
-      e.preventDefault();
-      const form = e.target;
-      const action = form.action || window.location.href;
-      const formData = new FormData(form);
-      try {
-        const resp = await fetch(action, { method: 'POST', body: formData, credentials: 'same-origin' });
-        if (resp.ok) {
-          let data;
-          try { data = await resp.json(); } catch (err) { data = null; }
-          const values = data || Object.fromEntries(formData.entries());
-          appendRow(tableBodyId, fields, values);
-          const modalId = form.id === 'instituteForm' ? 'instituteModal' : 'auditModal';
-          closeModal(modalId);
-          form.reset();
-        } else {
-          form.submit();
-        }
-      } catch (err) {
-        form.submit();
-      }
-    }
-
-    function appendRow(tableBodyId, fields, values) {
-      const tbody = document.getElementById(tableBodyId);
-      if (!tbody) return;
-      const tr = document.createElement('tr');
-      tr.className = 'border-b border-slate-700 hover:bg-slate-700 text-white';
-      fields.forEach(f => {
-        const td = document.createElement('td');
-        td.className = 'py-2 px-4';
-        td.textContent = values[f] ?? '';
-        tr.appendChild(td);
-      });
-      const actionTd = document.createElement('td');
-      actionTd.className = 'py-2 px-4';
-      if (tableBodyId === 'instituteTableBody') {
-        const id = values['id'] ?? '';
-        const name = values['name'] ?? '';
-        const licenseNo = values['licenseNo'] ?? '';
-        const type = values['type'] ?? '';
-        actionTd.innerHTML = `
-          <button class="edit-institute bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded mr-2" data-id="${id}" data-name="${name}" data-licenseno="${licenseNo}" data-type="${type}">Edit</button>
-          <button class="delete-institute bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Delete</button>
-        `;
-      } else if (tableBodyId === 'auditTableBody') {
-        const reportId = values['reportId'] ?? '';
-        const instituteId = values['instituteId'] ?? '';
-        const auditDate = values['auditDate'] ?? '';
-        const findingSummary = values['findingSummary'] ?? '';
-        actionTd.innerHTML = `
-          <button class="edit-audit bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded mr-2" data-reportid="${reportId}" data-instituteid="${instituteId}" data-auditdate="${auditDate}" data-findingsummary="${findingSummary}">Edit</button>
-          <button class="delete-audit bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Delete</button>
-        `;
-      } else {
-        actionTd.innerHTML = `
-          <button class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded mr-2">Edit</button>
-          <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Delete</button>
-        `;
-      }
-      tr.appendChild(actionTd);
-      tbody.appendChild(tr);
-    }
-
-    document.getElementById('instituteForm')?.addEventListener('submit', (e) => handleFormSubmit(e, 'instituteTableBody', ['id','name','licenseNo','type']));
-    document.getElementById('auditForm')?.addEventListener('submit', (e) => handleFormSubmit(e, 'auditTableBody', ['reportId','instituteId','auditDate','findingSummary']));
-
-    // Edit modal handlers: delegation to support existing and appended rows
-    document.getElementById('instituteTableBody')?.addEventListener('click', (e) => {
-      const btn = e.target.closest('.edit-institute');
-      if (!btn) return;
-      const id = btn.getAttribute('data-id');
-      const name = btn.getAttribute('data-name');
-      const licenseNo = btn.getAttribute('data-licenseno');
-      const type = btn.getAttribute('data-type');
-      const form = document.getElementById('instituteEditForm');
-      form.originalId.value = id;
-      form.id.value = id;
-      form.name.value = name;
-      form.licenseNo.value = licenseNo;
-      form.type.value = type;
-      openModal('instituteEditModal');
-    });
-
-    document.getElementById('auditTableBody')?.addEventListener('click', (e) => {
-      const btn = e.target.closest('.edit-audit');
-      if (!btn) return;
-      const reportId = btn.getAttribute('data-reportid');
-      const instituteId = btn.getAttribute('data-instituteid');
-      const auditDate = btn.getAttribute('data-auditdate');
-      const findingSummary = btn.getAttribute('data-findingsummary');
-      const form = document.getElementById('auditEditForm');
-      form.originalReportId.value = reportId;
-      form.reportId.value = reportId;
-      form.instituteId.value = instituteId;
-      form.auditDate.value = auditDate;
-      form.findingSummary.value = findingSummary;
-      openModal('auditEditModal');
-    });
-
-    // Edit form submit - similar to add but updates existing row instead of appending
-    async function handleEditSubmit(e, tableBodyId, idField, fields) {
-      e.preventDefault();
-      const form = e.target;
-      const action = form.action || window.location.href;
-      const formData = new FormData(form);
-      try {
-        const resp = await fetch(action, { method: 'POST', body: formData, credentials: 'same-origin' });
-        if (resp.ok) {
-          let data;
-          try { data = await resp.json(); } catch (err) { data = null; }
-          const values = data || Object.fromEntries(formData.entries());
-          updateRow(tableBodyId, idField, formData.get(idField === 'id' ? 'originalId' : 'originalReportId'), values, fields);
-          const modalId = form.id === 'instituteEditForm' ? 'instituteEditModal' : 'auditEditModal';
-          closeModal(modalId);
-          form.reset();
-        } else {
-          form.submit();
-        }
-      } catch (err) {
-        form.submit();
-      }
-    }
-
-    function updateRow(tableBodyId, idField, originalId, values, fields) {
-      const tbody = document.getElementById(tableBodyId);
-      if (!tbody) return;
-      const rows = Array.from(tbody.querySelectorAll('tr'));
-      for (const row of rows) {
-        const firstCell = row.querySelector('td');
-        if (!firstCell) continue;
-        if (String(firstCell.textContent).trim() === String(originalId).trim()) {
-          const tds = row.querySelectorAll('td');
-          fields.forEach((f, idx) => {
-            if (tds[idx]) tds[idx].textContent = values[f] ?? '';
-          });
-          const editBtn = row.querySelector(idField === 'id' ? '.edit-institute' : '.edit-audit');
-          if (editBtn) {
-            if (idField === 'id') {
-              editBtn.setAttribute('data-id', values['id'] ?? '');
-              editBtn.setAttribute('data-name', values['name'] ?? '');
-              editBtn.setAttribute('data-licenseno', values['licenseNo'] ?? '');
-              editBtn.setAttribute('data-type', values['type'] ?? '');
-            } else {
-              editBtn.setAttribute('data-reportid', values['reportId'] ?? '');
-              editBtn.setAttribute('data-instituteid', values['instituteId'] ?? '');
-              editBtn.setAttribute('data-auditdate', values['auditDate'] ?? '');
-              editBtn.setAttribute('data-findingsummary', values['findingSummary'] ?? '');
-            }
-          }
-          break;
-        }
-      }
-    }
-
-    document.getElementById('instituteEditForm')?.addEventListener('submit', (e) => handleEditSubmit(e, 'instituteTableBody', 'id', ['id','name','licenseNo','type']));
-    document.getElementById('auditEditForm')?.addEventListener('submit', (e) => handleEditSubmit(e, 'auditTableBody', 'reportId', ['reportId','instituteId','auditDate','findingSummary']));
+    function closeEditAuditModal() { document.getElementById('editAuditModal').classList.add('hidden'); }
   </script>
-
 </body>
 </html>

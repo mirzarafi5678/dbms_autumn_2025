@@ -45,7 +45,7 @@ app.use(express.json());
 app.use("/Admin",AdminRouter);
 app.use("/investor",InvestorRouter)
 
-app.use("/manager",ManagerRouter)
+app.use("/Manager",ManagerRouter)
 
 app.use(AuthRouter)
 
