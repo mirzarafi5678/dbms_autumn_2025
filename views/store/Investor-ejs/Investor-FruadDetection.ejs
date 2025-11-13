@@ -42,17 +42,26 @@
   </div>
 
   <!-- 2️⃣ Detection Section -->
-  <div class="bg-slate-800 p-6 rounded-2xl shadow-lg max-w-2xl mx-auto">
-    <h2 class="text-2xl font-bold mb-4 text-center">Fraud Detection Result</h2>
-    <div id="detectionResult" class="space-y-2 text-white">
-      <p><strong>Risk Score:</strong> <span id="riskScore">-</span></p>
-      <p><strong>Accuracy Score:</strong> <span id="accuracyScore">-</span></p>
-      <p><strong>Detection Date:</strong> <span id="detectionDate">-</span></p>
-      <p><strong>Summary:</strong> <span id="summary">-</span></p>
-    </div>
-    <button id="addFraudBtn" class="mt-4 w-full bg-blue-600 hover:bg-blue-700 py-2 rounded font-semibold transition">Add</button>
-    <p id="successMsg" class="text-green-400 text-center mt-2 hidden">✅ Added to Fraud Table!</p>
+<!-- 2️⃣ Detection Section -->
+<div class="bg-slate-800 p-6 rounded-2xl shadow-lg max-w-2xl mx-auto">
+  <h2 class="text-2xl font-bold mb-4 text-center">Fraud Detection Result</h2>
+
+  <!-- 👇 Add this loading indicator -->
+  <div id="loading" class="text-center hidden">
+    <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-4 border-b-4 border-blue-500"></div>
+    <p class="mt-2 text-sm text-blue-300">Analyzing transaction with AI...</p>
   </div>
+
+  <div id="detectionResult" class="space-y-2 text-white">
+    <p><strong>Risk Score:</strong> <span id="riskScore">-</span></p>
+    <p><strong>Accuracy Score:</strong> <span id="accuracyScore">-</span></p>
+    <p><strong>Detection Date:</strong> <span id="detectionDate">-</span></p>
+    <p><strong>Summary:</strong> <span id="summary">-</span></p>
+  </div>
+
+  <button id="addFraudBtn" class="mt-4 w-full bg-blue-600 hover:bg-blue-700 py-2 rounded font-semibold transition">Add</button>
+  <p id="successMsg" class="text-green-400 text-center mt-2 hidden">✅ Added to Fraud Table!</p>
+</div>
 
   <!-- 3️⃣ Fraud Table -->
   <div class="bg-slate-800 p-6 rounded-2xl shadow-lg max-w-5xl mx-auto">
@@ -91,6 +100,22 @@
   const detectButtons = document.querySelectorAll('.detectBtn');
   let currentDetection = {};
 
+  // Create a simple loading spinner dynamically
+  const loader = document.createElement('div');
+  loader.id = 'aiLoader';
+  loader.className = 'hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50';
+  loader.innerHTML = `
+    <div class="bg-slate-800 p-6 rounded-2xl text-center">
+      <div class="inline-block animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-blue-500 mb-3"></div>
+      <p class="text-blue-300 font-medium">Analyzing transaction with AI...</p>
+    </div>
+  `;
+  document.body.appendChild(loader);
+
+  // Helper functions to show/hide the loader
+  const showLoader = () => loader.classList.remove('hidden');
+  const hideLoader = () => loader.classList.add('hidden');
+
   detectButtons.forEach(btn => {
     btn.addEventListener('click', async () => {
       const tid = btn.dataset.tid;
@@ -98,29 +123,28 @@
       const investorId = btn.dataset.investorid;
       const amount = btn.dataset.amount;
 
-      // Call AI fraud detection API (replace this with actual fetch to your AI API)
+      showLoader(); // 👈 Show spinner before API call
+
       try {
-const response = await fetch('/investor/ai-detect', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ tid, stockId, investorId, amount })
-});
-
-
+        const response = await fetch('/investor/ai-detect', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tid, stockId, investorId, amount })
+        });
 
         const result = await response.json();
-        // Expected result = { riskScore, accuracyScore, detectionDate, summary }
 
         document.getElementById('riskScore').textContent = result.riskScore;
         document.getElementById('accuracyScore').textContent = result.accuracyScore;
         document.getElementById('detectionDate').textContent = result.detectionDate;
         document.getElementById('summary').textContent = result.summary;
 
-        // Save for adding to fraud table
         currentDetection = { tid, ...result };
-
       } catch (err) {
         console.error('Detection failed', err);
+        alert('AI detection failed. Please try again.');
+      } finally {
+        hideLoader(); // 👈 Always hide spinner after API call (success or fail)
       }
     });
   });
@@ -138,7 +162,6 @@ const response = await fetch('/investor/ai-detect', {
       if (res.ok) {
         const saved = await res.json();
 
-        // Add to fraud table dynamically
         const tbody = document.getElementById('fraudTableBody');
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -151,18 +174,18 @@ const response = await fetch('/investor/ai-detect', {
         `;
         tbody.appendChild(row);
 
-        // Show success message
         const msg = document.getElementById('successMsg');
         msg.classList.remove('hidden');
         setTimeout(() => msg.classList.add('hidden'), 2000);
 
-        currentDetection = {}; // reset
+        currentDetection = {};
       }
     } catch (err) {
       console.error('Failed to add fraud detection', err);
     }
   });
 </script>
+
 
 </body>
 </html>

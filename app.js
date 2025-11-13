@@ -9,6 +9,9 @@ const express = require('express');
 
 const AdminRouter = require("./routes/AdminRouter")
 const InvestorRouter= require("./routes/InvestorRouter")
+const ManagerRouter= require("./routes/ManagerRouter")
+
+
 const AuthRouter = require("./routes/AuthRouter")
 const errorsController = require("./controllers/errors");
 const rootDir = require("./utils/pathUtil");
@@ -41,6 +44,8 @@ app.use(express.json());
 
 app.use("/Admin",AdminRouter);
 app.use("/investor",InvestorRouter)
+
+app.use("/manager",ManagerRouter)
 
 app.use(AuthRouter)
 

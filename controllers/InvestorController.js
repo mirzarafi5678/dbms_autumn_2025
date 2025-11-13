@@ -1,5 +1,15 @@
-exports.Dashboard=(req, res , next ) => {
-    const CompanyStockList = [
+// ✅ Proper fetch import for Node v22 (CJS)
+const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
+
+// ✅ Your Gemini API key
+const GEMINI_API_KEY = "AIzaSyCOJyUBQEa84SmEWmrO1aiyyUwaUJiACeY";
+
+// Temporary storage for fraud data
+let fraudData = [];
+
+
+exports.Dashboard = (req, res, next) => {
+  const CompanyStockList = [
     { Apple: 120 },
     { Google: 80 },
     { Microsoft: 150 }
@@ -10,18 +20,17 @@ exports.Dashboard=(req, res , next ) => {
     { Day2: 130 },
     { Day3: 125 }
   ];
-    res.render('store/Investor-ejs/Investor-Dashboard', {
+
+  res.render('store/Investor-ejs/Investor-Dashboard', {
     pageTitle: 'Investor',
-    currentPage:'dashboard',
+    currentPage: 'dashboard',
     CompanyStockList,
     MovePriceList
-  
   });
+};
 
-}
 
 exports.profile = (req, res, next) => {
-  // Example: suppose you have user data in req.user or fetched from DB
   const userdetails = {
     id: 'INV-001',
     name: 'John Doe',
@@ -31,7 +40,7 @@ exports.profile = (req, res, next) => {
   res.render('store/Investor-ejs/Investor-profile', {
     pageTitle: 'Investor',
     currentPage: 'profile',
-    userdetails // 👈 Pass this to EJS
+    userdetails
   });
 };
 
@@ -49,29 +58,13 @@ exports.stockTN = (req, res, next) => {
   });
 };
 
-
 exports.postStockTN = (req, res, next) => {
   const { tid, stockId, investorId, amount } = req.body;
-
-  
   const newTransaction = { tid, stockId, investorId, amount };
-
- 
   res.status(200).json(newTransaction);
 };
 
 
-
-
-// const fetch = require("node-fetch");
-
-// Your Gemini API key
-const GEMINI_API_KEY = "AIzaSyCOJyUBQEa84SmEWmrO1aiyyUwaUJiACeY";
-
-// Temporary storage for fraud data
-let fraudData = [];
-
-// Render Fraud Detection page
 exports.FruadDetection = (req, res) => {
   const transactionList = [
     { tid: 'T001', stockId: 'S001', investorId: 'INV-001', amount: 1000 },
@@ -79,7 +72,14 @@ exports.FruadDetection = (req, res) => {
   ];
 
   const fraudList = [
-    { alertId: 'F001', tid: 'T001', riskScore: 0.85, accuracyScore: 0.92, detectionDate: '2025-11-12', summary: 'Suspicious large amount' }
+    {
+      alertId: 'F001',
+      tid: 'T001',
+      riskScore: 0.85,
+      accuracyScore: 0.92,
+      detectionDate: '2025-11-12',
+      summary: 'Suspicious large amount'
+    }
   ];
 
   res.render('store/Investor-ejs/Investor-FruadDetection', {
@@ -90,7 +90,7 @@ exports.FruadDetection = (req, res) => {
   });
 };
 
-// AI Fraud Detection using Gemini
+
 exports.AiDetect = async (req, res) => {
   const { tid, stockId, investorId, amount } = req.body;
 
@@ -109,28 +109,27 @@ exports.AiDetect = async (req, res) => {
       Summary: <text>
     `;
 
-    const response = await fetch("https://gemini.googleapis.com/v1/models/text-bison-001:generate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${GEMINI_API_KEY}`
-      },
-      body: JSON.stringify({
-        prompt: prompt,
-        temperature: 0.5,
-        max_output_tokens: 200
-      })
-    });
+    const response = await fetch(
+     "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=" + GEMINI_API_KEY
+,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }]
+        })
+      }
+    );
 
     const data = await response.json();
+    console.log("Gemini response:", data);
 
-    if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
-      return res.status(500).json({ error: "No response from Gemini API" });
+    if (!data.candidates || !data.candidates[0]?.content?.parts?.[0]?.text) {
+      return res.status(500).json({ error: "Invalid response from Gemini API", details: data });
     }
 
-    const aiText = data.candidates[0].content;
+    const aiText = data.candidates[0].content.parts[0].text;
 
-    // Parse Gemini AI response
     const riskMatch = aiText.match(/Risk Score\s*[:\-]\s*([0-9.]+)/i);
     const accuracyMatch = aiText.match(/Accuracy Score\s*[:\-]\s*([0-9.]+)/i);
     const summaryMatch = aiText.match(/Summary\s*[:\-]\s*(.+)/i);
@@ -143,14 +142,13 @@ exports.AiDetect = async (req, res) => {
     };
 
     res.json(result);
-
   } catch (err) {
     console.error("Gemini AI detection error:", err);
     res.status(500).json({ error: "AI detection failed" });
   }
 };
 
-// Add fraud detection to table
+
 exports.AddFraud = (req, res) => {
   const data = req.body;
   const alertId = `F${fraudData.length + 1}`;
@@ -158,3 +156,4 @@ exports.AddFraud = (req, res) => {
   fraudData.push(newFraud);
   res.json(newFraud);
 };
+
