@@ -9,7 +9,7 @@ const express = require('express');
 
 const AdminRouter = require("./routes/AdminRouter")
 const InvestorRouter= require("./routes/InvestorRouter")
-const ManagerRouter= require("./routes/ManagerRouter")
+// const ManagerRouter= require("./routes/ManagerRouter")
 
 
 const AuthRouter = require("./routes/AuthRouter")
@@ -45,7 +45,7 @@ app.use(express.json());
 app.use("/Admin",AdminRouter);
 app.use("/investor",InvestorRouter)
 
-app.use("/Manager",ManagerRouter)
+// app.use("/Manager",ManagerRouter)
 
 app.use(AuthRouter)
 
