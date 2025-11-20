@@ -1,0 +1,57 @@
+<%- include('../../partials/head') %>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 min-h-screen text-white">
+
+<%- include('../../partials/tradeManager-nav') %>
+
+<main class="p-8">
+
+  <h1 class="text-3xl font-bold mb-6">Trade Dashboard</h1>
+
+  <!-- GRAPH CONTAINER -->
+  <div class="bg-gray-800 p-6 rounded-xl shadow-lg max-w-5xl mx-auto">
+    <h2 class="text-xl font-semibold mb-4">Trade Amounts Over Time</h2>
+    <canvas id="tradeChart"></canvas>
+  </div>
+
+</main>
+
+<script>
+  // Backend data
+  const trades = <%- JSON.stringify(trades) %>;
+
+  // Prepare chart data
+  const labels = trades.map(t => new Date(t.date).toLocaleDateString());
+  const amounts = trades.map(t => t.amount);
+
+  const ctx = document.getElementById('tradeChart');
+  new Chart(ctx, {
+    type: 'line', // smooth line chart
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Trade Amount',
+        data: amounts,
+        borderColor: 'rgba(16,185,129,1)',
+        backgroundColor: 'rgba(16,185,129,0.3)',
+        tension: 0.3,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { labels: { color: 'white' } }
+      },
+      scales: {
+        x: { ticks: { color: 'white' } },
+        y: { ticks: { color: 'white' } }
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
