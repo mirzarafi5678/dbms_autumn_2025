@@ -1,0 +1,67 @@
+<%- include('../../partials/head') %>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 min-h-screen text-white">
+
+<%- include('../../partials/Investor-nav') %>
+
+<main class="p-8 space-y-12">
+
+    <!-- INSTITUTION TABLE -->
+    <section>
+        <h2 class="text-2xl font-bold mb-4">Institutions</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-gray-800 rounded-lg overflow-hidden">
+                <thead class="bg-gray-700 text-left">
+                    <tr>
+                        <th class="px-4 py-2">ID</th>
+                        <th class="px-4 py-2">Name</th>
+                        <th class="px-4 py-2">License Number</th>
+                        <th class="px-4 py-2">Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% institutions.forEach(inst => { %>
+                        <tr class="border-b border-gray-700 hover:bg-gray-700">
+                            <td class="px-4 py-2"><%= inst.id %></td>
+                            <td class="px-4 py-2"><%= inst.name %></td>
+                            <td class="px-4 py-2"><%= inst.licenseNumber %></td>
+                            <td class="px-4 py-2"><%= inst.type %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- AUDIT REPORT TABLE -->
+    <section>
+        <h2 class="text-2xl font-bold mb-4">Audit Reports</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-gray-800 rounded-lg overflow-hidden">
+                <thead class="bg-gray-700 text-left">
+                    <tr>
+                        <th class="px-4 py-2">Report ID</th>
+                        <th class="px-4 py-2">Institution ID</th>
+                        <th class="px-4 py-2">Audit Date</th>
+                        <th class="px-4 py-2">Findings Summary</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% auditReports.forEach(report => { %>
+                        <tr class="border-b border-gray-700 hover:bg-gray-700">
+                            <td class="px-4 py-2"><%= report.reportId %></td>
+                            <td class="px-4 py-2"><%= report.institutionId %></td>
+                            <td class="px-4 py-2"><%= report.auditDate.toDateString() %></td>
+                            <td class="px-4 py-2"><%= report.findingsSummary %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+
+</body>
+</html>

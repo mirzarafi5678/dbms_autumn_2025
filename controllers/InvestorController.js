@@ -1,3 +1,5 @@
+// const fetch = require("node-fetch");
+
 // ✅ Proper fetch import for Node v22 (CJS)
 // const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
@@ -6,6 +8,18 @@
 
 // Temporary storage for fraud data
 let fraudData = [];
+
+exports.viewAudit = (req, res, next) => {
+  res.render('store/Investor-ejs/Investor-Audit', {
+    pageTitle: 'Investor',
+    currentPage: 'viewAudit',
+    institutions: [],      // empty array for now
+    auditReports: []       // empty array for now
+  });
+};
+
+
+
 
 
 exports.Dashboard = (req, res, next) => {
@@ -30,19 +44,26 @@ exports.Dashboard = (req, res, next) => {
 };
 
 
-exports.profile = (req, res, next) => {
-  const userdetails = {
-    id: 'INV-001',
-    name: 'John Doe',
-    contact: '+880123456789'
-  };
+exports.buyStock = (req, res, next) => {
+  const CompanyList = [
+    { companyId: 1, name: "TechCorp", sector: "Technology", registrationNumber: "REG-001", contactInfo: "123456" },
+    { companyId: 2, name: "HealthPlus", sector: "Healthcare", registrationNumber: "REG-002", contactInfo: "7891011" }
+  ];
 
-  res.render('store/Investor-ejs/Investor-profile', {
+  const StockList = [
+    { stockId: 101, companyId: 1, totalShares: 5000, currentPrice: 120 },
+    { stockId: 102, companyId: 2, totalShares: 3000, currentPrice: 95 }
+  ];
+
+  res.render('store/Investor-ejs/Investor-buyStock', {
     pageTitle: 'Investor',
-    currentPage: 'profile',
-    userdetails
+    currentPage: 'buyStock',
+    CompanyList,
+    StockList
   });
 };
+
+
 
 
 exports.stockTN = (req, res, next) => {
@@ -91,6 +112,8 @@ exports.FruadDetection = (req, res) => {
 };
 const GEMINI_API_KEY = "AIzaSyCOJyUBQEa84SmEWmrO1aiyyUwaUJiACeY";
 
+
+
 exports.AiDetect = async (req, res) => {
   const { tid, stockId, investorId, amount } = req.body;
 
@@ -110,7 +133,7 @@ exports.AiDetect = async (req, res) => {
     `;
 
     const response = await fetch(
-     "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=" + GEMINI_API_KEY
+     "https://generativelanguage.googleapis.com/v1beta/models/gemini-chat-1.5-flash-preview-05-20:generateContent?key=" + GEMINI_API_KEY
 ,
       {
         method: "POST",
