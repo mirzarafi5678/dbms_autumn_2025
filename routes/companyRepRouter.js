@@ -1,11 +1,36 @@
 const express = require("express");
-const companyReoRouter = express.Router();
+const companyRepRouter = express.Router();
 
 const companyRepController = require("../controllers/companyRepController");
 
 
-companyReoRouter.get('/dashboard',companyRepController.Dashboard)
+companyRepRouter.get('/dashboard',companyRepController.Dashboard)
+
+companyRepRouter.get('/my-company',companyRepController.myCompany)
+companyRepRouter.get('/recent-stock-buyer',companyRepController.recentBuyer)
 
 
 
-module.exports = companyReoRouter;
+
+
+
+companyRepRouter.post('/my-company/add-company', companyRepController.addCompanyInfo);
+companyRepRouter.post('/my-company/update-company', companyRepController.updateCompanyInfo);
+
+// POST: Add a New Stock
+companyRepRouter.post('/my-company/add-stock', companyRepController.addStock);
+
+// POST: Update Stock (from popup edit modal)
+companyRepRouter.post('/my-company/update-stock', companyRepController.updateStock);
+
+// POST: Delete Stock
+companyRepRouter.post('/my-company/delete-stock', companyRepController.deleteStock);
+
+
+
+
+
+
+
+
+module.exports = companyRepRouter;

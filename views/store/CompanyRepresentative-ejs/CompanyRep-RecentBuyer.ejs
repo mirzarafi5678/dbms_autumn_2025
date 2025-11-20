@@ -1,0 +1,106 @@
+<%- include('../../partials/head') %>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 min-h-screen text-white">
+
+<%- include('../../partials/companyRep-nav') %>
+
+<main class="p-8 space-y-10">
+
+  <h1 class="text-3xl font-bold mb-6">Recent Buyers & Transactions</h1>
+
+  <!-- CHART -->
+  <div class="bg-gray-800 p-6 rounded-xl shadow-lg max-w-4xl mx-auto">
+    <h2 class="text-xl font-semibold mb-4">Transactions Amount Over Time</h2>
+    <canvas id="transactionChart"></canvas>
+  </div>
+
+  <!-- STOCK_TRANSACTION TABLE -->
+  <div class="bg-gray-800 p-6 rounded-xl shadow-lg overflow-x-auto">
+    <h2 class="text-xl font-semibold mb-4">Stock Transactions</h2>
+    <table class="w-full text-left">
+      <thead class="bg-gray-700">
+        <tr>
+          <th class="p-3">Transaction ID</th>
+          <th class="p-3">Stock ID</th>
+          <th class="p-3">Investor ID</th>
+          <th class="p-3">Company ID</th>
+          <th class="p-3">Amount</th>
+          <th class="p-3">Timestamp</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% stockTransactions.forEach(tx => { %>
+          <tr class="border-b border-gray-600 hover:bg-gray-700">
+            <td class="p-3"><%= tx.transactionId %></td>
+            <td class="p-3"><%= tx.stockId %></td>
+            <td class="p-3"><%= tx.investorId %></td>
+            <td class="p-3"><%= tx.companyId %></td>
+            <td class="p-3"><%= tx.amount %></td>
+            <td class="p-3"><%= new Date(tx.timestamp).toLocaleString() %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- INVESTOR TABLE -->
+  <div class="bg-gray-800 p-6 rounded-xl shadow-lg overflow-x-auto">
+    <h2 class="text-xl font-semibold mb-4">Investors</h2>
+    <table class="w-full text-left">
+      <thead class="bg-gray-700">
+        <tr>
+          <th class="p-3">Investor ID</th>
+          <th class="p-3">Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% investors.forEach(inv => { %>
+          <tr class="border-b border-gray-600 hover:bg-gray-700">
+            <td class="p-3"><%= inv.investorId %></td>
+            <td class="p-3"><%= inv.name %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+</main>
+
+<script>
+  const stockTransactions = <%- JSON.stringify(stockTransactions) %>;
+
+  // Prepare chart data: amount per timestamp
+  const labels = stockTransactions.map(tx => new Date(tx.timestamp).toLocaleString());
+  const amounts = stockTransactions.map(tx => tx.amount);
+
+  const ctx = document.getElementById('transactionChart');
+  new Chart(ctx, {
+    type: 'line', // beautiful line chart
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Transaction Amount',
+        data: amounts,
+        borderColor: 'rgba(59,130,246,1)',
+        backgroundColor: 'rgba(59,130,246,0.4)',
+        tension: 0.3,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { labels: { color: 'white' } }
+      },
+      scales: {
+        x: { ticks: { color: 'white' } },
+        y: { ticks: { color: 'white' } }
+      }
+    }
+  });
+</script>
+
+</body>
+</html>

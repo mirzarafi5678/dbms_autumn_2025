@@ -1,14 +1,111 @@
 <%- include('../../partials/head') %>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 min-h-screen text-white">
 
-    <%- include('../../partials/companyRep-nav') %>
+<%- include('../../partials/companyRep-nav') %>
 
+<main class="p-8">
 
-    <main>
-      
-    </main>
+  <!-- PAGE TITLE -->
+  <h1 class="text-3xl font-bold mb-8">Dashboard Overview</h1>
+
+  <!-- CHART CONTAINER -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+
+    <!-- STOCK OVERVIEW CHART -->
+    <div class="bg-gray-800 p-6 rounded-xl shadow-lg">
+      <h2 class="text-xl font-semibold mb-4">Stock Overview</h2>
+      <canvas id="stockChart"></canvas>
     </div>
-    
-    </html>
+
+    <!-- STOCK TRANSACTION CHART -->
+    <div class="bg-gray-800 p-6 rounded-xl shadow-lg">
+      <h2 class="text-xl font-semibold mb-4">Stock Transactions</h2>
+      <canvas id="transactionChart"></canvas>
+    </div>
+
+  </div>
+
+</main>
+
+<script>
+  // Backend Data
+  const stocks = <%- JSON.stringify(stocks) %>;
+  const transactions = <%- JSON.stringify(stockTransactions) %>;
+
+  // Extract Stock Data
+  const companyNames = stocks.map(s => s.companyName);
+  const totalShares = stocks.map(s => s.totalShares);
+  const currentPrices = stocks.map(s => s.currentPrice);
+
+  // Extract Transaction Data
+  const transactionTimes = transactions.map(t => new Date(t.timestamp).toLocaleString());
+  const investorCounts = transactions.map(t => t.numberOfInvestors);
+
+  // Chart 1: Stock Overview
+  const ctx1 = document.getElementById('stockChart');
+  new Chart(ctx1, {
+    type: 'bar',
+    data: {
+      labels: companyNames,
+      datasets: [
+        {
+          label: 'Total Shares',
+          data: totalShares,
+          backgroundColor: 'rgba(59,130,246,0.7)',
+        },
+        {
+          label: 'Current Price',
+          data: currentPrices,
+          backgroundColor: 'rgba(16,185,129,0.7)',
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { labels: { color: 'white' } }
+      },
+      scales: {
+        x: { ticks: { color: 'white' } },
+        y: { ticks: { color: 'white' } }
+      }
+    }
+  });
+
+  // Chart 2: Transaction Chart
+  const ctx2 = document.getElementById('transactionChart');
+  new Chart(ctx2, {
+    type: 'line',
+    data: {
+      labels: transactionTimes,
+      datasets: [
+        {
+          label: 'Number of Investors',
+          data: investorCounts,
+          borderColor: 'rgba(236,72,153,1)',
+          backgroundColor: 'rgba(236,72,153,0.4)',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.3
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { labels: { color: 'white' } }
+      },
+      scales: {
+        x: { ticks: { color: 'white' } },
+        y: { ticks: { color: 'white' } }
+      }
+    }
+  });
+
+</script>
+
+</body>
+</html>
