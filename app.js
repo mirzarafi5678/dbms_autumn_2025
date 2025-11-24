@@ -39,7 +39,23 @@ app.use(express.urlencoded({ extended: true }));
 // Parse JSON bodies (from fetch/AJAX)
 app.use(express.json());
 
+// Session support
+const session = require('express-session');
+app.use(
+  session({
+    secret: 'change_this_secret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 1000 * 60 * 60 * 2 } // 2 hours
+  })
+);
 
+app.get('/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) console.log(err);
+        res.redirect('/login');
+    });
+});
 
 
 
@@ -60,7 +76,7 @@ app.use(errorsController.pageNotFound);
 
 
 
-const PORT = 3001;
+const PORT = 3002;
 app.listen(PORT, () => {
   console.log(`Server running on address http://localhost:${PORT}`);
 });

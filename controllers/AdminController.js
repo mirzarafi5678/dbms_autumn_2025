@@ -1,3 +1,6 @@
+
+const db = require("../utils/db");
+
 exports.Dashboard = (req, res, next) => {
   const CompanyStockList = [
     { Apple: 120 },
@@ -67,14 +70,94 @@ exports.AIBasedFraudDetection=(req, res , next ) => {
   });
 }
 
-exports.PredictionStockPricet=(req, res , next ) => {
-   
-    res.render('store/Admin-ejs/Admin-PricePrediction', {
-    pageTitle: 'Admin',
-    currentPage : 'Prediction-of-Stock-Price',
-    PredictionList : []
-  });
-}
+exports.PredictionStockPricet = async (req, res) => {
+    try {
+        const [rows] = await db.query("SELECT * FROM stock_predictions");
+
+        res.render('store/Admin-ejs/Admin-PricePrediction', {
+            pageTitle: 'Admin',
+            currentPage: 'Prediction-of-Stock-Price',
+            PredictionList: rows
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.send("Database Error");
+    }
+};
+
+// SEARCH
+exports.searchPredictions = async (req, res) => {
+    const query = req.query.query;
+
+    try {
+        const [rows] = await db.query(
+            "SELECT * FROM stock_predictions WHERE Stockid LIKE ?", [`%${query}%`]
+        );
+
+        res.render('store/Admin-ejs/Admin-PricePrediction', {
+            pageTitle: 'Admin',
+            currentPage: 'Prediction-of-Stock-Price',
+            PredictionList: rows
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.send("Search Error");
+    }
+};
+
+// ADD
+exports.addPrediction = async (req, res) => {
+    const { Stockid, predictedPrice, date, accuracyScore } = req.body;
+
+    try {
+        await db.query(
+            "INSERT INTO stock_predictions (Stockid, predictedPrice, date, accuracyScore) VALUES (?, ?, ?, ?)",
+            [Stockid, predictedPrice, date, accuracyScore]
+        );
+
+        res.redirect('/admin/Prediction-of-Stock-Price');
+
+    } catch (err) {
+        console.error(err);
+        res.send("Insert Error");
+    }
+};
+
+// EDIT
+exports.editPrediction = async (req, res) => {
+    const Stockid = req.params.Stockid;
+    const { predictedPrice, date, accuracyScore } = req.body;
+
+    try {
+        await db.query(
+            "UPDATE stock_predictions SET predictedPrice=?, date=?, accuracyScore=? WHERE Stockid=?",
+            [predictedPrice, date, accuracyScore, Stockid]
+        );
+
+        res.redirect('/admin/Prediction-of-Stock-Price');
+
+    } catch (err) {
+        console.error(err);
+        res.send("Update Error");
+    }
+};
+
+// DELETE
+exports.deletePrediction = async (req, res) => {
+    const Stockid = req.params.Stockid;
+
+    try {
+        await db.query("DELETE FROM stock_predictions WHERE Stockid = ?", [Stockid]);
+
+        res.redirect('/admin/Prediction-of-Stock-Price');
+
+    } catch (err) {
+        console.error(err);
+        res.send("Delete Error");
+    }
+};
 
 exports.Userdetails=(req, res , next ) => {
    
