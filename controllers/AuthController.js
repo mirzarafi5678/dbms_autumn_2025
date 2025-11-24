@@ -32,6 +32,7 @@ exports.postLogin = async (req, res, next) => {
   try {
     const [rows] = await db.execute('SELECT userid, email, role FROM users WHERE email = ? AND pass = ?', [email, pass]);
     if (rows && rows.length > 0) {
+      console.log(rows)
       // set minimal user session
       req.session.user = {
         userid: rows[0].userid,
