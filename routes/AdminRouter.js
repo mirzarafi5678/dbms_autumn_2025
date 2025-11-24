@@ -43,11 +43,6 @@ AdminRouter.get('/AI-Based-Fraud-Detection',AdminController.AIBasedFraudDetectio
 AdminRouter.get('/Prediction-of-Stock-Price',AdminController.PredictionStockPricet)
 
 
-// router.get('/admin/predictions', adminController.PredictionStockPricet);
-// router.post('/admin/predictions/add', adminController.addPrediction);
-// router.post('/admin/predictions/edit/:Stockid', adminController.editPrediction);
-// router.post('/admin/predictions/delete/:Stockid', adminController.deletePrediction);
-// router.get('/admin/predictions/search', adminController.searchPrediction);
 
 
 

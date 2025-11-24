@@ -10,6 +10,7 @@ const express = require('express');
 const AdminRouter = require("./routes/AdminRouter")
 const InvestorRouter= require("./routes/InvestorRouter")
 const companyRepRouter= require("./routes/companyRepRouter")
+
 // const ManagerRouter= require("./routes/ManagerRouter")
 
 
@@ -58,8 +59,9 @@ app.get('/logout', (req, res) => {
 });
 
 
+const islogged = require("./middleware/auth")
 
-app.use("/Admin",AdminRouter);
+app.use("/Admin",islogged.isAuthenticated,AdminRouter);
 app.use("/investor",InvestorRouter)
 app.use("/companyRep",companyRepRouter)
 
