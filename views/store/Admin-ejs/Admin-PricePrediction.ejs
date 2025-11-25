@@ -13,7 +13,10 @@
                class="px-3 py-2 rounded-lg text-black" />
         <button type="submit" class="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700">Search</button>
       </form>
-
+       <a href="/Admin/Prediction-of-Stock-Price" 
+   class="bg-green-600 px-4 py-2 rounded-lg hover:bg-green-700">
+               Show ALL
+         </a>
       <!-- Add button -->
       <button onclick="openAddModal()" class="bg-green-600 px-4 py-2 rounded-lg hover:bg-green-700">
         Add Prediction
@@ -48,7 +51,7 @@
                     Edit
                   </button>
 
-                  <form action="/admin/predictions/delete/<%= prediction.Stockid %>" method="POST">
+                  <form action="/admin/predictions/delete/<%= prediction.id %>" method="POST">
                     <button type="submit" class="bg-red-600 px-3 py-1 rounded-lg hover:bg-red-700">
                       Delete
                     </button>
@@ -89,7 +92,7 @@
     <div class="bg-slate-800 p-6 rounded-lg w-96">
       <h2 class="text-xl mb-4">Edit Prediction</h2>
       <form id="editForm" method="POST">
-        <input type="text" name="Stockid" id="editStockid" placeholder="Stock ID" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="text" name="Stockid" id="editStockid" placeholder="Stock ID" class="w-full p-2 mb-3 rounded text-black" readonly>
         <input type="number" name="predictedPrice" id="editPredictedPrice" placeholder="Predicted Price" class="w-full p-2 mb-3 rounded text-black" required>
         <input type="date" name="date" id="editDate" class="w-full p-2 mb-3 rounded text-black" required>
         <input type="number" step="0.01" name="accuracyScore" id="editAccuracyScore" placeholder="Accuracy Score" class="w-full p-2 mb-3 rounded text-black" required>
@@ -103,6 +106,7 @@
   </div>
 
   <script>
+   
     // --- Add Modal ---
     function openAddModal() {
       document.getElementById('addModal').classList.remove('hidden');

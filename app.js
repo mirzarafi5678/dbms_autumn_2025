@@ -61,7 +61,9 @@ app.get('/logout', (req, res) => {
 
 const islogged = require("./middleware/auth")
 
-app.use("/Admin",islogged.isAuthenticated,AdminRouter);
+// ,islogged.isAuthenticated
+
+app.use("/Admin",AdminRouter);
 app.use("/investor",InvestorRouter)
 app.use("/companyRep",companyRepRouter)
 
