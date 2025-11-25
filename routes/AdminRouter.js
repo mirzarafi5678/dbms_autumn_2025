@@ -7,7 +7,7 @@ const AdminController = require("../controllers/AdminController");
 const auth = require('../middleware/auth');
 
 // Protect all admin routes
-AdminRouter.use(auth.isAdmin);
+// AdminRouter.use(auth.isAdmin);
 
 
 AdminRouter.get('/dashboard',AdminController.Dashboard)
@@ -30,7 +30,7 @@ AdminRouter.post('/predictions/add', AdminController.addPrediction);
 AdminRouter.post('/predictions/edit/:Stockid', AdminController.editPrediction);
 
 // Delete prediction
-AdminRouter.post('/predictions/delete/:Stockid', AdminController.deletePrediction);
+AdminRouter.post('/predictions/delete/:id', AdminController.deletePrediction);
 
 
 

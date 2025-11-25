@@ -73,6 +73,7 @@ exports.AIBasedFraudDetection=(req, res , next ) => {
 exports.PredictionStockPricet = async (req, res) => {
     try {
         const [rows] = await db.query("SELECT * FROM stock_predictions");
+        
 
         res.render('store/Admin-ejs/Admin-PricePrediction', {
             pageTitle: 'Admin',
@@ -89,6 +90,7 @@ exports.PredictionStockPricet = async (req, res) => {
 // SEARCH
 exports.searchPredictions = async (req, res) => {
     const query = req.query.query;
+    console.log(query)
 
     try {
         const [rows] = await db.query(
@@ -144,12 +146,13 @@ exports.editPrediction = async (req, res) => {
     }
 };
 
+
 // DELETE
 exports.deletePrediction = async (req, res) => {
-    const Stockid = req.params.Stockid;
+    const id = req.params.id;
 
     try {
-        await db.query("DELETE FROM stock_predictions WHERE Stockid = ?", [Stockid]);
+        await db.query("DELETE FROM stock_predictions WHERE id = ?", [id]);
 
         res.redirect('/admin/Prediction-of-Stock-Price');
 
