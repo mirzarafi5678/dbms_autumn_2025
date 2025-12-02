@@ -11,11 +11,15 @@
 
       <!-- Search + Add -->
       <div class="flex justify-between mb-4">
-        <form method="GET" action="/admin/company/search" class="flex gap-2">
-          <input type="text" name="query" placeholder="Search by Name or Sector..." 
+        <form method="GET" action="/Admin/company/search" class="flex gap-2">
+          <input type="text" name="query" placeholder="Search by Registration Number..." 
                  class="px-3 py-2 rounded-lg text-black" />
           <button type="submit" class="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700">Search</button>
         </form>
+           <a href="/Admin/Company-Stock-Management" 
+   class="bg-green-600 px-4 py-2 rounded-lg hover:bg-green-700">
+               Show ALL
+         </a>
 
         <button onclick="openAddCompanyModal()" class="bg-green-600 px-4 py-2 rounded-lg hover:bg-green-700">
           Add Company
@@ -27,10 +31,10 @@
         <table class="min-w-full border border-gray-700 rounded-lg">
           <thead class="bg-blue-800 text-white">
             <tr>
-              <th class="px-4 py-2 border">Company ID</th>
-              <th class="px-4 py-2 border">Name</th>
-              <th class="px-4 py-2 border">Sector</th>
-              <th class="px-4 py-2 border">Registration No</th>
+              <th class="px-4 py-2 border">registrationNumber</th>
+              <th class="px-4 py-2 border">name</th>
+              <th class="px-4 py-2 border">sector</th>
+              <th class="px-4 py-2 border">contactInfo</th>
               <th class="px-4 py-2 border">Actions</th>
             </tr>
           </thead>
@@ -38,16 +42,16 @@
             <% if (CompanyList && CompanyList.length > 0) { %>
               <% CompanyList.forEach(function(company) { %>
                 <tr class="border-b border-slate-700 hover:bg-slate-700">
-                  <td class="py-2 px-4"><%= company.id %></td>
+                  <td class="py-2 px-4"><%= company.registrationNumber %></td>
                   <td class="py-2 px-4"><%= company.name %></td>
                   <td class="py-2 px-4"><%= company.sector %></td>
-                  <td class="py-2 px-4"><%= company.registrationNo %></td>
+                  <td class="py-2 px-4"><%= company.contactInfo %></td>
                   <td class="py-2 px-4 flex gap-2">
                     <button onclick='openEditCompanyModal(<%= JSON.stringify(company) %>)'
                             class="bg-yellow-500 px-3 py-1 rounded-lg hover:bg-yellow-600">
                       Edit
                     </button>
-                    <form action="/admin/company/delete/<%= company.id %>" method="POST">
+                    <form action="/Admin/company/delete/<%= company.registrationNumber %>" method="POST">
                       <button type="submit" class="bg-red-600 px-3 py-1 rounded-lg hover:bg-red-700">
                         Delete
                       </button>
@@ -69,11 +73,15 @@
 
       <!-- Search + Add -->
       <div class="flex justify-between mb-4">
-        <form method="GET" action="/admin/stocks/search" class="flex gap-2">
-          <input type="text" name="query" placeholder="Search by Company ID..." 
+        <form method="GET" action="/Admin/stocks/search" class="flex gap-2">
+          <input type="text" name="query" placeholder="Search by Registration Number..." 
                  class="px-3 py-2 rounded-lg text-black" />
           <button type="submit" class="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700">Search</button>
         </form>
+                <a href="/Admin/Company-Stock-Management" 
+   class="bg-green-600 px-4 py-2 rounded-lg hover:bg-green-700">
+               Show ALL
+         </a>
 
         <button onclick="openAddStockModal()" class="bg-green-600 px-4 py-2 rounded-lg hover:bg-green-700">
           Add Stock
@@ -85,9 +93,10 @@
         <table class="min-w-full border border-gray-700 rounded-lg">
           <thead class="bg-blue-800 text-white">
             <tr>
-              <th class="px-4 py-2 border">Company ID</th>
-              <th class="px-4 py-2 border">Total Share</th>
-              <th class="px-4 py-2 border">Current Price</th>
+              <th class="px-4 py-2 border">registrationNumber</th>
+              <th class="px-4 py-2 border">stockId</th>
+              <th class="px-4 py-2 border">totalShares</th>
+              <th class="px-4 py-2 border">currentPrice</th>
               <th class="px-4 py-2 border">Actions</th>
             </tr>
           </thead>
@@ -95,15 +104,16 @@
             <% if (StockList && StockList.length > 0) { %>
               <% StockList.forEach(function(stock) { %>
                 <tr class="border-b border-slate-700 hover:bg-slate-700">
-                  <td class="py-2 px-4"><%= stock.companyId %></td>
-                  <td class="py-2 px-4"><%= stock.totalShare %></td>
+                  <td class="py-2 px-4"><%= stock.registrationNumber %></td>
+                  <td class="py-2 px-4"><%= stock.stockId %></td>
+                  <td class="py-2 px-4"><%= stock.totalShares %></td>
                   <td class="py-2 px-4"><%= stock.currentPrice %></td>
                   <td class="py-2 px-4 flex gap-2">
                     <button onclick='openEditStockModal(<%= JSON.stringify(stock) %>)'
                             class="bg-yellow-500 px-3 py-1 rounded-lg hover:bg-yellow-600">
                       Edit
                     </button>
-                    <form action="/admin/stocks/delete/<%= stock.companyId %>" method="POST">
+                    <form action="/Admin/stocks/delete/<%= stock.stockId %>" method="POST">
                       <button type="submit" class="bg-red-600 px-3 py-1 rounded-lg hover:bg-red-700">
                         Delete
                       </button>
@@ -124,10 +134,11 @@
   <div id="addCompanyModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
     <div class="bg-slate-800 p-6 rounded-lg w-96">
       <h2 class="text-xl mb-4">Add Company</h2>
-      <form method="POST" action="/admin/company/add">
-        <input type="text" name="name" placeholder="Company Name" class="w-full p-2 mb-3 rounded text-black" required>
-        <input type="text" name="sector" placeholder="Sector" class="w-full p-2 mb-3 rounded text-black" required>
-        <input type="text" name="registrationNo" placeholder="Registration No" class="w-full p-2 mb-3 rounded text-black" required>
+      <form method="POST" action="/Admin/company/add">
+        <input type="text" name="name" placeholder="name" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="text" name="sector" placeholder="sector" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="text" name="registrationNumber" placeholder="registrationNumber" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="text" name="contactInfo" placeholder="contactInfo" class="w-full p-2 mb-3 rounded text-black">
         <div class="flex justify-end gap-2">
           <button type="button" onclick="closeAddCompanyModal()" class="bg-gray-600 px-3 py-1 rounded-lg hover:bg-gray-700">Cancel</button>
           <button type="submit" class="bg-green-600 px-3 py-1 rounded-lg hover:bg-green-700">Save</button>
@@ -142,7 +153,8 @@
       <form id="editCompanyForm" method="POST">
         <input type="text" name="name" id="editCompanyName" class="w-full p-2 mb-3 rounded text-black" required>
         <input type="text" name="sector" id="editCompanySector" class="w-full p-2 mb-3 rounded text-black" required>
-        <input type="text" name="registrationNo" id="editCompanyRegNo" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="text" name="registrationNumber" id="editCompanyRegNo" class="w-full p-2 mb-3 rounded text-black" readonly required>
+        <input type="text" name="contactInfo" id="editCompanyContact" class="w-full p-2 mb-3 rounded text-black">
         <div class="flex justify-end gap-2">
           <button type="button" onclick="closeEditCompanyModal()" class="bg-gray-600 px-3 py-1 rounded-lg hover:bg-gray-700">Cancel</button>
           <button type="submit" class="bg-yellow-500 px-3 py-1 rounded-lg hover:bg-yellow-600">Update</button>
@@ -155,10 +167,11 @@
   <div id="addStockModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
     <div class="bg-slate-800 p-6 rounded-lg w-96">
       <h2 class="text-xl mb-4">Add Stock</h2>
-      <form method="POST" action="/admin/stocks/add">
-        <input type="text" name="companyId" placeholder="Company ID" class="w-full p-2 mb-3 rounded text-black" required>
-        <input type="number" name="totalShare" placeholder="Total Share" class="w-full p-2 mb-3 rounded text-black" required>
-        <input type="number" name="currentPrice" placeholder="Current Price" class="w-full p-2 mb-3 rounded text-black" required>
+      <form method="POST" action="/Admin/stocks/add">
+        <input type="text" name="registrationNumber" placeholder="registrationNumber" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="text" name="stockId" placeholder="stockId" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="number" name="totalShares" placeholder="totalShares" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="number" name="currentPrice" placeholder="currentPrice" class="w-full p-2 mb-3 rounded text-black" required>
         <div class="flex justify-end gap-2">
           <button type="button" onclick="closeAddStockModal()" class="bg-gray-600 px-3 py-1 rounded-lg hover:bg-gray-700">Cancel</button>
           <button type="submit" class="bg-green-600 px-3 py-1 rounded-lg hover:bg-green-700">Save</button>
@@ -171,7 +184,9 @@
     <div class="bg-slate-800 p-6 rounded-lg w-96">
       <h2 class="text-xl mb-4">Edit Stock</h2>
       <form id="editStockForm" method="POST">
-        <input type="number" name="totalShare" id="editStockTotalShare" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="text" name="registrationNumber" id="editStockRegistrationNumber" class="w-full p-2 mb-3 rounded text-black" readonly required>
+        <input type="text" name="stockId" id="editStockId" class="w-full p-2 mb-3 rounded text-black" readonly required>
+        <input type="number" name="totalShares" id="editStockTotalShare" class="w-full p-2 mb-3 rounded text-black" required>
         <input type="number" name="currentPrice" id="editStockCurrentPrice" class="w-full p-2 mb-3 rounded text-black" required>
         <div class="flex justify-end gap-2">
           <button type="button" onclick="closeEditStockModal()" class="bg-gray-600 px-3 py-1 rounded-lg hover:bg-gray-700">Cancel</button>
@@ -187,10 +202,11 @@
     function openAddCompanyModal() { document.getElementById('addCompanyModal').classList.remove('hidden'); }
     function closeAddCompanyModal() { document.getElementById('addCompanyModal').classList.add('hidden'); }
     function openEditCompanyModal(company) {
-      document.getElementById('editCompanyName').value = company.name;
-      document.getElementById('editCompanySector').value = company.sector;
-      document.getElementById('editCompanyRegNo').value = company.registrationNo;
-      document.getElementById('editCompanyForm').action = `/admin/company/edit/${company.id}`;
+      document.getElementById('editCompanyName').value = company.name || company.name;
+      document.getElementById('editCompanySector').value = company.sector || '';
+      document.getElementById('editCompanyRegNo').value = company.registrationNumber || company.registrationNumber || '';
+      document.getElementById('editCompanyContact').value = company.contactInfo || '';
+      document.getElementById('editCompanyForm').action = `/Admin/company/edit/${company.registrationNumber}`;
       document.getElementById('editCompanyModal').classList.remove('hidden');
     }
     function closeEditCompanyModal() { document.getElementById('editCompanyModal').classList.add('hidden'); }
@@ -199,9 +215,11 @@
     function openAddStockModal() { document.getElementById('addStockModal').classList.remove('hidden'); }
     function closeAddStockModal() { document.getElementById('addStockModal').classList.add('hidden'); }
     function openEditStockModal(stock) {
-      document.getElementById('editStockTotalShare').value = stock.totalShare;
-      document.getElementById('editStockCurrentPrice').value = stock.currentPrice;
-      document.getElementById('editStockForm').action = `/admin/stocks/edit/${stock.companyId}`;
+      document.getElementById('editStockRegistrationNumber').value = stock.registrationNumber || '';
+      document.getElementById('editStockId').value = stock.stockId || '';
+      document.getElementById('editStockTotalShare').value = stock.totalShares || stock.totalShare || 0;
+      document.getElementById('editStockCurrentPrice').value = stock.currentPrice || 0;
+      document.getElementById('editStockForm').action = `/Admin/stocks/edit/${stock.stockId}`;
       document.getElementById('editStockModal').classList.remove('hidden');
     }
     function closeEditStockModal() { document.getElementById('editStockModal').classList.add('hidden'); }

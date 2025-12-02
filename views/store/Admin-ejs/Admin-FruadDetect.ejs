@@ -8,7 +8,7 @@
 
     <!-- Search bar -->
     <div class="flex justify-between mb-4">
-      <form method="GET" action="/admin/fraud/search" class="flex gap-2">
+      <form method="GET" action="/Admin/fraud/search" class="flex gap-2">
         <input type="text" name="query" placeholder="Search by Alert ID..." 
                class="px-3 py-2 rounded-lg text-black" />
         <button type="submit" class="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700">Search</button>
@@ -26,11 +26,9 @@
         <thead class="bg-blue-800 text-white">
           <tr>
             <th class="px-4 py-2 border">Alert ID</th>
-            <th class="px-4 py-2 border">TID</th>
+            <th class="px-4 py-2 border">Transaction ID</th>
             <th class="px-4 py-2 border">Risk Score</th>
-            <th class="px-4 py-2 border">Accuracy Score</th>
             <th class="px-4 py-2 border">Detection Date</th>
-            <th class="px-4 py-2 border">Summary</th>
             <th class="px-4 py-2 border">Actions</th>
           </tr>
         </thead>
@@ -39,18 +37,16 @@
             <% FraudList.forEach(alert => { %>
               <tr class="hover:bg-slate-800 transition">
                 <td class="px-4 py-2 border"><%= alert.alertId %></td>
-                <td class="px-4 py-2 border"><%= alert.tid %></td>
+                <td class="px-4 py-2 border"><%= alert.transactionId %></td>
                 <td class="px-4 py-2 border"><%= alert.riskScore %></td>
-                <td class="px-4 py-2 border"><%= alert.accuracyScore %></td>
                 <td class="px-4 py-2 border"><%= alert.detectionDate %></td>
-                <td class="px-4 py-2 border"><%= alert.summary %></td>
                 <td class="px-4 py-2 border flex gap-2">
                   <button onclick="openEditModal(<%= JSON.stringify(alert) %>)"
                           class="bg-yellow-500 px-3 py-1 rounded-lg hover:bg-yellow-600">
                     Edit
                   </button>
 
-                  <form action="/admin/fraud/delete/<%= alert.alertId %>" method="POST">
+                  <form action="/Admin/fraud/delete/<%= alert.alertId %>" method="POST">
                     <button type="submit" class="bg-red-600 px-3 py-1 rounded-lg hover:bg-red-700">
                       Delete
                     </button>
@@ -60,7 +56,7 @@
             <% }) %>
           <% } else { %>
             <tr>
-              <td colspan="7" class="text-center py-4">No fraud alerts available</td>
+              <td colspan="5" class="text-center py-4">No fraud alerts available</td>
             </tr>
           <% } %>
         </tbody>
@@ -72,12 +68,10 @@
   <div id="addModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
     <div class="bg-slate-800 p-6 rounded-lg w-96">
       <h2 class="text-xl mb-4">Add New Fraud Alert</h2>
-      <form method="POST" action="/admin/fraud/add">
-        <input type="text" name="tid" placeholder="TID" class="w-full p-2 mb-3 rounded text-black" required>
+      <form method="POST" action="/Admin/fraud/add">
+        <input type="text" name="transactionId" placeholder="Transaction ID" class="w-full p-2 mb-3 rounded text-black" required>
         <input type="number" step="0.01" name="riskScore" placeholder="Risk Score" class="w-full p-2 mb-3 rounded text-black" required>
-        <input type="number" step="0.01" name="accuracyScore" placeholder="Accuracy Score" class="w-full p-2 mb-3 rounded text-black" required>
         <input type="date" name="detectionDate" class="w-full p-2 mb-3 rounded text-black" required>
-        <textarea name="summary" placeholder="Summary" class="w-full p-2 mb-3 rounded text-black" required></textarea>
 
         <div class="flex justify-end gap-2">
           <button type="button" onclick="closeAddModal()" class="bg-gray-600 px-3 py-1 rounded-lg hover:bg-gray-700">Cancel</button>
@@ -92,11 +86,10 @@
     <div class="bg-slate-800 p-6 rounded-lg w-96">
       <h2 class="text-xl mb-4">Edit Fraud Alert</h2>
       <form id="editForm" method="POST">
-        <input type="text" name="tid" id="editTid" placeholder="TID" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="text" name="alertId" id="editAlertId" placeholder="Alert ID" class="w-full p-2 mb-3 rounded text-black" readonly>
+        <input type="text" name="transactionId" id="editTransactionId" placeholder="Transaction ID" class="w-full p-2 mb-3 rounded text-black" required>
         <input type="number" step="0.01" name="riskScore" id="editRiskScore" placeholder="Risk Score" class="w-full p-2 mb-3 rounded text-black" required>
-        <input type="number" step="0.01" name="accuracyScore" id="editAccuracyScore" placeholder="Accuracy Score" class="w-full p-2 mb-3 rounded text-black" required>
         <input type="date" name="detectionDate" id="editDetectionDate" class="w-full p-2 mb-3 rounded text-black" required>
-        <textarea name="summary" id="editSummary" placeholder="Summary" class="w-full p-2 mb-3 rounded text-black" required></textarea>
 
         <div class="flex justify-end gap-2">
           <button type="button" onclick="closeEditModal()" class="bg-gray-600 px-3 py-1 rounded-lg hover:bg-gray-700">Cancel</button>
