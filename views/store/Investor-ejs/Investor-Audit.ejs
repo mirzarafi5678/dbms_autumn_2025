@@ -41,19 +41,21 @@
             <table class="min-w-full bg-gray-800 rounded-lg overflow-hidden">
                 <thead class="bg-gray-700 text-left">
                     <tr>
-                        <th class="px-4 py-2">Report ID</th>
-                        <th class="px-4 py-2">Institution ID</th>
+                        <th class="px-4 py-2">Audit Name</th>
                         <th class="px-4 py-2">Audit Date</th>
                         <th class="px-4 py-2">Findings Summary</th>
+                        <th class="px-4 py-2">Report ID</th>
+                        <th class="px-4 py-2">Registration Number</th>
                     </tr>
                 </thead>
                 <tbody>
                     <% auditReports.forEach(report => { %>
                         <tr class="border-b border-gray-700 hover:bg-gray-700">
-                            <td class="px-4 py-2"><%= report.reportId %></td>
-                            <td class="px-4 py-2"><%= report.institutionId %></td>
-                            <td class="px-4 py-2"><%= report.auditDate.toDateString() %></td>
+                            <td class="px-4 py-2"><%= report.auditName %></td>
+                            <td class="px-4 py-2"><%= report.auditDate ? report.auditDate.toDateString() : '' %></td>
                             <td class="px-4 py-2"><%= report.findingsSummary %></td>
+                            <td class="px-4 py-2"><%= report.reportId %></td>
+                            <td class="px-4 py-2"><%= report.registrationNumber %></td>
                         </tr>
                     <% }) %>
                 </tbody>

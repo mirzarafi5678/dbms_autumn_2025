@@ -13,22 +13,20 @@
 
       <table class="w-full text-left border-collapse">
         <thead>
-          <tr class="bg-slate-700 text-sm">
-            <th class="p-3">Company ID</th>
-            <th class="p-3">Name</th>
-            <th class="p-3">Sector</th>
-            <th class="p-3">Registration Number</th>
-            <th class="p-3">Contact Info</th>
-          </tr>
+              <tr class="bg-slate-700 text-sm">
+                <th class="p-3">Registration Number</th>
+                <th class="p-3">Name</th>
+                <th class="p-3">Sector</th>
+                <th class="p-3">Contact Info</th>
+              </tr>
         </thead>
 
         <tbody>
           <% CompanyList.forEach(company => { %>
             <tr class="border-b border-slate-700 hover:bg-slate-700/40 transition">
-              <td class="p-3"><%= company.companyId %></td>
+              <td class="p-3"><%= company.registrationNumber %></td>
               <td class="p-3"><%= company.name %></td>
               <td class="p-3"><%= company.sector %></td>
-              <td class="p-3"><%= company.registrationNumber %></td>
               <td class="p-3"><%= company.contactInfo %></td>
             </tr>
           <% }) %>
@@ -44,8 +42,8 @@
       <table class="w-full text-left border-collapse">
         <thead>
           <tr class="bg-slate-700 text-sm">
+            <th class="p-3">Registration Number</th>
             <th class="p-3">Stock ID</th>
-            <th class="p-3">Company ID</th>
             <th class="p-3">Total Shares</th>
             <th class="p-3">Current Price</th>
             <th class="p-3">Action</th>
@@ -55,8 +53,8 @@
         <tbody>
           <% StockList.forEach(stock => { %>
             <tr class="border-b border-slate-700 hover:bg-slate-700/40 transition">
+              <td class="p-3"><%= stock.registrationNumber %></td>
               <td class="p-3"><%= stock.stockId %></td>
-              <td class="p-3"><%= stock.companyId %></td>
               <td class="p-3"><%= stock.totalShares %></td>
               <td class="p-3">$<%= stock.currentPrice %></td>
 
@@ -73,7 +71,7 @@
 
       <!-- Success message -->
       <p id="buyMessage" class="text-green-400 text-center mt-4 hidden font-medium">
-        ✅ Request Sent!
+                 Done
       </p>
     </div>
 
