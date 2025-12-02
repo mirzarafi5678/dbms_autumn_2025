@@ -1,122 +1,83 @@
 <%- include('../../partials/head') %>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 min-h-screen text-white">
 
-    <%- include('../../partials/Investor-nav') %>
+<%- include('../../partials/Investor-nav') %>
 
-    <div class="container mx-auto px-4 py-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 ml-16 mr-8">
-            <!-- Stock Distribution Graph -->
-            <div class="bg-white/10 p-6 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300">
-                <h2 class="text-xl font-bold mb-4 text-center">Company Stock Distribution</h2>
-                <canvas id="stockDistributionChart"></canvas>
-            </div>
-            
-            <!-- Price Movement Graph -->
-            <div class="bg-white/10 p-6 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300">
-                <h2 class="text-xl font-bold mb-4 text-center">Price Movement Over Time</h2>
-                <canvas id="priceMovementChart"></canvas>
-            </div>
-        </div>
+<main class="min-h-screen pt-20 px-6 pb-10">
+ <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+    
+    <!-- Graph 1 -->
+    <div class="bg-slate-800 p-4 rounded-xl shadow-xl">
+        <h2 class="text-xl mb-2 font-semibold">Daily Transaction Volume</h2>
+        <canvas id="transactionChart"></canvas>
     </div>
 
+    <!-- Graph 2 -->
+    <div class="bg-slate-800 p-4 rounded-xl shadow-xl">
+        <h2 class="text-xl mb-2 font-semibold">Predicted Stock Prices</h2>
+        <canvas id="predictionChart"></canvas>
+    </div>
+
+</div>
+
+</main>
+
 <script>
-    // Get backend data (may be empty or undefined)
-    const companyStockList = <%- JSON.stringify(CompanyStockList || []) %>;
-    const movePriceList = <%- JSON.stringify(MovePriceList || []) %>;
+     // Prepare Data From Backend
+    const dailyLabels = <%- JSON.stringify(dailyVolume.map(x => x.day)) %>;
+    const dailyAmounts = <%- JSON.stringify(dailyVolume.map(x => x.totalAmount)) %>;
 
-    // Process CompanyStockList for pie chart
-    if (companyStockList.length > 0) {
-        const companies = [];
-        const stockAmounts = [];
+    const companyLabels = <%- JSON.stringify(predictions.map(x => x.registrationNumber)) %>;
+    const companyPrices = <%- JSON.stringify(predictions.map(x => x.predictedPrice)) %>;
 
-        companyStockList.forEach(item => {
-            const [company, amount] = Object.entries(item)[0];
-            companies.push(company);
-            stockAmounts.push(amount);
-        });
-
-        // Create Pie Chart only if data exists
-        const stockCtx = document.getElementById('stockDistributionChart').getContext('2d');
-        new Chart(stockCtx, {
-            type: 'pie',
-            data: {
-                labels: companies,
-                datasets: [{
-                    data: stockAmounts,
-                    backgroundColor: [
-                        '#FF6384',
-                        '#36A2EB',
-                        '#FFCE56',
-                        '#4BC0C0',
-                        '#9966FF',
-                        '#FF9F40'
-                    ]
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: { color: 'white' }
-                    }
-                }
+    // 1️⃣ Daily Transaction Volume (Line Chart)
+    new Chart(document.getElementById('transactionChart'), {
+        type: 'line',
+        data: {
+            labels: dailyLabels,
+            datasets: [{
+                label: 'Total Amount',
+                data: dailyAmounts,
+                borderColor: 'cyan',
+                backgroundColor: 'rgba(0,255,255,0.2)',
+                borderWidth: 2,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { labels: { color: 'white' } } },
+            scales: {
+                x: { ticks: { color: 'white' } },
+                y: { ticks: { color: 'white' } }
             }
-        });
-    } else {
-        // Hide the pie chart canvas if no data
-        document.getElementById('stockDistributionChart').style.display = 'none';
-    }
+        }
+    });
 
-    // Process MovePriceList for line chart
-    if (movePriceList.length > 0) {
-        const days = [];
-        const prices = [];
-
-        movePriceList.forEach(item => {
-            const [day, price] = Object.entries(item)[0];
-            days.push(day);
-            prices.push(price);
-        });
-
-        // Create Line Chart only if data exists
-        const priceCtx = document.getElementById('priceMovementChart').getContext('2d');
-        new Chart(priceCtx, {
-            type: 'line',
-            data: {
-                labels: days,
-                datasets: [{
-                    label: 'Price Movement',
-                    data: prices,
-                    borderColor: '#36A2EB',
-                    tension: 0.1,
-                    fill: false
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: false,
-                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                        ticks: { color: 'white' }
-                    },
-                    x: {
-                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                        ticks: { color: 'white' }
-                    }
-                },
-                plugins: {
-                    legend: { labels: { color: 'white' } }
-                }
+    // 2️⃣ Predicted Stock Prices (Bar Chart)
+    new Chart(document.getElementById('predictionChart'), {
+        type: 'bar',
+        data: {
+            labels: companyLabels,
+            datasets: [{
+                label: 'Predicted Price',
+                data: companyPrices,
+                backgroundColor: 'rgba(0,128,255,0.6)',
+                borderColor: 'rgb(0,128,255)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { labels: { color: 'white' } } },
+            scales: {
+                x: { ticks: { color: 'white' } },
+                y: { ticks: { color: 'white' } }
             }
-        });
-    } else {
-        // Hide the line chart canvas if no data
-        document.getElementById('priceMovementChart').style.display = 'none';
-    }
+        }
+    });
 </script>
 
 </body>
