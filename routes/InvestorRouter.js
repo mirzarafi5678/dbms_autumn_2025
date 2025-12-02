@@ -16,12 +16,4 @@ InvestorRouter.post('/add-fraud', InvestorController.AddFraud);
 
 
 
-
-
-
-
-
-
-
-
 module.exports = InvestorRouter;

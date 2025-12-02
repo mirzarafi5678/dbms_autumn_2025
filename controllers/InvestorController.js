@@ -5,21 +5,53 @@
 
 // ✅ Your Gemini API key
 
-
+const db = require("../utils/db");
 // Temporary storage for fraud data
 let fraudData = [];
 
-exports.viewAudit = (req, res, next) => {
-  res.render('store/Investor-ejs/Investor-Audit', {
-    pageTitle: 'Investor',
-    currentPage: 'viewAudit',
-    institutions: [],      // empty array for now
-    auditReports: []       // empty array for now
-  });
+exports.viewAudit = async (req, res, next) => {
+  try {
+    // Fetch institutions from `institute` table
+    const [institutions] = await db.execute(`
+      SELECT id, name, licenseNumber, type
+      FROM institute
+      ORDER BY name
+    `);
+
+    // Fetch audit reports from `report` table
+    const [auditReportsRaw] = await db.execute(`
+      SELECT auditName, auditDate, findingsSummary, reportId, registrationNumber
+      FROM report
+      ORDER BY auditDate DESC
+    `);
+
+    // Ensure auditDate is a JS Date object for EJS `toDateString()` usage
+    const auditReports = (auditReportsRaw || []).map(r => {
+      return {
+        ...r,
+        auditDate: r.auditDate ? new Date(r.auditDate) : null
+      };
+    });
+
+    res.render('store/Investor-ejs/Investor-Audit', {
+      pageTitle: 'Investor',
+      currentPage: 'viewAudit',
+      institutions: institutions || [],
+      auditReports: auditReports || []
+    });
+  } catch (err) {
+    console.error('Error fetching institutes or reports:', err);
+    res.render('store/Investor-ejs/Investor-Audit', {
+      pageTitle: 'Investor',
+      currentPage: 'viewAudit',
+      institutions: [],
+      auditReports: []
+    });
+  }
 };
 
 
-const db = require("../utils/db");
+
 
 exports.Dashboard = async (req, res, next) => {
   try {
@@ -53,23 +85,38 @@ exports.Dashboard = async (req, res, next) => {
 
 
 
-exports.buyStock = (req, res, next) => {
-  const CompanyList = [
-    { companyId: 1, name: "TechCorp", sector: "Technology", registrationNumber: "REG-001", contactInfo: "123456" },
-    { companyId: 2, name: "HealthPlus", sector: "Healthcare", registrationNumber: "REG-002", contactInfo: "7891011" }
-  ];
+exports.buyStock = async (req, res, next) => {
+  try {
+    // Fetch company list from `company` table
+    const [CompanyList] = await db.execute(`
+      SELECT registrationNumber, name, sector, contactInfo
+      FROM company
+      ORDER BY name
+    `);
 
-  const StockList = [
-    { stockId: 101, companyId: 1, totalShares: 5000, currentPrice: 120 },
-    { stockId: 102, companyId: 2, totalShares: 3000, currentPrice: 95 }
-  ];
+    // Fetch stock list from `stocks` table
+    const [StockList] = await db.execute(`
+      SELECT registrationNumber, stockId, totalShares, currentPrice
+      FROM stocks
+      ORDER BY stockId
+    `);
 
-  res.render('store/Investor-ejs/Investor-buyStock', {
-    pageTitle: 'Investor',
-    currentPage: 'buyStock',
-    CompanyList,
-    StockList
-  });
+    res.render('store/Investor-ejs/Investor-buyStock', {
+      pageTitle: 'Investor',
+      currentPage: 'buyStock',
+      CompanyList: CompanyList || [],
+      StockList: StockList || []
+    });
+  } catch (err) {
+    console.error('Error fetching companies or stocks:', err);
+    // Render view with empty lists as a safe fallback
+    res.render('store/Investor-ejs/Investor-buyStock', {
+      pageTitle: 'Investor',
+      currentPage: 'buyStock',
+      CompanyList: [],
+      StockList: []
+    });
+  }
 };
 
 
