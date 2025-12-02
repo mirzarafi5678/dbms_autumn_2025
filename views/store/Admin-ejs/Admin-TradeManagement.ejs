@@ -8,11 +8,16 @@
 
     <!-- Search bar -->
     <div class="flex justify-between mb-4">
-      <form method="GET" action="/admin/trades/search" class="flex gap-2">
-        <input type="text" name="query" placeholder="Search by Trade ID..." 
+      <form method="GET" action="/Admin/trades/search" class="flex gap-2">
+        <input type="text" name="query" placeholder="Search by tradeId..." 
                class="px-3 py-2 rounded-lg text-black" />
         <button type="submit" class="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700">Search</button>
       </form>
+        </form>
+           <a href="/Admin/Trade-Management" 
+   class="bg-green-600 px-4 py-2 rounded-lg hover:bg-green-700">
+               Show ALL
+         </a>
 
       <!-- Add button -->
       <button onclick="openAddModal()" class="bg-green-600 px-4 py-2 rounded-lg hover:bg-green-700">
@@ -25,11 +30,13 @@
       <table class="min-w-full border border-gray-700 rounded-lg">
         <thead class="bg-blue-800 text-white">
           <tr>
-            <th class="px-4 py-2 border">Trade ID</th>
-            <th class="px-4 py-2 border">Buyer ID</th>
-            <th class="px-4 py-2 border">Seller ID</th>
-            <th class="px-4 py-2 border">Amount</th>
-            <th class="px-4 py-2 border">Date</th>
+            <th class="px-4 py-2 border">tradeId</th>
+            <th class="px-4 py-2 border">buyerId</th>
+            <th class="px-4 py-2 border">sellerId</th>
+            <th class="px-4 py-2 border">amount</th>
+            <th class="px-4 py-2 border">date</th>
+            <th class="px-4 py-2 border">assetType</th>
+            <th class="px-4 py-2 border">status</th>
             <th class="px-4 py-2 border">Actions</th>
           </tr>
         </thead>
@@ -42,13 +49,15 @@
                 <td class="px-4 py-2 border"><%= trade.sellerId %></td>
                 <td class="px-4 py-2 border"><%= trade.amount %></td>
                 <td class="px-4 py-2 border"><%= trade.date %></td>
+                <td class="px-4 py-2 border"><%= trade.assetType %></td>
+                <td class="px-4 py-2 border"><%= trade.status %></td>
                 <td class="px-4 py-2 border flex gap-2">
                   <button onclick="openEditModal(<%= JSON.stringify(trade) %>)"
                           class="bg-yellow-500 px-3 py-1 rounded-lg hover:bg-yellow-600">
                     Edit
                   </button>
 
-                  <form action="/admin/trades/delete/<%= trade.tradeId %>" method="POST">
+                  <form action="/Admin/trades/delete/<%= trade.tradeId %>" method="POST">
                     <button type="submit" class="bg-red-600 px-3 py-1 rounded-lg hover:bg-red-700">
                       Delete
                     </button>
@@ -70,11 +79,17 @@
   <div id="addModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
     <div class="bg-slate-800 p-6 rounded-lg w-96">
       <h2 class="text-xl mb-4">Add New Trade</h2>
-      <form method="POST" action="/admin/trades/add">
-        <input type="text" name="buyerId" placeholder="Buyer ID" class="w-full p-2 mb-3 rounded text-black" required>
-        <input type="text" name="sellerId" placeholder="Seller ID" class="w-full p-2 mb-3 rounded text-black" required>
-        <input type="number" name="amount" placeholder="Amount" class="w-full p-2 mb-3 rounded text-black" required>
-        <input type="date" name="date" class="w-full p-2 mb-3 rounded text-black" required>
+      <form method="POST" action="/Admin/trades/add">
+        <input type="text" name="buyerId" placeholder="buyerId" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="text" name="sellerId" placeholder="sellerId" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="number" name="amount" placeholder="amount" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="datetime-local" name="date" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="text" name="assetType" placeholder="assetType" class="w-full p-2 mb-3 rounded text-black">
+        <select name="status" class="w-full p-2 mb-3 rounded text-black">
+          <option value="open">open</option>
+          <option value="closed">closed</option>
+          <option value="pending">pending</option>
+        </select>
 
         <div class="flex justify-end gap-2">
           <button type="button" onclick="closeAddModal()" class="bg-gray-600 px-3 py-1 rounded-lg hover:bg-gray-700">Cancel</button>
@@ -89,10 +104,17 @@
     <div class="bg-slate-800 p-6 rounded-lg w-96">
       <h2 class="text-xl mb-4">Edit Trade</h2>
       <form id="editForm" method="POST">
-        <input type="text" name="buyerId" id="editBuyerId" placeholder="Buyer ID" class="w-full p-2 mb-3 rounded text-black" required>
-        <input type="text" name="sellerId" id="editSellerId" placeholder="Seller ID" class="w-full p-2 mb-3 rounded text-black" required>
-        <input type="number" name="amount" id="editAmount" placeholder="Amount" class="w-full p-2 mb-3 rounded text-black" required>
-        <input type="date" name="date" id="editDate" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="text" name="tradeId" id="editTradeId" class="w-full p-2 mb-3 rounded text-black" readonly required>
+        <input type="text" name="buyerId" id="editBuyerId" placeholder="buyerId" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="text" name="sellerId" id="editSellerId" placeholder="sellerId" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="number" name="amount" id="editAmount" placeholder="amount" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="datetime-local" name="date" id="editDate" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="text" name="assetType" id="editAssetType" placeholder="assetType" class="w-full p-2 mb-3 rounded text-black">
+        <select name="status" id="editStatus" class="w-full p-2 mb-3 rounded text-black">
+          <option value="open">open</option>
+          <option value="closed">closed</option>
+          <option value="pending">pending</option>
+        </select>
 
         <div class="flex justify-end gap-2">
           <button type="button" onclick="closeEditModal()" class="bg-gray-600 px-3 py-1 rounded-lg hover:bg-gray-700">Cancel</button>
@@ -113,12 +135,15 @@
 
     // --- Edit Modal ---
     function openEditModal(trade) {
-      document.getElementById('editBuyerId').value = trade.buyerId;
-      document.getElementById('editSellerId').value = trade.sellerId;
-      document.getElementById('editAmount').value = trade.amount;
-      document.getElementById('editDate').value = trade.date;
+      document.getElementById('editTradeId').value = trade.tradeId || '';
+      document.getElementById('editBuyerId').value = trade.buyerId || '';
+      document.getElementById('editSellerId').value = trade.sellerId || '';
+      document.getElementById('editAmount').value = trade.amount || '';
+      document.getElementById('editDate').value = trade.date || '';
+      document.getElementById('editAssetType').value = trade.assetType || '';
+      document.getElementById('editStatus').value = trade.status || 'open';
 
-      document.getElementById('editForm').action = `/admin/trades/edit/${trade.tradeId}`;
+      document.getElementById('editForm').action = `/Admin/trades/edit/${trade.tradeId}`;
       document.getElementById('editModal').classList.remove('hidden');
     }
     function closeEditModal() {

@@ -8,8 +8,8 @@
 
     <!-- Search bar -->
     <div class="flex justify-between mb-4">
-      <form method="GET" action="/admin/price-history/search" class="flex gap-2">
-        <input type="text" name="query" placeholder="Search by Stock ID..." 
+      <form method="GET" action="/Admin/price-history/search" class="flex gap-2">
+        <input type="text" name="query" placeholder="Search by Registration Number..." 
                class="px-3 py-2 rounded-lg text-black" />
         <button type="submit" class="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700">Search</button>
       </form>
@@ -25,12 +25,13 @@
       <table class="min-w-full border border-gray-700 rounded-lg">
         <thead class="bg-blue-800 text-white">
           <tr>
-            <th class="px-4 py-2 border">History ID</th>
-            <th class="px-4 py-2 border">Stock ID</th>
-            <th class="px-4 py-2 border">Date</th>
-            <th class="px-4 py-2 border">Open</th>
-            <th class="px-4 py-2 border">Close</th>
-            <th class="px-4 py-2 border">Volume</th>
+            <th class="px-4 py-2 border">registrationNumber</th>
+            <th class="px-4 py-2 border">stockId</th>
+            <th class="px-4 py-2 border">timestamp</th>
+            <th class="px-4 py-2 border">open</th>
+            <th class="px-4 py-2 border">close</th>
+            <th class="px-4 py-2 border">high</th>
+            <th class="px-4 py-2 border">low</th>
             <th class="px-4 py-2 border">Actions</th>
           </tr>
         </thead>
@@ -38,19 +39,20 @@
           <% if (PriceList && PriceList.length > 0) { %>
             <% PriceList.forEach(function(p) { %>
               <tr class="border-b border-slate-700 hover:bg-slate-700">
-                <td class="py-2 px-4"><%= p.historyId %></td>
+                <td class="py-2 px-4"><%= p.registrationNumber %></td>
                 <td class="py-2 px-4"><%= p.stockId %></td>
-                <td class="py-2 px-4"><%= p.date %></td>
+                <td class="py-2 px-4"><%= p.timestamp %></td>
                 <td class="py-2 px-4"><%= p.open %></td>
                 <td class="py-2 px-4"><%= p.close %></td>
-                <td class="py-2 px-4"><%= p.volume %></td>
+                <td class="py-2 px-4"><%= p.high %></td>
+                <td class="py-2 px-4"><%= p.low %></td>
                 <td class="py-2 px-4 flex gap-2">
                   <button onclick='openEditModal(<%= JSON.stringify(p) %>)'
                           class="bg-yellow-500 px-3 py-1 rounded-lg hover:bg-yellow-600">
                     Edit
                   </button>
 
-                  <form action="/admin/price-history/delete/<%= p.historyId %>" method="POST">
+                  <form action="/Admin/price-history/delete/<%= p.registrationNumber %>" method="POST">
                     <button type="submit" class="bg-red-600 px-3 py-1 rounded-lg hover:bg-red-700">
                       Delete
                     </button>
@@ -72,12 +74,14 @@
   <div id="addModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
     <div class="bg-slate-800 p-6 rounded-lg w-96">
       <h2 class="text-xl mb-4">Add New Price Record</h2>
-      <form method="POST" action="/admin/price-history/add">
-        <input type="text" name="stockId" placeholder="Stock ID" class="w-full p-2 mb-3 rounded text-black" required>
-        <input type="date" name="date" class="w-full p-2 mb-3 rounded text-black" required>
-        <input type="number" step="0.01" name="open" placeholder="Open Price" class="w-full p-2 mb-3 rounded text-black" required>
-        <input type="number" step="0.01" name="close" placeholder="Close Price" class="w-full p-2 mb-3 rounded text-black" required>
-        <input type="number" name="volume" placeholder="Volume" class="w-full p-2 mb-3 rounded text-black" required>
+      <form method="POST" action="/Admin/price-history/add">
+        <input type="text" name="registrationNumber" placeholder="registrationNumber" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="text" name="stockId" placeholder="stockId" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="datetime-local" name="timestamp" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="number" step="0.01" name="open" placeholder="open" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="number" step="0.01" name="close" placeholder="close" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="number" step="0.01" name="high" placeholder="high" class="w-full p-2 mb-3 rounded text-black">
+        <input type="number" step="0.01" name="low" placeholder="low" class="w-full p-2 mb-3 rounded text-black">
 
         <div class="flex justify-end gap-2">
           <button type="button" onclick="closeAddModal()" class="bg-gray-600 px-3 py-1 rounded-lg hover:bg-gray-700">Cancel</button>
@@ -92,11 +96,13 @@
     <div class="bg-slate-800 p-6 rounded-lg w-96">
       <h2 class="text-xl mb-4">Edit Price Record</h2>
       <form id="editForm" method="POST">
-        <input type="text" name="stockId" id="editStockId" placeholder="Stock ID" class="w-full p-2 mb-3 rounded text-black" required>
-        <input type="date" name="date" id="editDate" class="w-full p-2 mb-3 rounded text-black" required>
-        <input type="number" step="0.01" name="open" id="editOpen" placeholder="Open Price" class="w-full p-2 mb-3 rounded text-black" required>
-        <input type="number" step="0.01" name="close" id="editClose" placeholder="Close Price" class="w-full p-2 mb-3 rounded text-black" required>
-        <input type="number" name="volume" id="editVolume" placeholder="Volume" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="text" name="registrationNumber" id="editRegistrationNumber" placeholder="registrationNumber" class="w-full p-2 mb-3 rounded text-black" readonly required>
+        <input type="text" name="stockId" id="editStockId" placeholder="stockId" class="w-full p-2 mb-3 rounded text-black" readonly required>
+        <input type="datetime-local" name="timestamp" id="editTimestamp" placeholder="timestamp" class="w-full p-2 mb-3 rounded text-black" readonly required>
+        <input type="number" step="0.01" name="open" id="editOpen" placeholder="open" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="number" step="0.01" name="close" id="editClose" placeholder="close" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="number" step="0.01" name="high" id="editHigh" placeholder="high" class="w-full p-2 mb-3 rounded text-black">
+        <input type="number" step="0.01" name="low" id="editLow" placeholder="low" class="w-full p-2 mb-3 rounded text-black">
 
         <div class="flex justify-end gap-2">
           <button type="button" onclick="closeEditModal()" class="bg-gray-600 px-3 py-1 rounded-lg hover:bg-gray-700">Cancel</button>
@@ -117,13 +123,16 @@
 
     // --- Edit Modal ---
     function openEditModal(p) {
-      document.getElementById('editStockId').value = p.stockId;
-      document.getElementById('editDate').value = p.date;
-      document.getElementById('editOpen').value = p.open;
-      document.getElementById('editClose').value = p.close;
-      document.getElementById('editVolume').value = p.volume;
+      document.getElementById('editRegistrationNumber').value = p.registrationNumber || '';
+      document.getElementById('editStockId').value = p.stockId || '';
+      document.getElementById('editTimestamp').value = p.timestamp || '';
+      document.getElementById('editOpen').value = p.open || '';
+      document.getElementById('editClose').value = p.close || '';
+      document.getElementById('editHigh').value = p.high || '';
+      document.getElementById('editLow').value = p.low || '';
 
-      document.getElementById('editForm').action = `/admin/price-history/edit/${p.historyId}`;
+      // Use stockId as identifier for edit (backend will also match registrationNumber & timestamp if provided)
+      document.getElementById('editForm').action = `/Admin/price-history/edit/${p.stockId}`;
       document.getElementById('editModal').classList.remove('hidden');
     }
     function closeEditModal() {

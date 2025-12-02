@@ -28,21 +28,25 @@
       <table class="min-w-full border border-gray-700 rounded-lg">
         <thead class="bg-blue-800 text-white">
           <tr>
-            <th class="px-4 py-2 ">Prediction ID</th>
-            <th class="px-4 py-2 r">Stock ID</th>
-            <th class="px-4 py-2 ">Predicted Price</th>
-            <th class="px-4 py-2 ">Date</th>
-            <th class="px-4 py-2 ">Accuracy Score</th>
-            <th class="px-4 py-2 ">Actions</th>
+            <th class="px-4 py-2">Registration No.</th>
+            <th class="px-4 py-2">Stock ID</th>
+            <th class="px-4 py-2">Timestamp</th>
+            <th class="px-4 py-2">Predicted Price</th>
+            <th class="px-4 py-2">Model Name</th>
+            <th class="px-4 py-2">Date</th>
+            <th class="px-4 py-2">Accuracy Score</th>
+            <th class="px-4 py-2">Actions</th>
           </tr>
         </thead>
         <tbody>
           <% if (PredictionList && PredictionList.length > 0) { %>
             <% PredictionList.forEach(prediction => { %>
               <tr class="hover:bg-slate-800 transition">
-                <td class="px-4 py-2 border"><%= prediction.id %></td>
-                <td class="px-4 py-2 border"><%= prediction.Stockid %></td>
+                <td class="px-4 py-2 border"><%= prediction.registrationNumber || prediction.registrationnumber || prediction.regNo %></td>
+                <td class="px-4 py-2 border"><%= prediction.stockId || prediction.Stockid %></td>
+                <td class="px-4 py-2 border"><%= prediction.timestamp || prediction.time || prediction.created_at %></td>
                 <td class="px-4 py-2 border"><%= prediction.predictedPrice %></td>
+                <td class="px-4 py-2 border"><%= prediction.modelName || prediction.model_name %></td>
                 <td class="px-4 py-2 border"><%= prediction.date %></td>
                 <td class="px-4 py-2 border"><%= prediction.accuracyScore %></td>
                 <td class="px-4 py-2 border flex gap-2">
@@ -51,7 +55,7 @@
                     Edit
                   </button>
 
-                  <form action="/admin/predictions/delete/<%= prediction.id %>" method="POST">
+                  <form action="/admin/predictions/delete/<%= prediction.stockId || prediction.Stockid %>" method="POST">
                     <button type="submit" class="bg-red-600 px-3 py-1 rounded-lg hover:bg-red-700">
                       Delete
                     </button>
@@ -74,9 +78,12 @@
     <div class="bg-slate-800 p-6 rounded-lg w-96">
       <h2 class="text-xl mb-4">Add New Prediction</h2>
       <form method="POST" action="/admin/predictions/add">
-        <input type="text" name="Stockid" placeholder="Stock ID" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="text" name="registrationNumber" placeholder="Registration Number" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="text" name="stockId" placeholder="Stock ID" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="datetime-local" name="timestamp" placeholder="Timestamp" class="w-full p-2 mb-3 rounded text-black" required>
         <input type="number" name="predictedPrice" placeholder="Predicted Price" class="w-full p-2 mb-3 rounded text-black" required>
-        <input type="date" name="date" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="text" name="modelName" placeholder="Model Name" class="w-full p-2 mb-3 rounded text-black">
+        <input type="date" name="date" class="w-full p-2 mb-3 rounded text-black">
         <input type="number" step="0.01" name="accuracyScore" placeholder="Accuracy Score" class="w-full p-2 mb-3 rounded text-black" required>
 
         <div class="flex justify-end gap-2">
@@ -92,9 +99,12 @@
     <div class="bg-slate-800 p-6 rounded-lg w-96">
       <h2 class="text-xl mb-4">Edit Prediction</h2>
       <form id="editForm" method="POST">
-        <input type="text" name="Stockid" id="editStockid" placeholder="Stock ID" class="w-full p-2 mb-3 rounded text-black" readonly>
+        <input type="text" name="registrationNumber" id="editRegistrationNumber" placeholder="Registration Number" class="w-full p-2 mb-3 rounded text-black" readonly>
+        <input type="text" name="stockId" id="editStockId" placeholder="Stock ID" class="w-full p-2 mb-3 rounded text-black" readonly>
+        <input type="datetime-local" name="timestamp" id="editTimestamp" placeholder="Timestamp" class="w-full p-2 mb-3 rounded text-black" readonly>
         <input type="number" name="predictedPrice" id="editPredictedPrice" placeholder="Predicted Price" class="w-full p-2 mb-3 rounded text-black" required>
-        <input type="date" name="date" id="editDate" class="w-full p-2 mb-3 rounded text-black" required>
+        <input type="text" name="modelName" id="editModelName" placeholder="Model Name" class="w-full p-2 mb-3 rounded text-black">
+        <input type="date" name="date" id="editDate" class="w-full p-2 mb-3 rounded text-black">
         <input type="number" step="0.01" name="accuracyScore" id="editAccuracyScore" placeholder="Accuracy Score" class="w-full p-2 mb-3 rounded text-black" required>
 
         <div class="flex justify-end gap-2">
@@ -117,12 +127,17 @@
 
     // --- Edit Modal ---
     function openEditModal(prediction) {
-      document.getElementById('editStockid').value = prediction.Stockid;
-      document.getElementById('editPredictedPrice').value = prediction.predictedPrice;
-      document.getElementById('editDate').value = prediction.date;
-      document.getElementById('editAccuracyScore').value = prediction.accuracyScore;
+      document.getElementById('editRegistrationNumber').value = prediction.registrationNumber || prediction.registrationnumber || prediction.regNo || '';
+      document.getElementById('editStockId').value = prediction.stockId || prediction.Stockid || '';
+      // try to set timestamp; if plain string, assign directly, if ISO, set value
+      document.getElementById('editTimestamp').value = prediction.timestamp || prediction.time || prediction.created_at || '';
+      document.getElementById('editPredictedPrice').value = prediction.predictedPrice || '';
+      document.getElementById('editModelName').value = prediction.modelName || prediction.model_name || '';
+      document.getElementById('editDate').value = prediction.date || '';
+      document.getElementById('editAccuracyScore').value = prediction.accuracyScore || '';
 
-      document.getElementById('editForm').action = `/admin/predictions/edit/${prediction.Stockid}`;
+      // Use stockId as identifier for existing backend route
+      document.getElementById('editForm').action = `/admin/predictions/edit/${prediction.stockId || prediction.Stockid}`;
       document.getElementById('editModal').classList.remove('hidden');
     }
     function closeEditModal() {
