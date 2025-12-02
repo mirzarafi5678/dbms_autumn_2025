@@ -19,29 +19,38 @@ exports.viewAudit = (req, res, next) => {
 };
 
 
+const db = require("../utils/db");
 
+exports.Dashboard = async (req, res, next) => {
+  try {
+    // 1️⃣ Daily Transaction Volume
+    const [dailyVolume] = await db.execute(`
+      SELECT DATE(timestamp) AS day, SUM(amount) AS totalAmount
+      FROM stocks_transaction
+      GROUP BY DATE(timestamp)
+      ORDER BY day;
+    `);
 
+    // 2️⃣ Predicted Prices
+    const [predictions] = await db.execute(`
+      SELECT registrationNumber, predictedPrice
+      FROM prediction
+      ORDER BY predictedPrice DESC
+      LIMIT 10;
+    `);
 
-exports.Dashboard = (req, res, next) => {
-  const CompanyStockList = [
-    { Apple: 120 },
-    { Google: 80 },
-    { Microsoft: 150 }
-  ];
+    res.render("store/Investor-ejs/Investor-Dashboard", {
+      pageTitle: 'Investor',
+      currentPage: 'dashboard',
+      dailyVolume,
+      predictions
+    });
 
-  const MovePriceList = [
-    { Day1: 120 },
-    { Day2: 130 },
-    { Day3: 125 }
-  ];
-
-  res.render('store/Investor-ejs/Investor-Dashboard', {
-    pageTitle: 'Investor',
-    currentPage: 'dashboard',
-    CompanyStockList,
-    MovePriceList
-  });
+  } catch (err) {
+    console.log(err);
+  }
 };
+
 
 
 exports.buyStock = (req, res, next) => {

@@ -1,27 +1,69 @@
 
 const db = require("../utils/db");
 
-exports.Dashboard = (req, res, next) => {
-  const CompanyStockList = [
-    { Apple: 120 },
-    { Google: 80 },
-    { Microsoft: 150 }
-  ];
+exports.Dashboard = async (req, res, next) => {
+  try {
+    // 1. Fraud Detection Trends (Risk Scores Over Time)
+    const [fraudTrends] = await db.execute(`
+      SELECT DATE_FORMAT(detectionDate, '%Y-%m-%d') as date, 
+             AVG(riskScore) as avgRisk,
+             COUNT(*) as alertCount
+      FROM fraud
+      GROUP BY DATE_FORMAT(detectionDate, '%Y-%m-%d')
+      ORDER BY detectionDate ASC
+    `);
 
-  const MovePriceList = [
-    { Day1: 120 },
-    { Day2: 130 },
-    { Day3: 125 }
-  ];
+    // 2. Top Companies by Stock Price & Market Cap
+    const [topCompanies] = await db.execute(`
+      SELECT c.name, s.currentPrice, s.totalShares,
+             (s.currentPrice * s.totalShares) as marketCap
+      FROM company c
+      INNER JOIN stocks s ON c.registrationNumber = s.registrationNumber
+      ORDER BY marketCap DESC
+      LIMIT 10
+    `);
 
-  res.render('store/Admin-ejs/Admin-Dashboard', {
-    pageTitle: 'Admin',
-    currentPage: 'dashboard',
-    CompanyStockList,
-    MovePriceList
-  });
+    // 3. Trading Volume by Day
+    const [tradingVolume] = await db.execute(`
+      SELECT DATE_FORMAT(timestamp, '%Y-%m-%d') as date,
+             COUNT(*) as transactionCount,
+             SUM(amount) as totalVolume
+      FROM stocks_transaction
+      GROUP BY DATE_FORMAT(timestamp, '%Y-%m-%d')
+      ORDER BY date ASC
+    `);
+
+    // 4. Trade Status Distribution
+    const [tradeStatus] = await db.execute(`
+      SELECT status, 
+             COUNT(*) as count,
+             SUM(amount) as totalAmount
+      FROM trade
+      GROUP BY status
+    `);
+
+    res.render('store/Admin-ejs/Admin-Dashboard', {
+      pageTitle: 'Admin Dashboard',
+      currentPage: 'dashboard',
+      fraudTrends: fraudTrends || [],
+      topCompanies: topCompanies || [],
+      tradingVolume: tradingVolume || [],
+      tradeStatus: tradeStatus || []
+    });
+  } catch (error) {
+    console.error('Dashboard Error:', error);
+    
+    // Render with empty data if there's an error
+    res.render('store/Admin-ejs/Admin-Dashboard', {
+      pageTitle: 'Admin Dashboard',
+      currentPage: 'dashboard',
+      fraudTrends: [],
+      topCompanies: [],
+      tradingVolume: [],
+      tradeStatus: []
+    });
+  }
 }
-
 exports.comapanyStockManagement = async (req, res, next) => {
     try {
         const [companyRows] = await db.query('SELECT registrationNumber, name, sector, contactInfo FROM company');
