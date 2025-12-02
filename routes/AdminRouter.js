@@ -83,6 +83,21 @@ AdminRouter.get('/fraud/search', AdminController.searchFraud);
 AdminRouter.post('/fraud/add', AdminController.addFraud);
 AdminRouter.post('/fraud/edit/:alertId', AdminController.editFraud);
 AdminRouter.post('/fraud/delete/:alertId', AdminController.deleteFraud);
+// Transactions (stocks_transaction)
+AdminRouter.get('/transactions/search', AdminController.searchTransactions);
+AdminRouter.post('/transactions/add', AdminController.addTransaction);
+AdminRouter.post('/transactions/edit/:transactionId', AdminController.editTransaction);
+AdminRouter.post('/transactions/delete/:transactionId', AdminController.deleteTransaction);
+// Investors
+AdminRouter.get('/investors/search', AdminController.searchInvestors);
+AdminRouter.post('/investors/add', AdminController.addInvestor);
+AdminRouter.post('/investors/edit/:iUserId', AdminController.editInvestor);
+AdminRouter.post('/investors/delete/:iUserId', AdminController.deleteInvestor);
+// Logs
+AdminRouter.get('/logs/search', AdminController.searchLogs);
+AdminRouter.post('/logs/add', AdminController.addLog);
+AdminRouter.post('/logs/edit/:userId', AdminController.editLog);
+AdminRouter.post('/logs/delete/:userId', AdminController.deleteLog);
 AdminRouter.get('/Prediction-of-Stock-Price',AdminController.PredictionStockPricet)
 
 
