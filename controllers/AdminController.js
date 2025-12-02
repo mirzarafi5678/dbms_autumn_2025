@@ -589,16 +589,16 @@ exports.deletePrediction = async (req, res) => {
     }
 };
 
-exports.Userdetails = (req, res, next) => {
+exports.stocktransaction = (req, res, next) => {
     (async () => {
         try {
             const [transactions] = await db.query('SELECT transactionId, timestamp, amount, stockId, iUserId, registrationNumber FROM stocks_transaction ORDER BY timestamp DESC');
             const [investors] = await db.query('SELECT iUserId, name, accountType FROM investor');
             const [logs] = await db.query('SELECT userId, loginTimestamp, logoutTimestamp, oldUserData, newUserData, auditorName, tradeApprovalStatus FROM logs ORDER BY loginTimestamp DESC');
 
-            res.render('store/Admin-ejs/Admin-UserDetail', {
+            res.render('store/Admin-ejs/Admin-StockTransaction', {
                 pageTitle: 'Admin',
-                currentPage: 'User-details',
+                currentPage: 'Stock-Transaction',
                 InvestorList: investors,
                 TransactionList: transactions,
                 StakeholderList: [],
@@ -618,9 +618,9 @@ exports.searchTransactions = async (req, res) => {
         const [transactions] = await db.query('SELECT transactionId, timestamp, amount, stockId, iUserId, registrationNumber FROM stocks_transaction WHERE transactionId LIKE ? ORDER BY timestamp DESC', [`%${query}%`]);
         const [investors] = await db.query('SELECT iUserId, name, accountType FROM investor');
         const [logs] = await db.query('SELECT userId, loginTimestamp, logoutTimestamp, oldUserData, newUserData, auditorName, tradeApprovalStatus FROM logs ORDER BY loginTimestamp DESC');
-        res.render('store/Admin-ejs/Admin-UserDetail', {
+        res.render('store/Admin-ejs/Admin-StockTransaction', {
             pageTitle: 'Admin',
-            currentPage: 'User-details',
+            currentPage: 'Stock-Transaction',
             InvestorList: investors,
             TransactionList: transactions,
            
@@ -633,11 +633,12 @@ exports.searchTransactions = async (req, res) => {
 };
 
 // TRANSACTIONS: add
+// Accepts transactionId, timestamp, amount, stockId, iUserId, registrationNumber
 exports.addTransaction = async (req, res) => {
-    const { timestamp, amount, stockId, iUserId, registrationNumber } = req.body;
+    const { transactionId, timestamp, amount, stockId, iUserId, registrationNumber } = req.body;
     try {
-        await db.query('INSERT INTO stocks_transaction (timestamp, amount, stockId, iUserId, registrationNumber) VALUES (?, ?, ?, ?, ?)', [timestamp, amount, stockId, iUserId, registrationNumber]);
-        res.redirect('/Admin/User-details');
+        await db.query('INSERT INTO stocks_transaction (transactionId, timestamp, amount, stockId, iUserId, registrationNumber) VALUES (?, ?, ?, ?, ?, ?)', [transactionId, timestamp, amount, stockId, iUserId, registrationNumber]);
+        res.redirect('/Admin/Stock-Transaction');
     } catch (err) {
         console.error(err);
         res.send('Insert Error');
@@ -650,7 +651,7 @@ exports.editTransaction = async (req, res) => {
     const { timestamp, amount, stockId, iUserId, registrationNumber } = req.body;
     try {
         await db.query('UPDATE stocks_transaction SET timestamp = ?, amount = ?, stockId = ?, iUserId = ?, registrationNumber = ? WHERE transactionId = ?', [timestamp, amount, stockId, iUserId, registrationNumber, transactionId]);
-        res.redirect('/Admin/User-details');
+        res.redirect('/Admin/Stock-Transaction');
     } catch (err) {
         console.error(err);
         res.send('Update Error');
@@ -662,7 +663,7 @@ exports.deleteTransaction = async (req, res) => {
     const transactionId = req.params.transactionId;
     try {
         await db.query('DELETE FROM stocks_transaction WHERE transactionId = ?', [transactionId]);
-        res.redirect('/Admin/User-details');
+        res.redirect('/Admin/Stock-Transaction');
     } catch (err) {
         console.error(err);
         res.send('Delete Error');
@@ -676,9 +677,9 @@ exports.searchInvestors = async (req, res) => {
         const [investors] = await db.query('SELECT iUserId, name, accountType FROM investor WHERE iUserId LIKE ? OR name LIKE ?', [`%${query}%`, `%${query}%`]);
         const [transactions] = await db.query('SELECT transactionId, timestamp, amount, stockId, iUserId, registrationNumber FROM stocks_transaction ORDER BY timestamp DESC');
         const [logs] = await db.query('SELECT userId, loginTimestamp, logoutTimestamp, oldUserData, newUserData, auditorName, tradeApprovalStatus FROM logs ORDER BY loginTimestamp DESC');
-        res.render('store/Admin-ejs/Admin-UserDetail', {
+        res.render('store/Admin-ejs/Admin-StockTransaction', {
             pageTitle: 'Admin',
-            currentPage: 'User-details',
+            currentPage: 'Stock-Transaction',
             InvestorList: investors,
             TransactionList: transactions,
             StakeholderList: [],
@@ -691,11 +692,12 @@ exports.searchInvestors = async (req, res) => {
 };
 
 // INVESTORS: add
+// Accepts iUserId, name, accountType
 exports.addInvestor = async (req, res) => {
-    const { name, accountType } = req.body;
+    const { iUserId, name, accountType } = req.body;
     try {
-        await db.query('INSERT INTO investor (name, accountType) VALUES (?, ?)', [name, accountType]);
-        res.redirect('/Admin/User-details');
+        await db.query('INSERT INTO investor (iUserId, name, accountType) VALUES (?, ?, ?)', [iUserId, name, accountType]);
+        res.redirect('/Admin/Stock-Transaction');
     } catch (err) {
         console.error(err);
         res.send('Insert Error');
@@ -708,7 +710,7 @@ exports.editInvestor = async (req, res) => {
     const { name, accountType } = req.body;
     try {
         await db.query('UPDATE investor SET name = ?, accountType = ? WHERE iUserId = ?', [name, accountType, iUserId]);
-        res.redirect('/Admin/User-details');
+        res.redirect('/Admin/Stock-Transaction');
     } catch (err) {
         console.error(err);
         res.send('Update Error');
@@ -720,65 +722,7 @@ exports.deleteInvestor = async (req, res) => {
     const iUserId = req.params.iUserId;
     try {
         await db.query('DELETE FROM investor WHERE iUserId = ?', [iUserId]);
-        res.redirect('/Admin/User-details');
-    } catch (err) {
-        console.error(err);
-        res.send('Delete Error');
-    }
-};
-
-// LOGS: search by userId
-exports.searchLogs = async (req, res) => {
-    const query = req.query.query || '';
-    try {
-        const [logs] = await db.query('SELECT userId, loginTimestamp, logoutTimestamp, oldUserData, newUserData, auditorName, tradeApprovalStatus FROM logs WHERE userId LIKE ? ORDER BY loginTimestamp DESC', [`%${query}%`]);
-        const [investors] = await db.query('SELECT iUserId, name, accountType FROM investor');
-        const [transactions] = await db.query('SELECT transactionId, timestamp, amount, stockId, iUserId, registrationNumber FROM stocks_transaction ORDER BY timestamp DESC');
-        res.render('store/Admin-ejs/Admin-UserDetail', {
-            pageTitle: 'Admin',
-            currentPage: 'User-details',
-            InvestorList: investors,
-            TransactionList: transactions,
-            StakeholderList: [],
-            LogsList: logs
-        });
-    } catch (err) {
-        console.error(err);
-        res.send('Search Error');
-    }
-};
-
-// LOGS: add
-exports.addLog = async (req, res) => {
-    const { userId, loginTimestamp, logoutTimestamp, oldUserData, newUserData, auditorName, tradeApprovalStatus } = req.body;
-    try {
-        await db.query('INSERT INTO logs (userId, loginTimestamp, logoutTimestamp, oldUserData, newUserData, auditorName, tradeApprovalStatus) VALUES (?, ?, ?, ?, ?, ?, ?)', [userId, loginTimestamp, logoutTimestamp, oldUserData, newUserData, auditorName, tradeApprovalStatus]);
-        res.redirect('/Admin/User-details');
-    } catch (err) {
-        console.error(err);
-        res.send('Insert Error');
-    }
-};
-
-// LOGS: edit (userId readonly)
-exports.editLog = async (req, res) => {
-    const userId = req.params.userId;
-    const { loginTimestamp, logoutTimestamp, oldUserData, newUserData, auditorName, tradeApprovalStatus } = req.body;
-    try {
-        await db.query('UPDATE logs SET loginTimestamp = ?, logoutTimestamp = ?, oldUserData = ?, newUserData = ?, auditorName = ?, tradeApprovalStatus = ? WHERE userId = ?', [loginTimestamp, logoutTimestamp, oldUserData, newUserData, auditorName, tradeApprovalStatus, userId]);
-        res.redirect('/Admin/User-details');
-    } catch (err) {
-        console.error(err);
-        res.send('Update Error');
-    }
-};
-
-// LOGS: delete by userId
-exports.deleteLog = async (req, res) => {
-    const userId = req.params.userId;
-    try {
-        await db.query('DELETE FROM logs WHERE userId = ?', [userId]);
-        res.redirect('/Admin/User-details');
+        res.redirect('/Admin/Stock-Transaction');
     } catch (err) {
         console.error(err);
         res.send('Delete Error');
