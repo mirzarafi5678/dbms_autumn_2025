@@ -78,23 +78,82 @@
   </div>
 </main>
   <script>
-    // BUY BUTTON HANDLER
-    document.querySelectorAll(".buyBtn").forEach(btn => {
-      btn.addEventListener("click", async () => {
-        const stockId = btn.getAttribute("data-id");
+    // BUY BUTTON HANDLER: show modal to input amount, then POST
+    let selectedStockId = null;
 
-        const response = await fetch("/Investor/buy-stock", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ stockId })
+    // create modal elements
+    const modal = document.createElement('div');
+    modal.id = 'buyModal';
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden';
+    modal.innerHTML = `
+      <div class="bg-slate-800 p-6 rounded-lg w-96">
+        <h3 class="text-lg font-semibold mb-2">Buy Stock</h3>
+        <p id="modalStockId" class="text-sm text-gray-200 mb-3"></p>
+        <label class="block text-sm mb-1">Amount</label>
+        <input id="buyAmount" type="number" min="1" class="w-full p-2 rounded mb-4 text-black" />
+        <div class="flex justify-end gap-2">
+          <button id="cancelBuy" class="px-4 py-2 rounded bg-gray-600 hover:bg-gray-700">Cancel</button>
+          <button id="confirmBuy" class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700">Confirm</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    function showModal(stockId) {
+      selectedStockId = stockId;
+      document.getElementById('modalStockId').textContent = 'Stock ID: ' + stockId;
+      document.getElementById('buyAmount').value = '';
+      modal.classList.remove('hidden');
+    }
+
+    function hideModal() {
+      selectedStockId = null;
+      modal.classList.add('hidden');
+    }
+
+    document.querySelectorAll('.buyBtn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const stockId = btn.getAttribute('data-id');
+        showModal(stockId);
+      });
+    });
+
+    document.getElementById('cancelBuy').addEventListener('click', () => {
+      hideModal();
+    });
+
+    document.getElementById('confirmBuy').addEventListener('click', async () => {
+      const amountEl = document.getElementById('buyAmount');
+      const amount = amountEl.value;
+
+      if (!selectedStockId || !amount || Number(amount) <= 0) {
+        alert('Please enter a valid amount');
+        return;
+      }
+
+      try {
+        const response = await fetch('/Investor/buy-stock', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ stockId: selectedStockId, amount })
         });
 
-        const msg = document.getElementById("buyMessage");
-        msg.classList.remove("hidden");
-        setTimeout(() => msg.classList.add("hidden"), 2000);
-      });
+        if (!response.ok) {
+          const err = await response.json().catch(() => ({}));
+          alert('Buy failed: ' + (err.error || response.statusText));
+        } else {
+          const data = await response.json();
+          const msg = document.getElementById('buyMessage');
+          msg.textContent = 'Purchase submitted';
+          msg.classList.remove('hidden');
+          setTimeout(() => msg.classList.add('hidden'), 2000);
+        }
+      } catch (e) {
+        console.error(e);
+        alert('Network error');
+      } finally {
+        hideModal();
+      }
     });
   </script>
 

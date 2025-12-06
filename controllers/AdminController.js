@@ -65,6 +65,7 @@ exports.Dashboard = async (req, res, next) => {
   }
 }
 exports.comapanyStockManagement = async (req, res, next) => {
+    console.log("id deklo",req.session.user)
     try {
         const [companyRows] = await db.query('SELECT registrationNumber, name, sector, contactInfo FROM company');
         const [stockRows] = await db.query('SELECT registrationNumber, stockId, totalShares, currentPrice FROM stocks');

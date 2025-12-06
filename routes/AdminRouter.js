@@ -7,7 +7,7 @@ const AdminController = require("../controllers/AdminController");
 const auth = require('../middleware/auth');
 
 // Protect all admin routes
-// AdminRouter.use(auth.isAdmin);
+AdminRouter.use(auth.isAdmin);
 
 
 AdminRouter.get('/dashboard',AdminController.Dashboard)
