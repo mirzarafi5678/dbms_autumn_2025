@@ -86,6 +86,7 @@ exports.Dashboard = async (req, res, next) => {
 
 
 exports.buyStock = async (req, res, next) => {
+     console.log("controller er moddhe asi",req.session.user)
   try {
     // Fetch company list from `company` table
     const [CompanyList] = await db.execute(`
@@ -116,6 +117,53 @@ exports.buyStock = async (req, res, next) => {
       CompanyList: [],
       StockList: []
     });
+  }
+};
+
+
+// Handle buy post from investor front-end
+exports.postBuyStock = async (req, res) => {
+
+
+   console.log("stock kintasi",req.session.userid)
+  
+  try {
+    const { stockId, amount } = req.body;
+
+    // Minimal validation
+    if (!stockId || !amount) {
+      return res.status(400).json({ error: 'stockId and amount are required' });
+    }
+
+    // Require logged-in user (iUserId) from session
+    const iUserId = req.session.user.userid ;
+    if (!iUserId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+
+    // Find registrationNumber from stocks table
+    const [stockRows] = await db.execute('SELECT registrationNumber FROM stocks WHERE stockId = ?', [stockId]);
+    if (!stockRows || stockRows.length === 0) {
+      return res.status(400).json({ error: 'Invalid stockId' });
+    }
+    const registrationNumber = stockRows[0].registrationNumber;
+
+    // Create transactionId and timestamp
+    const transactionId = 'T' + Date.now().toString();
+    const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' '); // MySQL DATETIME format
+
+    // Insert into stocks_transaction
+    await db.execute(
+      'INSERT INTO stocks_transaction (transactionId, timestamp, amount, stockId, iUserId, registrationNumber) VALUES (?, ?, ?, ?, ?, ?)',
+      [transactionId, timestamp, amount, stockId, iUserId, registrationNumber]
+    );
+
+    console.log('Transaction inserted:', { transactionId, stockId, iUserId, registrationNumber, amount });
+
+    res.json({ success: true, transactionId, stockId, amount, registrationNumber });
+  } catch (err) {
+    console.error('Error handling buy-stock:', err);
+    res.status(500).json({ error: 'Server error' });
   }
 };
 
