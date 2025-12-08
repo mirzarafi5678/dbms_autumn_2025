@@ -171,17 +171,36 @@ exports.postBuyStock = async (req, res) => {
 
 
 exports.stockTN = (req, res, next) => {
-  const transactionList = [
-    { tid: 'T001', stockId: 'S001', investorId: 'INV-001', amount: 1000 },
-    { tid: 'T002', stockId: 'S002', investorId: 'INV-002', amount: 500 },
-  ];
+    const iUserId = req.session.user.userid;
 
-  res.render('store/Investor-ejs/Investor-stockTN', {
-    pageTitle: 'Investor',
-    currentPage: 'stock-transaction',
-    transactionList
-  });
+    // MySQL DB connection (adjust if you're using a pool)
+    
+    const query = `
+        SELECT 
+            transactionId AS tid,
+            stockId,
+            registrationNumber ,
+            amount,
+            timestamp
+        FROM stocks_transaction
+        WHERE iUserId = ?
+        ORDER BY timestamp DESC
+    `;
+
+    db.execute(query, [iUserId])
+        .then(([rows]) => {
+            res.render('store/Investor-ejs/Investor-stockTN', {
+                pageTitle: 'Investor',
+                currentPage: 'stock-transaction',
+                transactionList: rows   // now sending DB data
+            });
+        })
+        .catch(err => {
+            console.error(err);
+            next(err);
+        });
 };
+
 
 exports.postStockTN = (req, res, next) => {
   const { tid, stockId, investorId, amount } = req.body;

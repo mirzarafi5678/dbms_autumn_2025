@@ -30,4 +30,15 @@ module.exports.isInvestor = (req, res, next) => {
   return res.redirect('/login');
 };
 
+module.exports.isCompanyRep = (req, res, next) => {
+     console.log("Comapny id deklo",req.session.user)
+  if (req.session && req.session.user && req.session.user.role === 'companyRep') {
+    return next();
+  }
+  // If logged in but not admin, send forbidden or redirect
+  if (req.session && req.session.user) {
+    return res.status(403).send('Forbidden: Admins only');
+  }
+  return res.redirect('/login');
+};
 

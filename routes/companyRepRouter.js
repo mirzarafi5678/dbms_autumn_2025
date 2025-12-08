@@ -2,6 +2,9 @@ const express = require("express");
 const companyRepRouter = express.Router();
 
 const companyRepController = require("../controllers/companyRepController");
+const auth = require('../middleware/auth');
+
+companyRepRouter.use(auth.isCompanyRep);
 
 
 companyRepRouter.get('/dashboard',companyRepController.Dashboard)
@@ -14,7 +17,7 @@ companyRepRouter.get('/recent-stock-buyer',companyRepController.recentBuyer)
 
 
 
-companyRepRouter.post('/my-company/add-company', companyRepController.addCompanyInfo);
+companyRepRouter.post('/my-company/save-company', companyRepController.addCompanyInfo);
 companyRepRouter.post('/my-company/update-company', companyRepController.updateCompanyInfo);
 
 // POST: Add a New Stock

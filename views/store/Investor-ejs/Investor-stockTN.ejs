@@ -9,15 +9,17 @@
 
     <!-- Stock Transaction Table -->
     <div class="bg-slate-800 p-6 rounded-2xl shadow-lg max-w-4xl mx-auto mt-12">
-      <h2 class="text-3xl font-bold mb-6 text-center tracking-wide">📊 Stock Transactions</h2>
+    <h2 class="text-3xl font-bold mb-6 text-center tracking-wide">📊 Your Stock Transactions</h2>
 
       <table class="w-full table-auto border-collapse overflow-hidden rounded-xl">
         <thead>
           <tr class="bg-slate-700 text-slate-300 text-lg">
-            <th class="px-6 py-3 border-b border-slate-600 text-left">Stock ID</th>
-            <th class="px-6 py-3 border-b border-slate-600 text-left">Company ID</th>
-            <th class="px-6 py-3 border-b border-slate-600 text-left">Amount</th>
+            <th class="px-6 py-3 border-b border-slate-600 text-left">Transaction ID</th>
             <th class="px-6 py-3 border-b border-slate-600 text-left">Timestamp</th>
+            <th class="px-6 py-3 border-b border-slate-600 text-left">Amount</th>
+            <th class="px-6 py-3 border-b border-slate-600 text-left">Stock ID</th>
+            <th class="px-6 py-3 border-b border-slate-600 text-left">Investor ID</th>
+            <th class="px-6 py-3 border-b border-slate-600 text-left">Registration Number</th>
           </tr>
         </thead>
 
@@ -25,19 +27,17 @@
           <% if (transactionList && transactionList.length > 0) { %>
             <% transactionList.forEach(tx => { %>
               <tr class="hover:bg-slate-700 transition">
+                <td class="px-6 py-3 border-b border-slate-700"><%= tx.transactionId || tx.tid || '' %></td>
+                <td class="px-6 py-3 border-b border-slate-700 text-sm text-slate-400"><%= tx.timestamp %></td>
+                <td class="px-6 py-3 border-b border-slate-700 font-semibold text-blue-400">$<%= tx.amount %></td>
                 <td class="px-6 py-3 border-b border-slate-700"><%= tx.stockId %></td>
-                <td class="px-6 py-3 border-b border-slate-700"><%= tx.companyId %></td>
-                <td class="px-6 py-3 border-b border-slate-700 font-semibold text-blue-400">
-                  $<%= tx.amount %>
-                </td>
-                <td class="px-6 py-3 border-b border-slate-700 text-sm text-slate-400">
-                  <%= tx.timestamp %>
-                </td>
+                <td class="px-6 py-3 border-b border-slate-700"><%= tx.iUserId || tx.investorId || '' %></td>
+                <td class="px-6 py-3 border-b border-slate-700"><%= tx.registrationNumber || '' %></td>
               </tr>
             <% }) %>
           <% } else { %>
             <tr>
-              <td colspan="4" class="px-6 py-6 text-center text-slate-400">
+              <td colspan="6" class="px-6 py-6 text-center text-slate-400">
                 No transactions found.
               </td>
             </tr>
