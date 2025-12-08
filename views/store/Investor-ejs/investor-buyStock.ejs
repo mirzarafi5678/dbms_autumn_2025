@@ -7,35 +7,10 @@
 <main class="Flexible">
   <div class="p-10 mt-10 space-y-12">
 
-    <!-- ====================== COMPANY TABLE ======================= -->
-    <div class="bg-slate-800 p-8 rounded-2xl shadow-lg w-full">
-      <h2 class="text-2xl font-bold mb-6 text-center">Company Details</h2>
-
-      <table class="w-full text-left border-collapse">
-        <thead>
-              <tr class="bg-slate-700 text-sm">
-                <th class="p-3">Registration Number</th>
-                <th class="p-3">Name</th>
-                <th class="p-3">Sector</th>
-                <th class="p-3">Contact Info</th>
-              </tr>
-        </thead>
-
-        <tbody>
-          <% CompanyList.forEach(company => { %>
-            <tr class="border-b border-slate-700 hover:bg-slate-700/40 transition">
-              <td class="p-3"><%= company.registrationNumber %></td>
-              <td class="p-3"><%= company.name %></td>
-              <td class="p-3"><%= company.sector %></td>
-              <td class="p-3"><%= company.contactInfo %></td>
-            </tr>
-          <% }) %>
-        </tbody>
-      </table>
-    </div>
 
 
-    <!-- ====================== STOCK TABLE ======================= -->
+
+     <!-- ====================== STOCK TABLE ======================= -->
     <div class="bg-slate-800 p-8 rounded-2xl shadow-lg w-full">
       <h2 class="text-2xl font-bold mb-6 text-center">Stock List</h2>
 
@@ -69,11 +44,39 @@
         </tbody>
       </table>
 
-      <!-- Success message -->
-      <p id="buyMessage" class="text-green-400 text-center mt-4 hidden font-medium">
-                 Done
-      </p>
+      <!-- Success message placeholder (kept for legacy access) -->
+      <p id="buyMessage" class="sr-only">Done</p>
     </div>
+
+    <!-- ====================== COMPANY TABLE ======================= -->
+    <div class="bg-slate-800 p-8 rounded-2xl shadow-lg w-full">
+      <h2 class="text-2xl font-bold mb-6 text-center">Company Details</h2>
+
+      <table class="w-full text-left border-collapse">
+        <thead>
+              <tr class="bg-slate-700 text-sm">
+                <th class="p-3">Registration Number</th>
+                <th class="p-3">Name</th>
+                <th class="p-3">Sector</th>
+                <th class="p-3">Contact Info</th>
+              </tr>
+        </thead>
+
+        <tbody>
+          <% CompanyList.forEach(company => { %>
+            <tr class="border-b border-slate-700 hover:bg-slate-700/40 transition">
+              <td class="p-3"><%= company.registrationNumber %></td>
+              <td class="p-3"><%= company.name %></td>
+              <td class="p-3"><%= company.sector %></td>
+              <td class="p-3"><%= company.contactInfo %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+
+   
 
   </div>
 </main>
@@ -98,6 +101,44 @@
       </div>
     `;
     document.body.appendChild(modal);
+
+    // Success popup (created once)
+    const successPopup = document.createElement('div');
+    successPopup.id = 'successPopup';
+    successPopup.className = 'fixed inset-0 flex items-center justify-center pointer-events-none hidden';
+    successPopup.innerHTML = `
+      <div class="pointer-events-auto bg-white/5 backdrop-blur-sm border border-green-500 rounded-lg p-6 w-80 text-center text-white">
+        <div class="flex flex-col items-center gap-3">
+          <div class="w-16 h-16 flex items-center justify-center rounded-full bg-green-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="white">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <div id="successTitle" class="text-lg font-semibold">Congratulations!</div>
+          <div id="successMsg" class="text-sm text-slate-200">Purchase successful.</div>
+          <div id="successTxn" class="text-xs text-slate-300"></div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(successPopup);
+
+    function showSuccessPopup(message, txnId) {
+      const title = document.getElementById('successTitle');
+      const msg = document.getElementById('successMsg');
+      const txn = document.getElementById('successTxn');
+      title.textContent = 'Congratulations!';
+      msg.textContent = message || 'Purchase successful.';
+      txn.textContent = txnId ? ('Transaction: ' + txnId) : '';
+      successPopup.classList.remove('hidden');
+      successPopup.classList.add('flex');
+      // auto hide after 3.5s
+      setTimeout(hideSuccessPopup, 3500);
+    }
+
+    function hideSuccessPopup() {
+      successPopup.classList.add('hidden');
+      successPopup.classList.remove('flex');
+    }
 
     function showModal(stockId) {
       selectedStockId = stockId;
@@ -143,10 +184,9 @@
           alert('Buy failed: ' + (err.error || response.statusText));
         } else {
           const data = await response.json();
-          const msg = document.getElementById('buyMessage');
-          msg.textContent = 'Purchase submitted';
-          msg.classList.remove('hidden');
-          setTimeout(() => msg.classList.add('hidden'), 2000);
+          // show nice success popup with transaction id if returned
+          const txn = data.transactionId || data.transactionid || '';
+          showSuccessPopup('Purchase submitted', txn);
         }
       } catch (e) {
         console.error(e);

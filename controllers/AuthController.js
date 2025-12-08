@@ -46,7 +46,7 @@ exports.postLogin = async (req, res, next) => {
       }
 
       if (req.session.user.role === 'investor') return res.redirect('/investor/dashboard');
-      if (req.session.user.role === 'companyRep') return res.redirect('/companyRep');
+      if (req.session.user.role === 'companyRep') return res.redirect('/companyRep/dashboard');
 
       return res.redirect('/');
     } else {
