@@ -54,6 +54,11 @@ exports.viewAudit = async (req, res, next) => {
 
 
 exports.Dashboard = async (req, res, next) => {
+
+    // const iUserId = req.session.user.userid;
+
+
+
   try {
     // 1️⃣ Daily Transaction Volume
     const [dailyVolume] = await db.execute(`
