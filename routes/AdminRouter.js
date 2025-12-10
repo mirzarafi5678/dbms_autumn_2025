@@ -100,6 +100,15 @@ AdminRouter.post('/investors/delete/:iUserId', AdminController.deleteInvestor);
 
 
 
+AdminRouter.get('/user-details', AdminController.userdetail);
+
+// Users routes (manage users table)
+AdminRouter.post('/users/add', AdminController.addUser);
+AdminRouter.post('/users/edit/:userid', AdminController.editUser);
+AdminRouter.post('/users/delete/:userid', AdminController.deleteUser);
+
+
+
 
 module.exports = AdminRouter;
 

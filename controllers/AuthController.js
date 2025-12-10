@@ -63,6 +63,7 @@ exports.postSignup = async (req, res, next) => {
   // Accept `email` or `username` and `password` fields from form
   const email = req.body.email || req.body.username;
   const pass = req.body.pass || req.body.password;
+  const name = req.body.name
   let roleIn = req.body.role;
 
   if (!email || !pass || !roleIn) {
@@ -75,12 +76,22 @@ exports.postSignup = async (req, res, next) => {
   }
 
   // Normalize roles to values accepted by DB enum
-  let role = 'investor';
-  if (roleIn === 'companyRep' || roleIn === 'companyRep') role = 'companyRep';
+ let role = 'investor'; // default
+
+if (roleIn === 'investor' || roleIn === 'companyRep') {
+  role = roleIn;
+}
   // for other values (manager, auditor, etc.) default to 'investor'
 
   try {
     await db.execute('INSERT INTO users (email, pass, role) VALUES (?, ?, ?)', [email, pass, role]);
+
+    const [rows] = await db.execute('SELECT userid, email, role FROM users WHERE email = ? AND pass = ?', [email, pass]);
+    const id = rows[0].userid;
+    await db.execute(
+    'INSERT INTO investor (iUserId, name) VALUES (?, ?)',
+    [id, name]
+  );
     return res.redirect('/login?created=1');
   } catch (err) {
     console.error('Signup error', err);

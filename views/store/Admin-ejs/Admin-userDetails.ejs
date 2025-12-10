@@ -1,0 +1,131 @@
+<%- include('../../partials/head') %>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 min-h-screen text-white">
+  <%- include('../../partials/admin-nav') %>
+
+  <main class="p-6">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex items-center justify-between mb-4">
+        <h1 class="text-2xl font-semibold">User Details</h1>
+        <button id="addUserBtn" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded">Add User</button>
+      </div>
+
+      <div class="overflow-x-auto bg-white/5 rounded">
+        <table class="min-w-full divide-y divide-gray-700">
+          <thead class="bg-white/5">
+            <tr>
+              <th class="px-4 py-2 text-left">UserID</th>
+              <th class="px-4 py-2 text-left">Email</th>
+              <th class="px-4 py-2 text-left">Password</th>
+              <th class="px-4 py-2 text-left">Role</th>
+              <th class="px-4 py-2 text-left">Contact Info</th>
+              <th class="px-4 py-2 text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (UsersList && UsersList.length) { %>
+              <% UsersList.forEach(function(user){ %>
+                <tr class="hover:bg-white/5">
+                  <td class="px-4 py-2"><%= user.userid %></td>
+                  <td class="px-4 py-2"><%= user.email %></td>
+                  <td class="px-4 py-2"><%= user.pass %></td>
+                  <td class="px-4 py-2"><%= user.role %></td>
+                  <td class="px-4 py-2"><%= user.contact_info %></td>
+                  <td class="px-4 py-2">
+                    <button type="button" class="editBtn bg-blue-600 px-3 py-1 rounded" data-user='<%- JSON.stringify(user) %>'>Edit</button>
+                    <form action="/Admin/users/delete/<%= encodeURIComponent(user.userid) %>" method="post" class="inline" onsubmit="return confirm('Delete user <%= user.userid %>?')">
+                      <button type="submit" class="bg-red-600 px-3 py-1 rounded ml-2">Delete</button>
+                    </form>
+                  </td>
+                </tr>
+              <% }); %>
+            <% } else { %>
+              <tr>
+                <td class="px-4 py-6" colspan="6">No users found.</td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <div id="userModal" class="fixed inset-0 flex items-center justify-center bg-black/50 hidden">
+    <div class="bg-white text-black rounded max-w-md w-full p-6">
+      <h2 id="modalTitle" class="text-xl font-semibold mb-4">Add User</h2>
+      <form id="userForm" method="post" action="/Admin/users/add">
+        <div class="mb-3">
+          <label class="block text-sm text-gray-700">UserID</label>
+          <input id="userid" name="userid" class="w-full mt-1 p-2 border rounded" required />
+        </div>
+        <div class="mb-3">
+          <label class="block text-sm text-gray-700">Email</label>
+          <input id="email" name="email"  class="w-full mt-1 p-2 border rounded" required />
+        </div>
+        <div class="mb-3">
+          <label class="block text-sm text-gray-700">Password</label>
+          <input id="pass" name="pass" class="w-full mt-1 p-2 border rounded" required />
+        </div>
+        <div class="mb-3">
+          <label class="block text-sm text-gray-700">Role</label>
+          <select id="role" name="role" class="w-full mt-1 p-2 border rounded" required>
+            <option value="admin">admin</option>
+            <option value="investor">investor</option>
+            <option value="companyRep">companyRep</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="block text-sm text-gray-700">Contact Info</label>
+          <input id="contact_info" name="contact_info" class="w-full mt-1 p-2 border rounded" />
+        </div>
+        <div class="flex justify-end gap-2">
+          <button type="button" id="cancelBtn" class="px-4 py-2">Cancel</button>
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const addBtn = document.getElementById('addUserBtn');
+    const modal = document.getElementById('userModal');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const modalTitle = document.getElementById('modalTitle');
+    const userForm = document.getElementById('userForm');
+
+    addBtn.addEventListener('click', ()=> {
+      modal.classList.remove('hidden');
+      modalTitle.textContent = 'Add User';
+      userForm.action = '/Admin/users/add';
+      document.getElementById('userid').readOnly = false;
+      userForm.reset();
+    });
+
+    cancelBtn.addEventListener('click', ()=> modal.classList.add('hidden'));
+
+    document.querySelectorAll('.editBtn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const user = JSON.parse(btn.getAttribute('data-user'));
+        modal.classList.remove('hidden');
+        modalTitle.textContent = 'Edit User';
+        userForm.action = '/Admin/users/edit/' + encodeURIComponent(user.userid);
+        document.getElementById('userid').value = user.userid;
+        document.getElementById('userid').readOnly = true;
+        document.getElementById('email').value = user.email || '';
+        document.getElementById('pass').value = user.pass || '';
+        document.getElementById('role').value = user.role || '';
+        document.getElementById('contact_info').value = user.contact_info || '';
+      });
+    });
+
+    // close modal on background click
+    modal.addEventListener('click', (e)=> {
+      if (e.target === modal) modal.classList.add('hidden');
+    });
+  </script>
+
+</body>
+
+
+</html>

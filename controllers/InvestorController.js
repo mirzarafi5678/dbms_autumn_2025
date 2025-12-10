@@ -56,18 +56,19 @@ exports.viewAudit = async (req, res, next) => {
 exports.Dashboard = async (req, res, next) => {
 
     // const iUserId = req.session.user.userid;
+     const iUserId = req.session.user.userid ;
 
 
 
   try {
     // 1️⃣ Daily Transaction Volume
     const [dailyVolume] = await db.execute(`
-      SELECT DATE(timestamp) AS day, SUM(amount) AS totalAmount
-      FROM stocks_transaction
-      GROUP BY DATE(timestamp)
-      ORDER BY day;
-    `);
-
+    SELECT DATE(timestamp) AS day, SUM(amount) AS totalAmount
+    FROM stocks_transaction
+    WHERE iUserId = ?
+    GROUP BY DATE(timestamp)
+    ORDER BY day
+  `, [iUserId]);
     // 2️⃣ Predicted Prices
     const [predictions] = await db.execute(`
       SELECT registrationNumber, predictedPrice
@@ -91,7 +92,7 @@ exports.Dashboard = async (req, res, next) => {
 
 
 exports.buyStock = async (req, res, next) => {
-     console.log("controller er moddhe asi",req.session.user)
+    //  console.log("controller er moddhe asi",req.session.user)
   try {
     // Fetch company list from `company` table
     const [CompanyList] = await db.execute(`

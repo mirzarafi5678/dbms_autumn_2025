@@ -1,6 +1,10 @@
 
 const db = require("../utils/db");
 
+
+
+
+
 exports.Dashboard = async (req, res, next) => {
   try {
     // 1. Fraud Detection Trends (Risk Scores Over Time)
@@ -772,3 +776,82 @@ exports.deleteInvestor = async (req, res) => {
     }
 };
 
+
+
+exports.userdetail = async (req, res, next) => {
+    try {
+        const [users] = await db.query('SELECT userid, email, pass, role, contact_info FROM users');
+        res.render('store/Admin-ejs/Admin-userDetails', {
+            pageTitle: 'Admin',
+            currentPage: 'user-details',
+            UsersList: users || []
+        });
+    } catch (err) {
+        console.error('userdetail Error:', err);
+        res.render('store/Admin-ejs/Admin-userDetails', {
+            pageTitle: 'Admin',
+            currentPage: 'user-details',
+            UsersList: []
+        });
+    }
+
+};
+
+// USERS: add
+exports.addUser = async (req, res) => {
+    const { userid, email, pass, role, contact_info } = req.body;
+    try {
+        // Normalize/validate role to match DB enum values
+        const normalizeRole = (r) => {
+            if (!r) return 'investor';
+            const v = String(r).trim();
+            const low = v.toLowerCase();
+            if (low === 'admin') return 'admin';
+            if (low === 'investor') return 'investor';
+            if (low === 'companyrep' || low === 'company rep' || low === 'company_rep') return 'companyRep';
+            // fallback
+            return 'investor';
+        };
+        const roleValue = normalizeRole(role);
+        await db.query('INSERT INTO users (userid, email, pass, role, contact_info) VALUES (?, ?, ?, ?, ?)', [userid, email, pass, roleValue, contact_info]);
+        res.redirect('/Admin/user-details');
+    } catch (err) {
+        console.error('addUser Error:', err);
+        res.send('Insert Error');
+    }
+};
+
+// USERS: edit (userid readonly)
+exports.editUser = async (req, res) => {
+    const userid = req.params.userid;
+    const { email, pass, role, contact_info } = req.body;
+    try {
+        const normalizeRole = (r) => {
+            if (!r) return 'investor';
+            const v = String(r).trim();
+            const low = v.toLowerCase();
+            if (low === 'admin') return 'admin';
+            if (low === 'investor') return 'investor';
+            if (low === 'companyrep' || low === 'company rep' || low === 'company_rep') return 'companyRep';
+            return 'investor';
+        };
+        const roleValue = normalizeRole(role);
+        await db.query('UPDATE users SET email = ?, pass = ?, role = ?, contact_info = ? WHERE userid = ?', [email, pass, roleValue, contact_info, userid]);
+        res.redirect('/Admin/user-details');
+    } catch (err) {
+        console.error('editUser Error:', err);
+        res.send('Update Error');
+    }
+};
+
+// USERS: delete by userid
+exports.deleteUser = async (req, res) => {
+    const userid = req.params.userid;
+    try {
+        await db.query('DELETE FROM users WHERE userid = ?', [userid]);
+        res.redirect('/Admin/user-details');
+    } catch (err) {
+        console.error('deleteUser Error:', err);
+        res.send('Delete Error');
+    }
+};
