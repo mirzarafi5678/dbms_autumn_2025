@@ -19,7 +19,7 @@ module.exports.isAdmin = (req, res, next) => {
 
 
 module.exports.isInvestor = (req, res, next) => {
-     console.log("id deklo",req.session.user)
+    //  console.log("id deklo",req.session.user)
   if (req.session && req.session.user && req.session.user.role === 'investor') {
     return next();
   }
