@@ -431,17 +431,28 @@ exports.searchTrades = async (req, res) => {
     }
 };
 
-// TRADES: add
+function generateRandomId() {
+    return Math.floor(100000 + Math.random() * 900000); 
+    // Always 10 digits
+}
+
+
 exports.addTrade = async (req, res) => {
     const { buyerId, sellerId, amount, date, assetType, status } = req.body;
+    
+     const tradeId = generateRandomId();
     try {
-        await db.query('INSERT INTO trade (buyerId, sellerId, amount, date, assetType, status) VALUES (?, ?, ?, ?, ?, ?)', [buyerId, sellerId, amount, date, assetType, status]);
+        await db.query(
+            'INSERT INTO trade (tradeId, buyerId, sellerId, amount, date, assetType, status) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [tradeId, buyerId, sellerId, amount, date, assetType, status]
+        );
         res.redirect('/Admin/Trade-Management');
     } catch (err) {
         console.error(err);
         res.send('Insert Error');
     }
 };
+
 
 // TRADES: edit (tradeId readonly)
 exports.editTrade = async (req, res) => {
@@ -504,8 +515,9 @@ exports.searchFraud = async (req, res) => {
 // FRAUD: add
 exports.addFraud = async (req, res) => {
     const { riskScore, detectionDate, transactionId } = req.body;
+     const Id = generateRandomId();
     try {
-        await db.query('INSERT INTO fraud (riskScore, detectionDate, transactionId) VALUES (?, ?, ?)', [riskScore, detectionDate, transactionId]);
+        await db.query('INSERT INTO fraud (alertId, riskScore, detectionDate, transactionId) VALUES (? ,?, ?, ?)', [Id,riskScore, detectionDate, transactionId]);
         res.redirect('/Admin/AI-Based-Fraud-Detection');
     } catch (err) {
         console.error(err);
