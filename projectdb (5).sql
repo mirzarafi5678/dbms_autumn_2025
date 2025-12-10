@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Generation Time: Dec 06, 2025 at 05:33 PM
+-- Generation Time: Dec 10, 2025 at 02:28 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -63,7 +63,8 @@ INSERT INTO `company` (`registrationNumber`, `name`, `sector`, `contactInfo`) VA
 
 CREATE TABLE `company_representative` (
   `rUserId` int(11) NOT NULL,
-  `registrationNumber` varchar(255) DEFAULT NULL
+  `registrationNumber` varchar(255) DEFAULT NULL,
+  `name` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -93,7 +94,9 @@ INSERT INTO `fraud` (`alertId`, `riskScore`, `detectionDate`, `transactionId`) V
 (7, 80.75, '2025-12-04', 7),
 (8, 85.60, '2025-12-04', 8),
 (9, 91.30, '2025-12-05', 9),
-(10, 78.90, '2025-12-05', 10);
+(160973, -0.03, '2025-12-01', 11),
+(499115, 0.03, '2025-12-12', 32),
+(2147483647, 0.03, '2025-12-29', 121);
 
 -- --------------------------------------------------------
 
@@ -172,7 +175,10 @@ INSERT INTO `investor` (`iUserId`, `name`, `accountType`) VALUES
 (13, 'Shakib Rahman', 'Standard'),
 (14, 'Rodela Tahsin', 'Premium'),
 (15, 'Azmir Hossain', 'Gold'),
-(16, 'Nabila Khan', 'Gold');
+(16, 'Nabila Khan', 'Gold'),
+(19, 'mirza azam khan', 'regular'),
+(1112, 'newinvestor', NULL),
+(1113, 'mirza md sufian ', NULL);
 
 -- --------------------------------------------------------
 
@@ -215,7 +221,7 @@ INSERT INTO `prediction` (`registrationNumber`, `stockId`, `timestamp`, `predict
 ('REG001', 1, '2025-12-01 09:00:00', 105.50, 'ModelA', '2025-12-01', 95.25),
 ('REG002', 2, '2025-12-01 09:05:00', 210.75, 'ModelB', '2025-12-01', 92.10),
 ('REG003', 3, '2025-12-01 09:10:00', 315.20, 'ModelC', '2025-12-01', 88.50),
-('REG004', 4, '2025-12-01 09:15:00', 420.10, 'ModelA', '2025-12-01', 90.00),
+('REG004', 4, '2025-12-01 09:15:00', 415.00, 'ModelA pro version', '0000-00-00', 90.00),
 ('REG005', 5, '2025-12-01 09:20:00', 525.30, 'ModelB', '2025-12-01', 94.75),
 ('REG006', 6, '2025-12-01 09:25:00', 130.00, 'ModelC', '2025-12-01', 91.60),
 ('REG007', 7, '2025-12-01 09:30:00', 235.50, 'ModelA', '2025-12-01', 89.90),
@@ -223,7 +229,6 @@ INSERT INTO `prediction` (`registrationNumber`, `stockId`, `timestamp`, `predict
 ('REG009', 9, '2025-12-01 09:40:00', 445.60, 'ModelC', '2025-12-01', 87.45),
 ('REG010', 10, '2025-12-01 09:45:00', 550.00, 'ModelA', '2025-12-01', 96.10),
 ('REG011', 11, '2025-12-01 09:50:00', 120.40, 'ModelB', '2025-12-01', 92.55),
-('REG012', 12, '2025-12-01 09:55:00', 225.75, 'ModelC', '2025-12-01', 88.80),
 ('REG013', 13, '2025-12-01 10:00:00', 330.20, 'ModelA', '2025-12-01', 90.50),
 ('REG014', 14, '2025-12-01 10:05:00', 435.10, 'ModelB', '2025-12-01', 94.00),
 ('REG015', 15, '2025-12-01 10:10:00', 540.30, 'ModelC', '2025-12-01', 91.20),
@@ -260,6 +265,8 @@ CREATE TABLE `price_history` (
 
 INSERT INTO `price_history` (`registrationNumber`, `stockId`, `timestamp`, `open`, `close`, `high`, `low`) VALUES
 ('21', 11, '2025-12-12 10:48:00', 0.02, 0.01, 0.04, 11.00),
+('222', 45, '2026-01-01 18:16:00', 0.03, 0.03, 0.03, 0.02),
+('etrhsdfb', 0, '2025-12-13 18:09:00', 0.03, 0.02, 0.02, 0.04),
 ('REG001', 101, '2025-12-01 09:00:00', 50.00, 50.25, 51.00, 49.75),
 ('REG002', 102, '2025-12-01 09:05:00', 120.50, 120.75, 121.20, 119.80),
 ('REG003', 103, '2025-12-01 09:10:00', 35.20, 35.50, 36.00, 34.80),
@@ -329,7 +336,6 @@ CREATE TABLE `stocks` (
 --
 
 INSERT INTO `stocks` (`registrationNumber`, `stockId`, `totalShares`, `currentPrice`) VALUES
-(21, 33, 12, 3.00),
 (1, 101, 1000, 50.25),
 (2, 102, 500, 120.75),
 (3, 103, 2000, 35.50),
@@ -367,7 +373,21 @@ CREATE TABLE `stocks_transaction` (
 
 INSERT INTO `stocks_transaction` (`transactionId`, `timestamp`, `amount`, `stockId`, `iUserId`, `registrationNumber`) VALUES
 ('T1765038729677', '2025-12-06 16:32:09', 34.00, 104, 15, '4'),
-('T1765038748221', '2025-12-06 16:32:28', 109.00, 109, 15, '9');
+('T1765038748221', '2025-12-06 16:32:28', 109.00, 109, 15, '9'),
+('T1765204654684', '2025-12-08 14:37:34', 989.00, 106, 15, '6'),
+('T1765205504300', '2025-12-08 14:51:44', 500.00, 112, 15, '12'),
+('T1765205736579', '2025-12-08 14:55:36', 1.00, 101, 15, '1'),
+('T1765205841634', '2025-12-08 14:57:21', 100.00, 103, 16, '3'),
+('T1765208622609', '2025-12-08 15:43:42', 123.00, 102, 15, '2'),
+('T1765361458844', '2025-12-10 10:10:58', 5.00, 105, 19, '5'),
+('T1765361475354', '2025-12-10 10:11:15', 7.00, 106, 19, '6'),
+('T1765361488778', '2025-12-10 10:11:28', 6.00, 108, 19, '8'),
+('T1765361533666', '2025-12-10 10:12:13', 4.00, 106, 16, '6'),
+('T1765368877496', '2025-12-10 12:14:37', 8.00, 101, 15, '1'),
+('T1765368889616', '2025-12-10 12:14:49', 120.00, 102, 15, '2'),
+('T1765368948559', '2025-12-10 12:15:48', 234.00, 109, 1112, '9'),
+('T1765371323487', '2025-12-10 12:55:23', 12.00, 101, 15, '1'),
+('T1765371374485', '2025-12-10 12:56:14', 345.00, 104, 1113, '4');
 
 -- --------------------------------------------------------
 
@@ -390,6 +410,7 @@ CREATE TABLE `trade` (
 --
 
 INSERT INTO `trade` (`tradeId`, `buyerId`, `sellerId`, `amount`, `date`, `assetType`, `status`) VALUES
+(0, 123, 112, 3.00, '2025-12-13 18:29:00', '1SA', 'closed'),
 (1, 1, 2, 5000.50, '2025-12-01 09:00:00', 'Stock', 'Completed'),
 (2, 3, 4, 12000.75, '2025-12-01 09:15:00', 'Stock', 'Pending'),
 (3, 5, 6, 7500.00, '2025-12-01 09:30:00', 'Bond', 'Completed'),
@@ -403,8 +424,8 @@ INSERT INTO `trade` (`tradeId`, `buyerId`, `sellerId`, `amount`, `date`, `assetT
 (11, 6, 7, 7100.00, '2025-12-01 11:30:00', 'Bond', 'Pending'),
 (12, 8, 9, 8800.25, '2025-12-01 11:45:00', 'Stock', 'Completed'),
 (13, 10, 11, 5400.75, '2025-12-01 12:00:00', 'ETF', 'Completed'),
-(14, 12, 13, 12500.50, '2025-12-01 12:15:00', 'Stock', 'Pending'),
-(15, 14, 15, 6600.00, '2025-12-01 12:30:00', 'Bond', 'Completed');
+(312741, 123, 121, 3.00, '2025-12-12 18:52:00', 'sports', 'pending'),
+(2147483647, 121, 121, 11.00, '2025-12-19 20:40:00', 'saa', 'closed');
 
 -- --------------------------------------------------------
 
@@ -426,7 +447,17 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`userid`, `email`, `pass`, `role`, `contact_info`) VALUES
 (1, 'admin@example.com', 'adminpass', 'admin', NULL),
-(15, 'rafi', '5678', 'investor', NULL);
+(4, 'fscds', 'sdsc', 'investor', 'csfds'),
+(5, 'sdsxs', 'sdsxs', 'investor', 'scsc'),
+(11, 'rafi@w.com', 'wdww', '', '2dww'),
+(15, 'rafi', '5678', 'investor', NULL),
+(16, 'tonmoy', '5678', 'investor', NULL),
+(18, 'hello', '123', 'companyRep', NULL),
+(19, 'khan', '990', 'investor', NULL),
+(90, 'scs', 'cscs', '', 'dsd'),
+(1111, 'esd', '232', '', ''),
+(1112, 'new', '123', 'investor', NULL),
+(1113, 'king', '123', 'investor', NULL);
 
 --
 -- Indexes for dumped tables
@@ -527,7 +558,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `userid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `userid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1114;
 
 --
 -- Constraints for dumped tables

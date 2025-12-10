@@ -7,7 +7,7 @@ const AdminController = require("../controllers/AdminController");
 const auth = require('../middleware/auth');
 
 // Protect all admin routes
-AdminRouter.use(auth.isAdmin);
+// AdminRouter.use(auth.isAdmin);
 
 
 AdminRouter.get('/dashboard',AdminController.Dashboard)
@@ -76,7 +76,7 @@ AdminRouter.post('/trades/delete/:tradeId', AdminController.deleteTrade);
 AdminRouter.get('/Price-Monitoring',AdminController.PriceMonitoring)
 
 
-AdminRouter.get('/Trade-Management',AdminController.TradeManagement)
+// AdminRouter.get('/Trade-Management',AdminController.TradeManagement)
 AdminRouter.get('/AI-Based-Fraud-Detection',AdminController.AIBasedFraudDetection)
 // Fraud routes (alerts)
 AdminRouter.get('/fraud/search', AdminController.searchFraud);

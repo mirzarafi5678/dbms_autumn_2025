@@ -114,13 +114,24 @@
 
     // --- Edit Modal ---
     function openEditModal(alert) {
-      document.getElementById('editTid').value = alert.tid;
-      document.getElementById('editRiskScore').value = alert.riskScore;
-      document.getElementById('editAccuracyScore').value = alert.accuracyScore;
-      document.getElementById('editDetectionDate').value = alert.detectionDate;
-      document.getElementById('editSummary').value = alert.summary;
+      // populate fields that actually exist in the form
+      if (alert.alertId !== undefined) document.getElementById('editAlertId').value = alert.alertId;
+      if (alert.transactionId !== undefined) document.getElementById('editTransactionId').value = alert.transactionId;
+      if (alert.riskScore !== undefined) document.getElementById('editRiskScore').value = alert.riskScore;
+      if (alert.detectionDate !== undefined && alert.detectionDate) {
+        // try to normalize to YYYY-MM-DD for <input type="date">
+        try {
+          const d = (typeof alert.detectionDate === 'string' && alert.detectionDate.length >= 10)
+            ? alert.detectionDate.substr(0,10)
+            : new Date(alert.detectionDate).toISOString().slice(0,10);
+          document.getElementById('editDetectionDate').value = d;
+        } catch (e) {
+          document.getElementById('editDetectionDate').value = '';
+        }
+      }
 
-      document.getElementById('editForm').action = `/admin/fraud/edit/${alert.alertId}`;
+      // set correct form action (match AdminRouter path)
+      document.getElementById('editForm').action = '/Admin/fraud/edit/' + encodeURIComponent(alert.alertId);
       document.getElementById('editModal').classList.remove('hidden');
     }
     function closeEditModal() {
