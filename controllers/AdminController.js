@@ -234,9 +234,10 @@ exports.searchInstitute = async (req, res) => {
 
 // INSTITUTE: add
 exports.addInstitute = async (req, res) => {
+    const id = generateRandomId();
     const { name, licenseNumber, type } = req.body;
     try {
-        await db.query('INSERT INTO institute (name, licenseNumber, type) VALUES (?, ?, ?)', [name, licenseNumber, type]);
+        await db.query('INSERT INTO institute (id,name, licenseNumber, type) VALUES (?,?, ?, ?)', [id,name, licenseNumber, type]);
         res.redirect('/Admin/Audit-Report-Management');
     } catch (err) {
         console.error(err);
@@ -289,9 +290,10 @@ exports.searchReports = async (req, res) => {
 
 // REPORTS: add
 exports.addReport = async (req, res) => {
+    const reportId = generateRandomId();
     const { auditName, auditDate, findingsSummary, registrationNumber } = req.body;
     try {
-        await db.query('INSERT INTO report (auditName, auditDate, findingsSummary, registrationNumber) VALUES (?, ?, ?, ?)', [auditName, auditDate, findingsSummary, registrationNumber]);
+        await db.query('INSERT INTO report (reportId, auditName, auditDate, findingsSummary, registrationNumber) VALUES (?,?, ?, ?, ?)', [reportId,auditName, auditDate, findingsSummary, registrationNumber]);
         res.redirect('/Admin/Audit-Report-Management');
     } catch (err) {
         console.error(err);
