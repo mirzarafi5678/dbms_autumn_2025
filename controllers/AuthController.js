@@ -87,11 +87,23 @@ if (roleIn === 'investor' || roleIn === 'companyRep') {
     await db.execute('INSERT INTO users (email, pass, role) VALUES (?, ?, ?)', [email, pass, role]);
 
     const [rows] = await db.execute('SELECT userid, email, role FROM users WHERE email = ? AND pass = ?', [email, pass]);
-    const id = rows[0].userid;
+    if( rows[0].role=="investor"){
+             
+     const id = rows[0].userid;
     await db.execute(
     'INSERT INTO investor (iUserId, name) VALUES (?, ?)',
     [id, name]
   );
+    }
+    if( rows[0].role=="companyRep"){
+             
+     const rUserId = rows[0].userid;
+    await db.execute(
+    'INSERT INTO company_representative (rUserId, name) VALUES (?, ?)',
+    [rUserId, name]
+  );
+    }
+    
     return res.redirect('/login?created=1');
   } catch (err) {
     console.error('Signup error', err);

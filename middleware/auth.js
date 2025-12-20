@@ -31,7 +31,7 @@ module.exports.isInvestor = (req, res, next) => {
 };
 
 module.exports.isCompanyRep = (req, res, next) => {
-     console.log("Comapny id deklo",req.session.user)
+    //  console.log("Comapny id deklo",req.session.user)
   if (req.session && req.session.user && req.session.user.role === 'companyRep') {
     return next();
   }
