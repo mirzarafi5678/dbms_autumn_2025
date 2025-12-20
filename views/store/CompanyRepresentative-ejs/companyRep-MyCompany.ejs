@@ -12,7 +12,7 @@
 <div class="bg-gray-800 p-6 rounded-xl shadow-lg mb-12 max-w-2xl">
     <h2 class="text-xl font-semibold mb-4">Company Information</h2>
 
-    <form action="/CompanyRep/save-company" method="POST" class="space-y-4">
+    <form action="/companyRep/my-company/save-company" method="POST" class="space-y-4">
 
         <input type="text" name="name"
                placeholder="<%= company.name || 'Company Name' %>"
@@ -24,26 +24,24 @@
                value="<%= company.sector || '' %>"
                class="w-full p-3 rounded bg-gray-700 text-white">
 
-        <input type="text" name="registrationNumber"
-               placeholder="<%= company.registrationNumber || 'Registration Number' %>"
-               value="<%= company.registrationNumber || '' %>"
-               class="w-full p-3 rounded bg-gray-700 text-white">
-
+        
         <input type="text" name="contactInfo"
                placeholder="<%= company.contactInfo || 'Contact Info' %>"
                value="<%= company.contactInfo || '' %>"
                class="w-full p-3 rounded bg-gray-700 text-white">
 
         <div class="flex space-x-3">
-            <button type="submit"
-                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded">
-                Submit
-            </button>
-
-            <button formaction="/CompanyRep/update-company" type="submit"
-                    class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded">
-                Update
-            </button>
+            <% if (!company || !company.name) { %>
+                <button type="submit"
+                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded">
+                    Submit
+                </button>
+            <% } else { %>
+                <button formaction="/companyRep/my-company/update-company" type="submit"
+                        class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded">
+                    Update
+                </button>
+            <% } %>
         </div>
     </form>
 </div>
@@ -53,7 +51,7 @@
     <div class="bg-gray-800 p-6 rounded-xl shadow-lg mb-8 max-w-xl">
         <h2 class="text-xl font-semibold mb-4">Add Stock</h2>
 
-        <form action="/CompanyRep/add-stock" method="POST" class="space-y-4">
+        <form action="/companyRep/my-company/add-stock" method="POST" class="space-y-4">
             <input type="number" name="totalShares"
                    placeholder="Total Shares"
                    class="w-full p-3 rounded bg-gray-700 text-white">
@@ -100,7 +98,7 @@
                             </button>
 
                             <!-- DELETE BUTTON -->
-                            <form action="/CompanyRep/delete-stock" method="POST">
+                            <form action="/companyRep/my-company/delete-stock" method="POST">
                                 <input type="hidden" name="stockId" value="<%= stock.stockId %>">
                                 <button type="submit" 
                                         class="px-3 py-1 bg-red-600 hover:bg-red-700 rounded">
@@ -123,7 +121,7 @@
         <div class="bg-gray-800 p-8 rounded-xl w-96">
             <h2 class="text-xl font-semibold mb-4">Edit Stock</h2>
 
-            <form action="/CompanyRep/update-stock" method="POST" class="space-y-3">
+            <form action="/companyRep/my-company/update-stock" method="POST" class="space-y-3">
                 
                 <input id="editStockId" name="stockId"
                        readonly
